@@ -1,0 +1,90 @@
+{
+	"pools": [
+		{
+			"name": "main",
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"weight": 5,
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"min": 2.0,
+								"max": 7.0,
+								"type": "minecraft:uniform"
+							}
+						}
+					],
+					"name": "arachnids:762"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 5,
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"min": 2.0,
+								"max": 7.0,
+								"type": "minecraft:uniform"
+							}
+						}
+					],
+					"name": "arachnids:mz90"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "arachnids:mar1"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "arachnids:mar2"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "arachnids:miarmor_helmet"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "arachnids:miarmor_chestplate"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "arachnids:miarmor_leggings"
+				},
+				{
+					"type": "item",
+					"weight": 1,
+					"name": "arachnids:miarmor_boots"
+				},
+				{
+					"type": "minecraft:item",
+					"functions": [
+						{
+							"function": "minecraft:set_nbt",
+							"tag": "{StoredEnchantments:[{id:\"arachnids:grenadeattachment\",lvl:1s}]}"
+						}
+					],
+					"name": "minecraft:enchanted_book"
+				},
+				{
+					"type": "minecraft:item",
+					"functions": [
+						{
+							"function": "minecraft:set_nbt",
+							"tag": "{StoredEnchantments:[{id:\"arachnids:sniperattachment\",lvl:1s}]}"
+						}
+					],
+					"name": "minecraft:enchanted_book"
+				}
+			]
+		}
+	]
+}

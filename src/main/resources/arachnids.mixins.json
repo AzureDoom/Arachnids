@@ -1,0 +1,24 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "mod.azure.arachnids.mixin",
+	"compatibilityLevel": "JAVA_16",
+	"mixins": [
+		"AnvilScreenHandlerMixin",
+		"BuilderAccessor",
+		"HeldItemRendererMixin",
+		"LootContextAccessor",
+		"LootManagerAccessor",
+		"LootTableMixin",
+		"MendingMixin",
+		"SpawnRestrictionMixin",
+		"UnbreakingMixin"
+	],
+	"client": [
+		"SniperMixin",
+		"WeaponRenderingMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

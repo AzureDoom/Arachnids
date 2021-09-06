@@ -1,0 +1,48 @@
+{
+	"parent": "minecraft:adventure/root",
+	"display": {
+		"icon": {
+			"item": "arachnids:miarmor_chestplate",
+			"nbt": "{Damage:0}"
+		},
+		"title": {
+			"translate": "arachnids.achievement.miarmor_armor.title"
+		},
+		"description": {
+			"translate": "arachnids.achievement.miarmor_armor.desc"
+		},
+		"frame": "challenge",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"rewards": {
+		"experience": 100
+	},
+	"criteria": {
+		"mi_armor": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "arachnids:miarmor_helmet"
+					},
+					{
+						"item": "arachnids:miarmor_chestplate"
+					},
+					{
+						"item": "arachnids:miarmor_leggings"
+					},
+					{
+						"item": "arachnids:miarmor_boots"
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"mi_armor"
+		]
+	]
+}
