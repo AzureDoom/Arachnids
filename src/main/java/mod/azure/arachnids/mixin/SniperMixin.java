@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.client.ArachnidsClientInit;
 import mod.azure.arachnids.items.weapons.MAR1Item;
 import mod.azure.arachnids.items.weapons.MAR2Item;
 import net.minecraft.client.MinecraftClient;
@@ -45,7 +46,7 @@ public abstract class SniperMixin extends DrawableHelper {
 		if (this.client.options.getPerspective().isFirstPerson()
 				&& (itemStack.getItem() instanceof MAR1Item || itemStack.getItem() instanceof MAR2Item)
 				&& EnchantmentHelper.getLevel(ArachnidsMod.SNIPERATTACHMENT, itemStack) > 0) {
-			if (this.client.options.keySneak.isPressed()) {
+			if (ArachnidsClientInit.scope.isPressed()) {
 				if (this.scoped == true) {
 					this.client.options.fov = this.client.options.fov - 60;
 					this.scoped = false;

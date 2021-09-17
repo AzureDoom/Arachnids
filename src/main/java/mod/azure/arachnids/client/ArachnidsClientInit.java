@@ -41,7 +41,6 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
@@ -53,9 +52,13 @@ public class ArachnidsClientInit implements ClientModInitializer {
 	public static KeyBinding reload = new KeyBinding("key.arachnids.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
 			"category.arachnids.binds");
 
+	public static KeyBinding scope = new KeyBinding("key.arachnids.scope", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT,
+			"category.arachnids.binds");
+
 	@Override
 	public void onInitializeClient() {
 		KeyBindingHelper.registerKeyBinding(reload);
+		KeyBindingHelper.registerKeyBinding(scope);
 		GeoItemRenderer.registerItemRenderer(ArachnidsItems.MAR1, new MAR1Render());
 		GeoItemRenderer.registerItemRenderer(ArachnidsItems.MAR2, new MAR2Render());
 		GeoItemRenderer.registerItemRenderer(ArachnidsMod.MZ90BLOCK.asItem(), new MZ90BlockItemRender());
@@ -88,13 +91,13 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		FabricModelPredicateProviderRegistry.register(ArachnidsItems.MAR1, new Identifier("scoped"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					if (livingEntity != null)
-						return isSneaking(livingEntity, itemStack) ? 1.0F : 0.0F;
+						return isScoped(itemStack) ? 1.0F : 0.0F;
 					return 0.0F;
 				});
 		FabricModelPredicateProviderRegistry.register(ArachnidsItems.MAR2, new Identifier("scoped"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					if (livingEntity != null)
-						return isSneaking(livingEntity, itemStack) ? 1.0F : 0.0F;
+						return isScoped(itemStack) ? 1.0F : 0.0F;
 					return 0.0F;
 				});
 	}
@@ -108,8 +111,8 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		return (stack.getDamage() < stack.getMaxDamage() - 1);
 	}
 
-	private static boolean isSneaking(LivingEntity livingEntity, ItemStack stack) {
-		return livingEntity.isSneaking() && EnchantmentHelper.getLevel(ArachnidsMod.SNIPERATTACHMENT, stack) > 0;
+	private static boolean isScoped(ItemStack stack) {
+		return scope.isPressed() && EnchantmentHelper.getLevel(ArachnidsMod.SNIPERATTACHMENT, stack) > 0;
 	}
 
 }

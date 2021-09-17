@@ -1,6 +1,8 @@
 package mod.azure.arachnids.entity.projectiles;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -253,12 +255,17 @@ public class FlareEntity extends PersistentProjectileEntity {
 	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		super.onBlockHit(blockHitResult);
+		List<BlockState> blacklist = Arrays.asList(Blocks.AIR.getDefaultState(), Blocks.CACTUS.getDefaultState(),
+				Blocks.STONE.getDefaultState(), Blocks.SAND.getDefaultState());
 		if (world.getBlockState(this.getBlockPos()) == Blocks.AIR.getDefaultState()
 				&& world.getBlockState(this.getBlockPos().north()) == Blocks.AIR.getDefaultState()
 				&& world.getBlockState(this.getBlockPos().south()) == Blocks.AIR.getDefaultState()
 				&& world.getBlockState(this.getBlockPos().east()) == Blocks.AIR.getDefaultState()
 				&& world.getBlockState(this.getBlockPos().west()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().up()) == Blocks.AIR.getDefaultState()) {
+				&& world.getBlockState(this.getBlockPos().up()) == Blocks.AIR.getDefaultState()
+				&& world.getBlockState(this.getBlockPos()) != blacklist
+				&& world.getBlockState(this.getBlockPos()) != blacklist
+				&& world.getBlockState(this.getBlockPos()) != blacklist) {
 			if (this.isAlive())
 				world.setBlockState(blockHitResult.getBlockPos().offset(Direction.UP), Blocks.LIGHT.getDefaultState(),
 						Block.NOTIFY_NEIGHBORS);
@@ -291,7 +298,7 @@ public class FlareEntity extends PersistentProjectileEntity {
 	public boolean shouldRender(double distance) {
 		return true;
 	}
-	
+
 	@Override
 	protected boolean tryPickup(PlayerEntity player) {
 		return false;

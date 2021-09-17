@@ -37,8 +37,5 @@
 		"geckolib3": ">=3.0.9",
 		"java": ">=16"
 	},
-	"suggests": {
-		"another-mod": "*"
-	},
 	"accessWidener": "arachnids.accesswidener"
 }

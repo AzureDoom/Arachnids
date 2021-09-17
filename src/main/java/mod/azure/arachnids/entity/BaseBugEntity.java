@@ -45,6 +45,8 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 
 	public static final TrackedData<Integer> STATE = DataTracker.registerData(BaseBugEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
+	public static final TrackedData<Integer> MOVING = DataTracker.registerData(BaseBugEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(BaseBugEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
 	public static MobStats config = ArachnidsMod.config.stats;
@@ -62,7 +64,7 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(
-				new AnimationController<BaseBugEntity>(this, "idle_controller", 5, this::predicate));
+				new AnimationController<BaseBugEntity>(this, "idle_controller", 3, this::predicate));
 	}
 
 	@Override
@@ -78,11 +80,20 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 		this.dataTracker.set(STATE, time);
 	}
 
+	public int getMovingState() {
+		return this.dataTracker.get(MOVING);
+	}
+
+	public void setMovingState(int time) {
+		this.dataTracker.set(MOVING, time);
+	}
+
 	@Override
 	protected void initDataTracker() {
 		super.initDataTracker();
 		this.dataTracker.startTracking(VARIANT, 0);
 		this.dataTracker.startTracking(STATE, 0);
+		this.dataTracker.startTracking(MOVING, 0);
 	}
 
 	@Override
@@ -118,6 +129,11 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	}
 
 	@Override
+	protected boolean isDisallowedInPeaceful() {
+		return true;
+	}
+
+	@Override
 	public void readCustomDataFromNbt(NbtCompound tag) {
 		super.readCustomDataFromNbt(tag);
 		this.setVariant(tag.getInt("Variant"));
@@ -131,7 +147,7 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	public void setVariant(int variant) {
 		this.dataTracker.set(VARIANT, variant);
 	}
-	
+
 	@Override
 	public boolean doesRenderOnFire() {
 		return false;

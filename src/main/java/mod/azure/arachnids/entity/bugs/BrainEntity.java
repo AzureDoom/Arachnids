@@ -1,7 +1,10 @@
 package mod.azure.arachnids.entity.bugs;
 
+import java.util.List;
+
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -12,10 +15,12 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
@@ -30,6 +35,7 @@ public class BrainEntity extends BaseBugEntity {
 
 	@Override
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 
@@ -47,6 +53,26 @@ public class BrainEntity extends BaseBugEntity {
 		super.tickMovement();
 		if (!this.world.isClient) {
 			this.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1000000, 1, false, false));
+		}
+	}
+
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		float q = 50.0F;
+		int k = MathHelper.floor(this.getX() - (double) q - 1.0D);
+		int l = MathHelper.floor(this.getX() + (double) q + 1.0D);
+		int t = MathHelper.floor(this.getY() - (double) q - 1.0D);
+		int u = MathHelper.floor(this.getY() + (double) q + 1.0D);
+		int v = MathHelper.floor(this.getZ() - (double) q - 1.0D);
+		int w = MathHelper.floor(this.getZ() + (double) q + 1.0D);
+		List<Entity> list = this.world.getOtherEntities(this,
+				new Box((double) k, (double) t, (double) v, (double) l, (double) u, (double) w));
+		for (int x = 0; x < list.size(); ++x) {
+			Entity entity = (Entity) list.get(x);
+			if (entity instanceof BrainEntity && entity.age < 1) {
+				this.remove(Entity.RemovalReason.DISCARDED);
+			}
 		}
 	}
 

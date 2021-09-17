@@ -19,7 +19,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -69,6 +68,6 @@ public class MZ90Block extends Block {
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
-		return VoxelShapes.cuboid(0.33f, 0f, 0.33f, 0.67f, 1.0f, 0.67f);
+		return Block.createCuboidShape(6, 0, 6, 10, 10, 10);
 	}
 }

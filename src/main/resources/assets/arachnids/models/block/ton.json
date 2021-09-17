@@ -108,13 +108,12 @@
 		},
 		"gui": {
 			"rotation": [0, 20, -32],
-			"translation": [1.25, 2, 0]
-		},
-		"head": {
-			"scale": [0, 0, 0]
+			"translation": [1.25, 2.5, 0],
+			"scale": [1.35, 1.35, 1.35]
 		},
 		"fixed": {
-			"translation": [-0.5, 2, 0]
+			"translation": [-0.75, 2.75, -1],
+			"scale": [1.35, 1.35, 1.35]
 		}
 	}
 }

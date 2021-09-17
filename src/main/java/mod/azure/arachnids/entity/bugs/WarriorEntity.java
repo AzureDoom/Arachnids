@@ -156,6 +156,12 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 	}
 
 	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
+	}
+
+	@Override
 	protected SoundEvent getAmbientSound() {
 		return ArachnidsSounds.WARRIOR_IDLE;
 	}

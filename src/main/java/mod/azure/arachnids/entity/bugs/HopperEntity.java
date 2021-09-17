@@ -1,6 +1,7 @@
 package mod.azure.arachnids.entity.bugs;
 
 import mod.azure.arachnids.entity.BaseBugEntity;
+import mod.azure.arachnids.entity.goals.HopperFlightMoveControl;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityDimensions;
@@ -10,12 +11,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -24,7 +28,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class HopperEntity extends BaseBugEntity {
@@ -34,11 +41,27 @@ public class HopperEntity extends BaseBugEntity {
 	public HopperEntity(EntityType<? extends BaseBugEntity> entityType, World world) {
 		super(entityType, world);
 		this.experiencePoints = config.hopper_exp;
+		this.moveControl = new HopperFlightMoveControl(this, 90, false);
 	}
 
 	@Override
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		if (this.dataTracker.get(MOVING) == 1) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("flying", true));
+			return PlayState.CONTINUE;
+		}
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+			return PlayState.CONTINUE;
+		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
+	}
+
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(
+				new AnimationController<HopperEntity>(this, "idle_controller", 5, this::predicate));
 	}
 
 	@Override
@@ -48,12 +71,34 @@ public class HopperEntity extends BaseBugEntity {
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
 	}
 
+	@Override
+	protected EntityNavigation createNavigation(World world) {
+		BirdNavigation birdNavigation = new BirdNavigation(this, world);
+		birdNavigation.setCanPathThroughDoors(false);
+		birdNavigation.setCanSwim(true);
+		birdNavigation.setCanEnterOpenDoors(true);
+		return birdNavigation;
+	}
+
+	@Override
+	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+		return false;
+	}
+
+	@Override
+	protected void fall(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+	}
+
+	public boolean isInAir() {
+		return !this.onGround;
+	}
+
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.hopper_health)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.hopper_melee)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 15.0D)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 2.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
 	}
 
@@ -76,6 +121,12 @@ public class HopperEntity extends BaseBugEntity {
 
 	public int getVariants() {
 		return 2;
+	}
+
+	@Override
+	public void writeCustomDataToNbt(NbtCompound tag) {
+		super.writeCustomDataToNbt(tag);
+		tag.putInt("Variant", this.getVariant());
 	}
 
 	@Override
