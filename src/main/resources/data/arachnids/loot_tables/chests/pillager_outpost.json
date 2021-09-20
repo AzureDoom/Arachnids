@@ -83,6 +83,16 @@
 						}
 					],
 					"name": "minecraft:enchanted_book"
+				},
+				{
+					"type": "minecraft:item",
+					"functions": [
+						{
+							"function": "minecraft:set_nbt",
+							"tag": "{StoredEnchantments:[{id:\"arachnids:flareattachment\",lvl:1s}]}"
+						}
+					],
+					"name": "minecraft:enchanted_book"
 				}
 			]
 		}
