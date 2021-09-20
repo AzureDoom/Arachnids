@@ -2,30 +2,24 @@ package mod.azure.arachnids.items.weapons;
 
 import java.util.List;
 
-import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.client.ArachnidsClientInit;
 import mod.azure.arachnids.entity.projectiles.BulletEntity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
 import software.bernie.geckolib3.util.GeckoLibUtil;
@@ -85,32 +79,6 @@ public class MAR1Item extends BaseGunItem {
 						GeckoLibNetwork.syncAnimation(otherPlayer, this, id, ANIM_OPEN);
 					}
 				}
-			}
-		}
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-		if (world.isClient) {
-			if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof MAR1Item) {
-				if (ArachnidsClientInit.reload.isPressed() && selected) {
-					PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-					passedData.writeBoolean(true);
-					ClientPlayNetworking.send(ArachnidsMod.MAR1, passedData);
-				}
-			}
-		}
-	}
-
-	public void reload(PlayerEntity user, Hand hand) {
-		if (user.getStackInHand(hand).getItem() instanceof MAR1Item) {
-			while (user.getStackInHand(hand).getDamage() != 0
-					&& user.getInventory().count(ArachnidsItems.BULLETS) > 0) {
-				removeAmmo(ArachnidsItems.BULLETS, user);
-				user.getStackInHand(hand).damage(-config.MAR1_mag_size, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
-				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
-						ArachnidsSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

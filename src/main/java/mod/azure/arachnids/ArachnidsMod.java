@@ -8,9 +8,8 @@ import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.enchantment.FlareEnchantment;
 import mod.azure.arachnids.enchantment.GrenadeEnchantment;
 import mod.azure.arachnids.enchantment.SnipingEnchantment;
+import mod.azure.arachnids.items.weapons.BaseGunItem;
 import mod.azure.arachnids.items.weapons.M55Item;
-import mod.azure.arachnids.items.weapons.MAR1Item;
-import mod.azure.arachnids.items.weapons.MAR2Item;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.arachnids.util.ArachnidsVillagerTrades;
@@ -43,9 +42,8 @@ public class ArachnidsMod implements ModInitializer {
 	public static ProjectilesEntityRegister PROJECTILES;
 	public static final Block TONBLOCK = new TONBlock();
 	public static final Block MZ90BLOCK = new MZ90Block();
-	public static final Identifier M55 = new Identifier(MODID, "m55");
-	public static final Identifier MAR1 = new Identifier(MODID, "mar1");
-	public static final Identifier MAR2 = new Identifier(MODID, "mar2");
+	public static final Identifier RELOAD_BULLETS = new Identifier(MODID, "reload_bullets");
+	public static final Identifier RELOAD_TON = new Identifier(MODID, "reload_ton");
 	public static final Enchantment SNIPERATTACHMENT = new SnipingEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment GRENADEATTACHMENT = new GrenadeEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment FLAREATTACHMENT = new FlareEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
@@ -71,21 +69,14 @@ public class ArachnidsMod implements ModInitializer {
 		});
 		MobAttributes.init();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> ArachnidsVillagerTrades.addTrades());
-		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.MAR1,
+		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_BULLETS,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof MAR1Item) {
-						((MAR1Item) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
+					if (player.getMainHandStack().getItem() instanceof BaseGunItem) {
+						((BaseGunItem) player.getMainHandStack().getItem()).reloadBullets(player, Hand.MAIN_HAND);
 					}
 					;
 				});
-		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.MAR2,
-				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandStack().getItem() instanceof MAR2Item) {
-						((MAR2Item) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);
-					}
-					;
-				});
-		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.M55,
+		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_TON,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
 					if (player.getMainHandStack().getItem() instanceof M55Item) {
 						((M55Item) player.getMainHandStack().getItem()).reload(player, Hand.MAIN_HAND);

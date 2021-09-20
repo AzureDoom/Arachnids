@@ -2,15 +2,23 @@ package mod.azure.arachnids.items.weapons;
 
 import java.util.List;
 
+import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.client.ArachnidsClientInit;
 import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
 import mod.azure.arachnids.entity.projectiles.FlareEntity;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
+import mod.azure.arachnids.util.ArachnidsItems;
+import mod.azure.arachnids.util.ArachnidsSounds;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -137,6 +145,32 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 	@Override
 	public boolean isEnchantable(ItemStack stack) {
 		return true;
+	}
+
+	@Override
+	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+		if (world.isClient) {
+			if (((PlayerEntity) entity).getMainHandStack().getItem() instanceof BaseGunItem) {
+				if (ArachnidsClientInit.reload.isPressed() && selected) {
+					PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+					passedData.writeBoolean(true);
+					ClientPlayNetworking.send(ArachnidsMod.RELOAD_BULLETS, passedData);
+				}
+			}
+		}
+	}
+
+	public void reloadBullets(PlayerEntity user, Hand hand) {
+		if (user.getStackInHand(hand).getItem() instanceof BaseGunItem) {
+			while (user.getStackInHand(hand).getDamage() != 0
+					&& user.getInventory().count(ArachnidsItems.BULLETS) > 0) {
+				removeAmmo(ArachnidsItems.BULLETS, user);
+				user.getStackInHand(hand).damage(-config.MAR1_mag_size, user, s -> user.sendToolBreakStatus(hand));
+				user.getStackInHand(hand).setCooldown(3);
+				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
+						ArachnidsSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
+			}
+		}
 	}
 
 }

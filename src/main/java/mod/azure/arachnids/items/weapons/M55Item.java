@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 public class M55Item extends Item {
 
 	public static Weapons config = ArachnidsMod.config.weapons;
-	
+
 	public M55Item() {
 		super(new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup).maxCount(1).maxDamage(2));
 	}
@@ -37,7 +37,6 @@ public class M55Item extends Item {
 	public void onStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int remainingUseTicks) {
 		if (entityLiving instanceof PlayerEntity) {
 			PlayerEntity playerentity = (PlayerEntity) entityLiving;
-
 			if (stack.getDamage() < (stack.getMaxDamage() - 1)) {
 				playerentity.getItemCooldownManager().set(this, 15);
 				if (!worldIn.isClient) {
@@ -46,13 +45,10 @@ public class M55Item extends Item {
 							0.0F, 0.75F * 3.0F, 1.0F);
 					abstractarrowentity.refreshPositionAndAngles(entityLiving.getX(), entityLiving.getBodyY(0.95),
 							entityLiving.getZ(), 0, 0);
-
-					abstractarrowentity.setDamage(2.5);
-
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 					worldIn.spawnEntity(abstractarrowentity);
-					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(),
-							ArachnidsSounds.M55FIRE, SoundCategory.PLAYERS, 1.0F,
+					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
+							playerentity.getZ(), ArachnidsSounds.M55FIRE, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 				}
 			}
@@ -78,7 +74,7 @@ public class M55Item extends Item {
 					&& ArachnidsClientInit.reload.isPressed() && selected) {
 				PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 				passedData.writeBoolean(true);
-				ClientPlayNetworking.send(ArachnidsMod.M55, passedData);
+				ClientPlayNetworking.send(ArachnidsMod.RELOAD_TON, passedData);
 			}
 		}
 	}
