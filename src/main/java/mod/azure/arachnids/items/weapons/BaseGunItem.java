@@ -162,7 +162,7 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 
 	public void reloadBullets(PlayerEntity user, Hand hand) {
 		if (user.getStackInHand(hand).getItem() instanceof BaseGunItem) {
-			while (user.getStackInHand(hand).getDamage() != 0
+			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.getInventory().count(ArachnidsItems.BULLETS) > 0) {
 				removeAmmo(ArachnidsItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-config.MAR1_mag_size, user, s -> user.sendToolBreakStatus(hand));
