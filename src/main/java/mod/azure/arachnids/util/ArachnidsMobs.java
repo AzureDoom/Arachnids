@@ -41,7 +41,7 @@ public class ArachnidsMobs {
 	public static final EntityType<BrainEntity> BRAINBUG = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(ArachnidsMod.MODID, "brainbug"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, BrainEntity::new)
-					.dimensions(EntityDimensions.changing(6.6f, 4.05F)).trackRangeBlocks(90).trackedUpdateRate(4)
+					.dimensions(EntityDimensions.changing(5.6f, 4.05F)).trackRangeBlocks(90).trackedUpdateRate(4)
 					.build());
 
 	public static final EntityType<HopperEntity> HOOPERBUG = Registry.register(Registry.ENTITY_TYPE,

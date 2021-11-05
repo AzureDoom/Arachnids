@@ -1,3 +1,3 @@
-v.1.0.0
+v.0.0.1
 
-- First Release
+- This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.

@@ -8,13 +8,11 @@ import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 
 public class BugMeleeGoal extends MeleeAttackGoal {
 	private final BaseBugEntity actor;
-	private final double speed;
 	public int cooldown;
 
 	public BugMeleeGoal(BaseBugEntity zombie, double speed) {
 		super(zombie, speed, false);
 		this.actor = zombie;
-		this.speed = speed;
 	}
 
 	@Override

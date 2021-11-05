@@ -324,12 +324,12 @@
 				},
 				"lWing1": {
 					"rotation": {
-						"vector": [0, "5+math.sin(query.anim_time*360)*20", "-20+math.sin(query.anim_time*360)*2"]
+						"vector": ["-10+math.cos(query.anim_time*360)*10", "10+math.sin(query.anim_time*360)*25", "-20+math.sin(query.anim_time*360)*2"]
 					}
 				},
 				"rWing1": {
 					"rotation": {
-						"vector": [0, "-5+math.sin(query.anim_time*360)*-20", "20+math.sin(query.anim_time*360)*-2"]
+						"vector": ["-10+math.cos(query.anim_time*360)*10", "10+math.sin(query.anim_time*-360)*25", "20+math.sin(query.anim_time*360)*2"]
 					}
 				}
 			}
