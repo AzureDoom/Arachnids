@@ -3,9 +3,9 @@ package mod.azure.arachnids.client.models.mobs;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.PlasmaEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
-public class PlasmaModel extends AnimatedGeoModel<PlasmaEntity> {
+public class PlasmaModel extends AnimatedTickingGeoModel<PlasmaEntity> {
 
 	@Override
 	public Identifier getAnimationFileLocation(PlasmaEntity animatable) {
@@ -19,8 +19,8 @@ public class PlasmaModel extends AnimatedGeoModel<PlasmaEntity> {
 
 	@Override
 	public Identifier getTextureLocation(PlasmaEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/entity/" + (object.getAttckingState() == 1 ? "plasma_glow"
-				: "plasma") + ".png");
+		return new Identifier(ArachnidsMod.MODID,
+				"textures/entity/" + (object.getAttckingState() == 1 ? "plasma_glow" : "plasma") + ".png");
 	}
 
 }

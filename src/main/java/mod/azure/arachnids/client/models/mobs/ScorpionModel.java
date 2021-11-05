@@ -3,9 +3,9 @@ package mod.azure.arachnids.client.models.mobs;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.ScorpionEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
-public class ScorpionModel extends AnimatedGeoModel<ScorpionEntity> {
+public class ScorpionModel extends AnimatedTickingGeoModel<ScorpionEntity> {
 
 	@Override
 	public Identifier getAnimationFileLocation(ScorpionEntity animatable) {

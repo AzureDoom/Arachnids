@@ -3,9 +3,9 @@ package mod.azure.arachnids.client.models.mobs;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.HopperEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
-public class HopperModel extends AnimatedGeoModel<HopperEntity> {
+public class HopperModel extends AnimatedTickingGeoModel<HopperEntity> {
 
 	@Override
 	public Identifier getAnimationFileLocation(HopperEntity animatable) {

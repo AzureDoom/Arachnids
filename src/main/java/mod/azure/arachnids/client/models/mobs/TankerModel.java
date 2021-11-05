@@ -3,9 +3,9 @@ package mod.azure.arachnids.client.models.mobs;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.TankerEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 
-public class TankerModel extends AnimatedGeoModel<TankerEntity> {
+public class TankerModel extends AnimatedTickingGeoModel<TankerEntity> {
 
 	@Override
 	public Identifier getAnimationFileLocation(TankerEntity animatable) {

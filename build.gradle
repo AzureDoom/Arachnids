@@ -33,7 +33,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.17:3.0.13:dev'
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.17:3.0.21:dev'
 	modImplementation 'curse.maven:TDI-245733:3358651'
 	modImplementation 'curse.maven:modmenu-308702:3431313'
 	modImplementation 'curse.maven:REI-310111:3424130'

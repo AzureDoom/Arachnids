@@ -35,13 +35,14 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatable {
+public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatable, IAnimationTickable {
 
 	public static final TrackedData<Integer> STATE = DataTracker.registerData(BaseBugEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
@@ -278,6 +279,11 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 				this.world.sendEntityStatus(player, (byte) 30);
 			}
 		}
+	}
+
+	@Override
+	public int tickTimer() {
+		return age;
 	}
 
 }
