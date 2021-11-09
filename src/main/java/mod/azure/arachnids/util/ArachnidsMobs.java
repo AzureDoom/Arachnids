@@ -49,7 +49,7 @@ public class ArachnidsMobs {
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, HopperEntity::new)
 					.dimensions(EntityDimensions.fixed(2.3f, 2.15F)).trackRangeBlocks(90).trackedUpdateRate(4).build());
 
-	public static final EntityType<PlasmaEntity> PLAMSABUG = Registry.register(Registry.ENTITY_TYPE,
+	public static final EntityType<PlasmaEntity> PLASMABUG = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(ArachnidsMod.MODID, "plasma"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, PlasmaEntity::new)
 					.dimensions(EntityDimensions.changing(12.05f, 8.25F)).trackRangeBlocks(90).trackedUpdateRate(4)

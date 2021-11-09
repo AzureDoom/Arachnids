@@ -16,7 +16,7 @@ public class MobAttributes {
 		FabricDefaultAttributeRegistry.register(ArachnidsMobs.ARKELLIANBUG, ArkellianEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ArachnidsMobs.BRAINBUG, BrainEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ArachnidsMobs.HOOPERBUG, HopperEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.PLAMSABUG, PlasmaEntity.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(ArachnidsMobs.PLASMABUG, PlasmaEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ArachnidsMobs.SCORPIONBUG, ScorpionEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ArachnidsMobs.TANKERBUG, TankerEntity.createMobAttributes());
 		FabricDefaultAttributeRegistry.register(ArachnidsMobs.WARRIORBUG, WarriorEntity.createMobAttributes());

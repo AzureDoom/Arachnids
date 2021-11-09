@@ -34,8 +34,8 @@ public class ArachnidsItems {
 			"brainbug_spawn_egg");
 	public static BugSpawnEgg HOOPERBUG_SPAWN_EGG = item(new BugSpawnEgg(ArachnidsMobs.HOOPERBUG, 0x214c0e, 0x6f9e5a),
 			"hooper_spawn_egg");
-	public static BugSpawnEgg PLAMSABUG_SPAWN_EGG = item(new BugSpawnEgg(ArachnidsMobs.PLAMSABUG, 0x020408, 0x535a66),
-			"plamsa_spawn_egg");
+	public static BugSpawnEgg PLAMSABUG_SPAWN_EGG = item(new BugSpawnEgg(ArachnidsMobs.PLASMABUG, 0x020408, 0x535a66),
+			"plasma_spawn_egg");
 	public static BugSpawnEgg SCORPIONBUG_SPAWN_EGG = item(
 			new BugSpawnEgg(ArachnidsMobs.SCORPIONBUG, 0x535a66, 0xaa887c), "scorpion_spawn_egg");
 	public static BugSpawnEgg TANKERBUG_SPAWN_EGG = item(new BugSpawnEgg(ArachnidsMobs.TANKERBUG, 0x091a27, 0x96a8b5),

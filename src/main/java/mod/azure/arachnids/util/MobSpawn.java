@@ -49,7 +49,7 @@ public class MobSpawn {
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.HOOPERBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.PLAMSABUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.PLASMABUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.SCORPIONBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
