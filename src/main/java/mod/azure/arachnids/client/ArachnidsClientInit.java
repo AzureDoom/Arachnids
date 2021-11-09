@@ -68,7 +68,7 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.ARKELLIANBUG, (ctx) -> new ArkellianRender(ctx));
 		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.BRAINBUG, (ctx) -> new BrainRender(ctx));
 		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.HOOPERBUG, (ctx) -> new HopperRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.PLAMSABUG, (ctx) -> new PlasmaRender(ctx));
+		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.PLASMABUG, (ctx) -> new PlasmaRender(ctx));
 		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.SCORPIONBUG, (ctx) -> new ScorpionRender(ctx));
 		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.TANKERBUG, (ctx) -> new TankerRender(ctx));
 		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.WARRIORBUG, (ctx) -> new WarriorRender(ctx));
