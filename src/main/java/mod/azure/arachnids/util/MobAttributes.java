@@ -12,15 +12,22 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 
 public class MobAttributes {
 
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.ARKELLIANBUG, ArkellianEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.BRAINBUG, BrainEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.HOOPERBUG, HopperEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.PLASMABUG, PlasmaEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.SCORPIONBUG, ScorpionEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.TANKERBUG, TankerEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.WARRIORBUG, WarriorEntity.createMobAttributes());
-		FabricDefaultAttributeRegistry.register(ArachnidsMobs.WORKERBUG, WorkerEntity.createMobAttributes());
-	}
-
+  public static void init() {
+    FabricDefaultAttributeRegistry.register(
+        ArachnidsMobs.ARKELLIANBUG, ArkellianEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(ArachnidsMobs.BRAINBUG,
+                                            BrainEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(ArachnidsMobs.HOOPERBUG,
+                                            HopperEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(ArachnidsMobs.PLASMABUG,
+                                            PlasmaEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(
+        ArachnidsMobs.SCORPIONBUG, ScorpionEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(ArachnidsMobs.TANKERBUG,
+                                            TankerEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(
+        ArachnidsMobs.WARRIORBUG, WarriorEntity.createMobAttributes());
+    FabricDefaultAttributeRegistry.register(ArachnidsMobs.WORKERBUG,
+                                            WorkerEntity.createMobAttributes());
+  }
 }
