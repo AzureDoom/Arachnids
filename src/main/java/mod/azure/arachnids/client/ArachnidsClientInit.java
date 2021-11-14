@@ -33,7 +33,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
@@ -63,23 +63,23 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		GeoItemRenderer.registerItemRenderer(ArachnidsItems.MAR2, new MAR2Render());
 		GeoItemRenderer.registerItemRenderer(ArachnidsMod.MZ90BLOCK.asItem(), new MZ90BlockItemRender());
 		GeoItemRenderer.registerItemRenderer(ArachnidsMod.TONBLOCK.asItem(), new TonBlockItemRender());
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.MZ90, (ctx) -> new MZ90BlockRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.TON, (ctx) -> new TonBlockRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.ARKELLIANBUG, (ctx) -> new ArkellianRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.BRAINBUG, (ctx) -> new BrainRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.HOOPERBUG, (ctx) -> new HopperRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.PLASMABUG, (ctx) -> new PlasmaRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.SCORPIONBUG, (ctx) -> new ScorpionRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.TANKERBUG, (ctx) -> new TankerRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.WARRIORBUG, (ctx) -> new WarriorRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ArachnidsMobs.WORKERBUG, (ctx) -> new WorkerRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BULLETS, (ctx) -> new BulletRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.MZ90, (ctx) -> new MZ90Render(ctx));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.TON, (ctx) -> new TonEntityRender(ctx));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.BUGPLASMA,
+		EntityRendererRegistry.register(ArachnidsMobs.MZ90, (ctx) -> new MZ90BlockRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.TON, (ctx) -> new TonBlockRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.ARKELLIANBUG, (ctx) -> new ArkellianRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.BRAINBUG, (ctx) -> new BrainRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.HOOPERBUG, (ctx) -> new HopperRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.PLASMABUG, (ctx) -> new PlasmaRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.SCORPIONBUG, (ctx) -> new ScorpionRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.TANKERBUG, (ctx) -> new TankerRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.WARRIORBUG, (ctx) -> new WarriorRender(ctx));
+		EntityRendererRegistry.register(ArachnidsMobs.WORKERBUG, (ctx) -> new WorkerRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BULLETS, (ctx) -> new BulletRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.MZ90, (ctx) -> new MZ90Render(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.TON, (ctx) -> new TonEntityRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BUGPLASMA,
 				(ctx) -> new BugPlasmaRender(ctx));
 		requestParticleTexture(new Identifier("minecraft:particle/big_smoke_0"));
-		EntityRendererRegistry.INSTANCE.register(ProjectilesEntityRegister.FLARE, (ctx) -> new FlareRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.FLARE, (ctx) -> new FlareRender(ctx));
 		ParticleFactoryRegistry.getInstance().register(ArachnidsParticles.FLARE, FlareParticle.RedSmokeFactory::new);
 		ClientSidePacketRegistry.INSTANCE.register(EntityPacket.ID, (ctx, buf) -> {
 			EntityPacketOnClient.onPacket(ctx, buf);
