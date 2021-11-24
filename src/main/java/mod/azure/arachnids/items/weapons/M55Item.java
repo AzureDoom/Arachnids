@@ -41,7 +41,7 @@ public class M55Item extends Item {
 				playerentity.getItemCooldownManager().set(this, 15);
 				if (!worldIn.isClient) {
 					TacticalOxygenNukeEntity abstractarrowentity = createNuke(worldIn, stack, playerentity);
-					abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
 							0.0F, 0.75F * 3.0F, 1.0F);
 					abstractarrowentity.refreshPositionAndAngles(entityLiving.getX(), entityLiving.getBodyY(0.95),
 							entityLiving.getZ(), 0, 0);
@@ -60,7 +60,7 @@ public class M55Item extends Item {
 			while (user.getStackInHand(hand).getDamage() != 0 && user.getInventory().count(ArachnidsItems.TON) > 0) {
 				removeAmmo(ArachnidsItems.TON, user);
 				user.getStackInHand(hand).damage(-2, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ArachnidsSounds.M55RELOAD, SoundCategory.PLAYERS, 0.5F, 1.0F);
 			}

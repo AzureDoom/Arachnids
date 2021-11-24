@@ -166,7 +166,7 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 					&& user.getInventory().count(ArachnidsItems.BULLETS) > 0) {
 				removeAmmo(ArachnidsItems.BULLETS, user);
 				user.getStackInHand(hand).damage(-config.MAR1_mag_size, user, s -> user.sendToolBreakStatus(hand));
-				user.getStackInHand(hand).setCooldown(3);
+				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ArachnidsSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);
 			}

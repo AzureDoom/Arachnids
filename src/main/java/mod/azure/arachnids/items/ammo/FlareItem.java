@@ -28,7 +28,7 @@ public class FlareItem extends Item {
 			user.getItemCooldownManager().set(this, 25);
 			if (!world.isClient) {
 				FlareEntity snowballEntity = new FlareEntity(world, itemStack, user, false);
-				snowballEntity.setProperties(user, user.getPitch(), user.getYaw(), 0.0F, 0.5F * 3.0F, 1.0F);
+				snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 0.5F * 3.0F, 1.0F);
 				world.spawnEntity(snowballEntity);
 			}
 			if (!user.getAbilities().creativeMode) {

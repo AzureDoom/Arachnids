@@ -42,7 +42,7 @@ public class MAR1Item extends BaseGunItem {
 					if (playerentity.getOffHandStack().getItem() == ArachnidsItems.MZ90
 							&& EnchantmentHelper.getLevel(ArachnidsMod.GRENADEATTACHMENT, stack) > 0) {
 						abstractarrowentity = createMZ90(worldIn, stack, playerentity);
-						abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
 								0.0F, 0.5F * 3.0F, 1.0F);
 						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 								playerentity.getZ(), ArachnidsSounds.GRENADELAUNCHER, SoundCategory.PLAYERS, 0.25F,
@@ -52,7 +52,7 @@ public class MAR1Item extends BaseGunItem {
 					} else if (playerentity.getOffHandStack().getItem() == ArachnidsItems.FLARE
 							&& EnchantmentHelper.getLevel(ArachnidsMod.FLAREATTACHMENT, stack) > 0) {
 						abstractarrowentity = createFlare(worldIn, stack, playerentity);
-						abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
 								0.0F, 0.5F * 3.0F, 1.0F);
 						worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 								playerentity.getZ(), ArachnidsSounds.FLAREGUN, SoundCategory.PLAYERS, 0.25F,
@@ -61,7 +61,7 @@ public class MAR1Item extends BaseGunItem {
 						playerentity.getItemCooldownManager().set(this, 8);
 					} else {
 						abstractarrowentity = createBullet(worldIn, stack, playerentity);
-						abstractarrowentity.setProperties(playerentity, playerentity.getPitch(), playerentity.getYaw(),
+						abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
 								0.0F, 1.0F * 3.0F, 1.0F);
 						if (EnchantmentHelper.getLevel(Enchantments.FLAME, stack) > 0) {
 							abstractarrowentity.setOnFireFor(100);
