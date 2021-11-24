@@ -26,6 +26,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
@@ -40,6 +41,15 @@ public class PlasmaEntity extends BaseBugEntity {
 
 	@Override
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+		if (event.isMoving()) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("walking", true));
+			return PlayState.CONTINUE;
+		}
+//		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+//			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
+//			return PlayState.CONTINUE;
+//		}
+		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
 		return PlayState.CONTINUE;
 	}
 
