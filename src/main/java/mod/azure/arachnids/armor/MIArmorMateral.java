@@ -12,12 +12,12 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Lazy;
 
+@SuppressWarnings("deprecation")
 public enum MIArmorMateral implements ArmorMaterial {
 
-	MIARMOR("miarmor", 37, new int[] { 5, 2, 3, 1 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F,
-			0.4F, () -> {
-				return Ingredient.ofItems(Items.LEATHER);
-			});
+	MIARMOR("miarmor", 37, new int[] { 5, 2, 3, 1 }, 30, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 8.0F, 0.4F, () -> {
+		return Ingredient.ofItems(Items.LEATHER);
+	});
 
 	private static final int[] BASE_DURABILITY = new int[] { 13, 15, 16, 11 };
 	private final String name;
