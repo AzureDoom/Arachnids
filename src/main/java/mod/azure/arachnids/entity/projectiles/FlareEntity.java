@@ -1,8 +1,6 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,9 +11,11 @@ import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LightBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -33,7 +33,6 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
@@ -240,14 +239,29 @@ public class FlareEntity extends PersistentProjectileEntity {
 
 	@Override
 	public void onRemoved() {
-		if (world.getBlockState(this.getBlockPos()) == Blocks.LIGHT.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().north()) == Blocks.LIGHT.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().south()) == Blocks.LIGHT.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().east()) == Blocks.LIGHT.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().west()) == Blocks.LIGHT.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().up()) == Blocks.LIGHT.getDefaultState()) {
-			world.updateNeighbors(this.getBlockPos(), Blocks.AIR);
-			world.setBlockState(this.getBlockPos(), Blocks.AIR.getDefaultState(), Block.NOTIFY_NEIGHBORS);
+		if (this.getBlockStateAtPos().getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().up()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().up()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().down()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().down(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().north()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().north(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().south()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().south(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().east()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().east(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
+		}
+		if (this.world.getBlockState(this.getBlockPos().west()).getBlock() instanceof LightBlock) {
+			world.setBlockState(this.getBlockPos().west(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
 		}
 		super.onRemoved();
 	}
@@ -255,20 +269,9 @@ public class FlareEntity extends PersistentProjectileEntity {
 	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		super.onBlockHit(blockHitResult);
-		List<BlockState> blacklist = Arrays.asList(Blocks.AIR.getDefaultState(), Blocks.CACTUS.getDefaultState(),
-				Blocks.STONE.getDefaultState(), Blocks.SAND.getDefaultState());
-		if (world.getBlockState(this.getBlockPos()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().north()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().south()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().east()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().west()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos().up()) == Blocks.AIR.getDefaultState()
-				&& world.getBlockState(this.getBlockPos()) != blacklist
-				&& world.getBlockState(this.getBlockPos()) != blacklist
-				&& world.getBlockState(this.getBlockPos()) != blacklist) {
-			if (this.isAlive())
-				world.setBlockState(blockHitResult.getBlockPos().offset(Direction.UP), Blocks.LIGHT.getDefaultState(),
-						Block.NOTIFY_NEIGHBORS);
+		if (this.isAlive() && world.getBlockState(blockHitResult.getBlockPos().up()).getBlock() instanceof AirBlock) {
+			world.setBlockState(blockHitResult.getBlockPos().up(), Blocks.LIGHT.getDefaultState(),
+					Block.NOTIFY_NEIGHBORS);
 		}
 	}
 
