@@ -51,7 +51,7 @@ public class MZ90Entity extends PersistentProjectileEntity implements IAnimatabl
 	protected String type;
 	private int ticksInAir;
 	public static Weapons config = ArachnidsMod.config.weapons;
-	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(FlareEntity.class,
+	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(MZ90Entity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
 	public MZ90Entity(EntityType<? extends MZ90Entity> entityType, World world) {
