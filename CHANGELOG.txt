@@ -1,5 +1,5 @@
-v.0.0.1
+v.0.0.2
 
-Direct Port to 1.18
+- Fixes crash with dup registry.
+
 - This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.
-- Fixes Flares replacing blocks in walls, improves light-source placement.
