@@ -19,7 +19,6 @@ import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -29,7 +28,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import software.bernie.geckolib3.GeckoLib;
 
@@ -64,9 +62,6 @@ public class ArachnidsMod implements ModInitializer {
 		PROJECTILES = new ProjectilesEntityRegister();
 		GeckoLib.initialize();
 		MobSpawn.addSpawnEntries();
-		RegistryEntryAddedCallback.event(BuiltinRegistries.BIOME).register((i, id, biome) -> {
-			MobSpawn.addSpawnEntries();
-		});
 		MobAttributes.init();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> ArachnidsVillagerTrades.addTrades());
 		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_BULLETS,
