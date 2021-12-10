@@ -1,5 +1,5 @@
 v.0.0.2
 
-- Fixes crash with dup registry.
+- 1.18.1 Full Release
 
 - This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.
