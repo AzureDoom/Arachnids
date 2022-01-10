@@ -11,9 +11,9 @@
 		"description": {
 			"translate": "arachnids.achievement.miarmor_armor.desc"
 		},
-		"frame": "challenge",
+		"frame": "task",
 		"show_toast": true,
-		"announce_to_chat": true,
+		"announce_to_chat": false,
 		"hidden": false
 	},
 	"rewards": {
@@ -26,15 +26,6 @@
 				"items": [
 					{
 						"item": "arachnids:miarmor_helmet"
-					},
-					{
-						"item": "arachnids:miarmor_chestplate"
-					},
-					{
-						"item": "arachnids:miarmor_leggings"
-					},
-					{
-						"item": "arachnids:miarmor_boots"
 					}
 				]
 			}
