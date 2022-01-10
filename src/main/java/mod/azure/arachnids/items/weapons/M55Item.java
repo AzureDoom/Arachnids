@@ -114,6 +114,16 @@ public class M55Item extends Item {
 	}
 
 	@Override
+	public int getEnchantability() {
+		return 0;
+	}
+
+	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
+
+	@Override
 	public int getMaxUseTime(ItemStack stack) {
 		return 72000;
 	}

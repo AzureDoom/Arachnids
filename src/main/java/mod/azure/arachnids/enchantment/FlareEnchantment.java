@@ -1,7 +1,6 @@
 package mod.azure.arachnids.enchantment;
 
-import mod.azure.arachnids.items.weapons.MAR1Item;
-import mod.azure.arachnids.items.weapons.MAR2Item;
+import mod.azure.arachnids.util.ArachnidsItems;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -40,11 +39,11 @@ public class FlareEnchantment extends Enchantment {
 
 	@Override
 	public boolean isAcceptableItem(ItemStack stack) {
-		return (stack.getItem() instanceof MAR1Item || stack.getItem() instanceof MAR2Item) ? true : false;
+		return (stack.isOf(ArachnidsItems.MAR1) || stack.isOf(ArachnidsItems.MAR2)) ? true : false;
 	}
 
 	public boolean isAvailableForRandomSelection() {
-		return true;
+		return false;
 	}
 
 }

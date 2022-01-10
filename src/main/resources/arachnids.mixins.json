@@ -2,16 +2,14 @@
 	"required": true,
 	"minVersion": "0.8",
 	"package": "mod.azure.arachnids.mixin",
-	"compatibilityLevel": "JAVA_16",
+	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"AnvilScreenHandlerMixin",
 		"BuilderAccessor",
 		"HeldItemRendererMixin",
 		"LootContextAccessor",
 		"LootManagerAccessor",
-		"LootTableMixin",
-		"MendingMixin",
-		"UnbreakingMixin"
+		"LootTableMixin"
 	],
 	"client": [
 		"SniperMixin",

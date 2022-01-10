@@ -139,12 +139,12 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 
 	@Override
 	public int getEnchantability() {
-		return 35;
+		return 0;
 	}
 
 	@Override
 	public boolean isEnchantable(ItemStack stack) {
-		return true;
+		return false;
 	}
 
 	@Override
