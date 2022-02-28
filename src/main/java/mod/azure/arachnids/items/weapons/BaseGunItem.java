@@ -122,7 +122,7 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 
 	@Override
 	public boolean hasGlint(ItemStack stack) {
-		return false;
+		return stack.hasEnchantments();
 	}
 
 	@Override
