@@ -60,6 +60,7 @@ public class TONItem extends BlockItem implements IAnimatable {
 			if (!world.isClient) {
 				TacticalOxygenNukeEntity snowballEntity = new TacticalOxygenNukeEntity(world, user, true);
 				snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 1.0F, 1.0F);
+				snowballEntity.refreshPositionAndAngles(user.getX(), user.getBodyY(0.95), user.getZ(), 0, 0);
 				world.spawnEntity(snowballEntity);
 			}
 			if (!user.getAbilities().creativeMode) {
