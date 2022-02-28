@@ -71,7 +71,7 @@ public class BrainEntity extends BaseBugEntity {
 		for (int x = 0; x < list.size(); ++x) {
 			Entity entity = (Entity) list.get(x);
 			if (entity instanceof BrainEntity && entity.age < 1) {
-				this.remove(Entity.RemovalReason.DISCARDED);
+				entity.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 	}
