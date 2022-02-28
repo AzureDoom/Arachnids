@@ -51,6 +51,7 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 		this.experiencePoints = config.warrior_exp;
 	}
 
+	@Override
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 		if (this.dataTracker.get(STATE) == 0 && event.isMoving() && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
@@ -58,6 +59,10 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 		}
 		if (this.dataTracker.get(STATE) == 0 && this.isAttacking() && event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("running", true));
+			return PlayState.CONTINUE;
+		}
+		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
@@ -70,10 +75,6 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 		}
 		if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("heavy_attack", true));
-			return PlayState.CONTINUE;
-		}
-		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("death", false));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
