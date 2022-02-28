@@ -9,7 +9,8 @@
 		"HeldItemRendererMixin",
 		"LootContextAccessor",
 		"LootManagerAccessor",
-		"LootTableMixin"
+		"LootTableMixin",
+		"VillagerMixin"
 	],
 	"client": [
 		"SniperMixin",
