@@ -71,6 +71,7 @@ public class MAR2Item extends BaseGunItem {
 						stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 						playerentity.getItemCooldownManager().set(this, 3);
 					}
+					worldIn.setBlockState(playerentity.getCameraBlockPos(), ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
 					worldIn.spawnEntity(abstractarrowentity);
 					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
 					GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);

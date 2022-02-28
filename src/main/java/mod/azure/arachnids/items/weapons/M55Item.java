@@ -50,6 +50,7 @@ public class M55Item extends Item {
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 							playerentity.getZ(), ArachnidsSounds.M55FIRE, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
+					worldIn.setBlockState(playerentity.getCameraBlockPos(), ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
 				}
 			}
 		}
