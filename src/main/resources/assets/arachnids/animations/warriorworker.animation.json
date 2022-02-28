@@ -75,17 +75,6 @@
 				}
 			}
 		},
-		"jaw_idle": {
-			"loop": true,
-			"animation_length": 2,
-			"bones": {
-				"lowJaw": {
-					"rotation": {
-						"vector": ["-8+Math.sin(query.anim_time*180)*15", 0, 0]
-					}
-				}
-			}
-		},
 		"moving": {
 			"loop": true,
 			"animation_length": 2,
@@ -236,17 +225,6 @@
 				"lowJaw": {
 					"rotation": {
 						"vector": ["-8+Math.sin(query.anim_time*720)*15", 0, 0]
-					}
-				}
-			}
-		},
-		"jaw_running": {
-			"loop": true,
-			"animation_length": 2,
-			"bones": {
-				"lowJaw": {
-					"rotation": {
-						"vector": ["-8+Math.sin(query.anim_time*360)*15", 0, 0]
 					}
 				}
 			}
