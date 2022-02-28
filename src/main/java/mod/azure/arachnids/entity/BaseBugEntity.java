@@ -14,6 +14,8 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -284,6 +286,11 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	@Override
 	public int tickTimer() {
 		return age;
+	}
+
+	@Override
+	protected EntityNavigation createNavigation(World world) {
+		return new SpiderNavigation(this, world);
 	}
 
 }
