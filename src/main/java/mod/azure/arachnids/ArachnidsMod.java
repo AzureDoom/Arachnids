@@ -4,6 +4,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
+import mod.azure.arachnids.blocks.TickingLightBlock;
+import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.enchantment.FlareEnchantment;
 import mod.azure.arachnids.enchantment.GrenadeEnchantment;
@@ -20,7 +22,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantment.Rarity;
 import net.minecraft.entity.EquipmentSlot;
@@ -40,6 +44,8 @@ public class ArachnidsMod implements ModInitializer {
 	public static ProjectilesEntityRegister PROJECTILES;
 	public static final Block TONBLOCK = new TONBlock();
 	public static final Block MZ90BLOCK = new MZ90Block();
+	public static BlockEntityType<TickingLightEntity> TICKING_LIGHT_ENTITY;
+	public static final TickingLightBlock TICKING_LIGHT_BLOCK = new TickingLightBlock();
 	public static final Identifier RELOAD_BULLETS = new Identifier(MODID, "reload_bullets");
 	public static final Identifier RELOAD_TON = new Identifier(MODID, "reload_ton");
 	public static final Enchantment SNIPERATTACHMENT = new SnipingEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
@@ -60,6 +66,9 @@ public class ArachnidsMod implements ModInitializer {
 		ITEMS = new ArachnidsItems();
 		SOUNDS = new ArachnidsSounds();
 		PROJECTILES = new ProjectilesEntityRegister();
+		Registry.register(Registry.BLOCK, new Identifier(MODID, "lightblock"), TICKING_LIGHT_BLOCK);
+		TICKING_LIGHT_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
+				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, TICKING_LIGHT_BLOCK).build(null));
 		GeckoLib.initialize();
 		MobSpawn.addSpawnEntries();
 		MobAttributes.init();

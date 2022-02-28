@@ -1,9 +1,9 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import java.util.Iterator;
-
 import org.jetbrains.annotations.Nullable;
 
+import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsParticles;
 import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.util.ArachnidsItems;
@@ -11,11 +11,8 @@ import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LightBlock;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -30,13 +27,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class FlareEntity extends PersistentProjectileEntity {
@@ -46,6 +37,8 @@ public class FlareEntity extends PersistentProjectileEntity {
 	protected boolean inAir;
 	protected String type;
 	private int ticksInAir;
+	private BlockPos lightBlockPos = null;
+	private int idleTicks = 0;
 
 	private static final TrackedData<Boolean> PATHING = DataTracker.registerData(FlareEntity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
@@ -115,7 +108,13 @@ public class FlareEntity extends PersistentProjectileEntity {
 
 	@Override
 	public void tick() {
-		super.tick();
+		int idleOpt = 100;
+		if (getVelocity().lengthSquared() < 0.01)
+			idleTicks++;
+		else
+			idleTicks = 0;
+		if (idleOpt <= 0 || idleTicks < idleOpt)
+			super.tick();
 		if (this.age >= 800) {
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -126,98 +125,8 @@ public class FlareEntity extends PersistentProjectileEntity {
 					this.random.nextGaussian() * 0.05D, -this.getVelocity().y * 0.07D,
 					this.random.nextGaussian() * 0.05D);
 		}
-		if (this.isGunFired()) {
-			boolean bl = this.isNoClip();
-			BlockPos blockPos = this.getBlockPos();
-			BlockState blockState = this.world.getBlockState(blockPos);
-			Vec3d vec3d = this.getVelocity();
-			Vec3d vec3d4;
-			if (!blockState.isAir() && !bl) {
-				VoxelShape voxelShape = blockState.getCollisionShape(this.world, blockPos);
-				if (!voxelShape.isEmpty()) {
-					vec3d4 = this.getPos();
-					Iterator<?> var7 = voxelShape.getBoundingBoxes().iterator();
-
-					while (var7.hasNext()) {
-						Box box = (Box) var7.next();
-						if (box.offset(blockPos).contains(vec3d4)) {
-							this.inGround = true;
-							break;
-						}
-					}
-					this.setFireMethod(false);
-				}
-			}
-			if (this.prevPitch == 0.0F && this.prevYaw == 0.0F) {
-				double f = vec3d.horizontalLength();
-				this.setYaw((float) (MathHelper.atan2(vec3d.x, vec3d.z) * 57.2957763671875D));
-				this.setPitch((float) (MathHelper.atan2(vec3d.y, f) * 57.2957763671875D));
-				this.prevYaw = this.getYaw();
-				this.prevPitch = this.getPitch();
-			}
-			if (this.inAir && !bl) {
-				this.age();
-				++this.timeInAir;
-			} else {
-				this.timeInAir = 0;
-				Vec3d vec3d3 = this.getPos();
-				Vec3d vector3d3 = vec3d3.add(vec3d);
-				HitResult hitResult = this.world.raycast(new RaycastContext(vec3d3, vector3d3,
-						RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, this));
-				if (((HitResult) hitResult).getType() != HitResult.Type.MISS) {
-					vector3d3 = ((HitResult) hitResult).getPos();
-				}
-				while (!this.isRemoved()) {
-					EntityHitResult entityHitResult = this.getEntityCollision(vec3d3, vector3d3);
-					if (entityHitResult != null) {
-						hitResult = entityHitResult;
-					}
-					if (hitResult != null && ((HitResult) hitResult).getType() == HitResult.Type.ENTITY) {
-						Entity entity = ((EntityHitResult) hitResult).getEntity();
-						Entity entity2 = this.getOwner();
-						if (entity instanceof PlayerEntity && entity2 instanceof PlayerEntity
-								&& !((PlayerEntity) entity2).shouldDamagePlayer((PlayerEntity) entity)) {
-							hitResult = null;
-							entityHitResult = null;
-						}
-					}
-					if (hitResult != null && !bl) {
-						this.onCollision((HitResult) hitResult);
-						this.velocityDirty = true;
-					}
-					if (entityHitResult == null || this.getPierceLevel() <= 0) {
-						break;
-					}
-					hitResult = null;
-				}
-				vec3d = this.getVelocity();
-				double d = vec3d.x;
-				double e = vec3d.y;
-				double g = vec3d.z;
-				double h = this.getX() + d;
-				double j = this.getY() + e;
-				double k = this.getZ() + g;
-				double l = vec3d.horizontalLength();
-				if (bl) {
-					this.setYaw((float) (MathHelper.atan2(-e, -g) * 57.2957763671875D));
-				} else {
-					this.setYaw((float) (MathHelper.atan2(e, g) * 57.2957763671875D));
-				}
-				this.setPitch((float) (MathHelper.atan2(e, l) * 57.2957763671875D));
-				this.setPitch(updateRotation(this.prevPitch, this.getPitch()));
-				this.setYaw(updateRotation(this.prevYaw, this.getYaw()));
-				float m = 0.99F;
-
-				this.setVelocity(vec3d.multiply((double) m));
-				Vec3d vec3d5 = this.getVelocity();
-				this.setVelocity(vec3d5.x, vec3d5.y - 0.05000000074505806D, vec3d5.z);
-				this.updatePosition(h, j, k);
-				this.checkBlockCollision();
-			}
-		} else {
-			this.setVelocity(this.getVelocity().multiply((double) 0.99F));
-			this.setVelocity(this.getVelocity().x, this.getVelocity().y - 0.05000000074505806D, this.getVelocity().z);
-		}
+		boolean isInsideWaterBlock = world.isWater(getBlockPos());
+		spawnLightSource(isInsideWaterBlock);
 	}
 
 	@Override
@@ -238,41 +147,8 @@ public class FlareEntity extends PersistentProjectileEntity {
 	}
 
 	@Override
-	public void onRemoved() {
-		if (this.getBlockStateAtPos().getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().up()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().up()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().up(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().down()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().down(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().north()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().north(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().south()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().south(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().east()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().east(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		if (this.world.getBlockState(this.getBlockPos().west()).getBlock() instanceof LightBlock) {
-			world.setBlockState(this.getBlockPos().west(), Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS);
-		}
-		super.onRemoved();
-	}
-
-	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		super.onBlockHit(blockHitResult);
-		if (this.isAlive() && world.getBlockState(blockHitResult.getBlockPos().up()).getBlock() instanceof AirBlock) {
-			world.setBlockState(blockHitResult.getBlockPos().up(), Blocks.LIGHT.getDefaultState(),
-					Block.NOTIFY_NEIGHBORS);
-		}
 	}
 
 	@Override
@@ -305,6 +181,50 @@ public class FlareEntity extends PersistentProjectileEntity {
 	@Override
 	protected boolean tryPickup(PlayerEntity player) {
 		return false;
+	}
+
+	private void spawnLightSource(boolean isInWaterBlock) {
+		if (lightBlockPos == null) {
+			lightBlockPos = findFreeSpace(world, getBlockPos(), 2);
+			if (lightBlockPos == null)
+				return;
+			world.setBlockState(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
+		} else if (checkDistance(lightBlockPos, getBlockPos(), 2)) {
+			BlockEntity blockEntity = world.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity) {
+				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
+			} else
+				lightBlockPos = null;
+		} else
+			lightBlockPos = null;
+	}
+
+	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
+				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
+				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+	}
+
+	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+		if (blockPos == null)
+			return null;
+
+		int[] offsets = new int[maxDistance * 2 + 1];
+		offsets[0] = 0;
+		for (int i = 2; i <= maxDistance * 2; i += 2) {
+			offsets[i - 1] = i / 2;
+			offsets[i] = -i / 2;
+		}
+		for (int x : offsets)
+			for (int y : offsets)
+				for (int z : offsets) {
+					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockState state = world.getBlockState(offsetPos);
+					if (state.isAir() || state.getBlock().equals(ArachnidsMod.TICKING_LIGHT_BLOCK))
+						return offsetPos;
+				}
+
+		return null;
 	}
 
 }
