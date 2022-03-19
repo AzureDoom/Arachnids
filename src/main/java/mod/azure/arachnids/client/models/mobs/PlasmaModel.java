@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class PlasmaModel extends AnimatedTickingGeoModel<PlasmaEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(PlasmaEntity animatable) {
+	public Identifier getAnimationResource(PlasmaEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/plasma.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(PlasmaEntity object) {
+	public Identifier getModelResource(PlasmaEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/plasma.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(PlasmaEntity object) {
+	public Identifier getTextureResource(PlasmaEntity object) {
 		return new Identifier(ArachnidsMod.MODID,
 				"textures/entity/" + (object.getAttckingState() == 1 ? "plasma_glow" : "plasma") + ".png");
 	}

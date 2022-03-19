@@ -13,6 +13,7 @@
 		"VillagerMixin"
 	],
 	"client": [
+		"AbstractClientPlayerEntityMixin",
 		"SniperMixin",
 		"WeaponRenderingMixin"
 	],

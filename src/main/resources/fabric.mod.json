@@ -31,11 +31,10 @@
 		"arachnids.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.12.5",
+		"fabricloader": ">=0.13.3",
 		"fabric": "*",
-		"minecraft": "1.18.x",
 		"java": ">=17",
-		"geckolib3": ">=3.0.19"
+		"geckolib3": ">=3.0.0"
 	},
 	"accessWidener": "arachnids.accesswidener"
 }

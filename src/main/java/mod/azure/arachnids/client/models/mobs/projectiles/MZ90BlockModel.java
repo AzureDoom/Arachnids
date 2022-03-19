@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class MZ90BlockModel extends AnimatedGeoModel<MZ90Item> {
 	@Override
-	public Identifier getModelLocation(MZ90Item object) {
+	public Identifier getModelResource(MZ90Item object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/mz90.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(MZ90Item object) {
+	public Identifier getTextureResource(MZ90Item object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/items/mz-90_fragmentation_grenade.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(MZ90Item animatable) {
+	public Identifier getAnimationResource(MZ90Item animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/mz90.animation.json");
 	}
 }

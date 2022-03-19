@@ -1,0 +1,39 @@
+package mod.azure.arachnids.mixin;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.mojang.authlib.GameProfile;
+
+import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.client.ArachnidsClientInit;
+import mod.azure.arachnids.util.ArachnidsItems;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+@Mixin(AbstractClientPlayerEntity.class)
+public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity {
+
+	public AbstractClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
+		super(world, pos, yaw, profile);
+	}
+
+	@SuppressWarnings("resource")
+	@Inject(at = @At("HEAD"), method = "getFovMultiplier", cancellable = true)
+	private void render(CallbackInfoReturnable<Float> ci) {
+		ItemStack itemStack = this.getMainHandStack();
+		if (MinecraftClient.getInstance().options.getPerspective().isFirstPerson()) {
+			if (itemStack.isOf(ArachnidsItems.MAR1) || itemStack.isOf(ArachnidsItems.MAR2)
+					&& EnchantmentHelper.getLevel(ArachnidsMod.SNIPERATTACHMENT, itemStack) > 0) {
+				ci.setReturnValue(ArachnidsClientInit.scope.isPressed() ? 0.1F : 1.0F);
+			}
+		}
+	}
+}

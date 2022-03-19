@@ -1,6 +1,7 @@
 package mod.azure.arachnids.blocks;
 
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
 import mod.azure.arachnids.util.ArachnidsMobs;

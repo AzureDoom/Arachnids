@@ -25,7 +25,7 @@ public class MZ90Render extends GeoProjectilesRenderer<MZ90Entity> {
 	public RenderLayer getRenderType(MZ90Entity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 }

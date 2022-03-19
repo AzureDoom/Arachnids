@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class ArkellianModel extends AnimatedTickingGeoModel<ArkellianEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(ArkellianEntity animatable) {
+	public Identifier getAnimationResource(ArkellianEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/arkellian.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(ArkellianEntity object) {
+	public Identifier getModelResource(ArkellianEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/arkellian.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ArkellianEntity object) {
+	public Identifier getTextureResource(ArkellianEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/entity/arkellian.png");
 	}
 

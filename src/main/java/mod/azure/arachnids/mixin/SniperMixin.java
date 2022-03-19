@@ -48,13 +48,11 @@ public abstract class SniperMixin extends DrawableHelper {
 				&& EnchantmentHelper.getLevel(ArachnidsMod.SNIPERATTACHMENT, itemStack) > 0) {
 			if (ArachnidsClientInit.scope.isPressed()) {
 				if (this.scoped == true) {
-					this.client.options.fov = this.client.options.fov - 60;
 					this.scoped = false;
 				}
 				this.renderSniperOverlay();
 			} else {
 				if (!this.scoped) {
-					this.client.options.fov = this.client.options.fov + 60;
 					this.scoped = true;
 				}
 			}

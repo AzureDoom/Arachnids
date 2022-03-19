@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class TankerModel extends AnimatedTickingGeoModel<TankerEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(TankerEntity animatable) {
+	public Identifier getAnimationResource(TankerEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/tanker.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(TankerEntity object) {
+	public Identifier getModelResource(TankerEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/tanker.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(TankerEntity object) {
+	public Identifier getTextureResource(TankerEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/entity/tanker.png");
 	}
 

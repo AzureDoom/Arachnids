@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class TONEntityModel extends AnimatedGeoModel<TacticalOxygenNukeEntity> {
 	@Override
-	public Identifier getModelLocation(TacticalOxygenNukeEntity object) {
+	public Identifier getModelResource(TacticalOxygenNukeEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/ton.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(TacticalOxygenNukeEntity object) {
+	public Identifier getTextureResource(TacticalOxygenNukeEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/items/tactical_oxygen_nuke.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(TacticalOxygenNukeEntity animatable) {
+	public Identifier getAnimationResource(TacticalOxygenNukeEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/ton.animation.json");
 	}
 }

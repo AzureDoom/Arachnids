@@ -21,7 +21,7 @@ public class ScorpionRender extends GeoEntityRenderer<ScorpionEntity> {
 	public RenderLayer getRenderType(ScorpionEntity animatable, float partialTicks, MatrixStack stack,
 			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
 			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureLocation(animatable));
+		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override

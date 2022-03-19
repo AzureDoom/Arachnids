@@ -7,17 +7,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BugPlasmaModel extends AnimatedGeoModel<BugPlasmaEntity> {
 	@Override
-	public Identifier getModelLocation(BugPlasmaEntity object) {
+	public Identifier getModelResource(BugPlasmaEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/bugplasma.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(BugPlasmaEntity object) {
+	public Identifier getTextureResource(BugPlasmaEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/entity/plasma_ball.png");
 	}
 
 	@Override
-	public Identifier getAnimationFileLocation(BugPlasmaEntity animatable) {
+	public Identifier getAnimationResource(BugPlasmaEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/bugplasma.animation.json");
 	}
 }

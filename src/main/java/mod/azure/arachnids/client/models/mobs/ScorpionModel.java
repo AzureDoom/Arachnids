@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class ScorpionModel extends AnimatedTickingGeoModel<ScorpionEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(ScorpionEntity animatable) {
+	public Identifier getAnimationResource(ScorpionEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/scorpion.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(ScorpionEntity object) {
+	public Identifier getModelResource(ScorpionEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/scorpion.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(ScorpionEntity object) {
+	public Identifier getTextureResource(ScorpionEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/entity/scorpion.png");
 	}
 

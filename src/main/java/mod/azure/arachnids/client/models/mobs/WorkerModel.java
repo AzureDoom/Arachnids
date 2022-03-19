@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
 public class WorkerModel extends AnimatedTickingGeoModel<WorkerEntity> {
 
 	@Override
-	public Identifier getAnimationFileLocation(WorkerEntity animatable) {
+	public Identifier getAnimationResource(WorkerEntity animatable) {
 		return new Identifier(ArachnidsMod.MODID, "animations/warriorworker.animation.json");
 	}
 
 	@Override
-	public Identifier getModelLocation(WorkerEntity object) {
+	public Identifier getModelResource(WorkerEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "geo/warriorworker.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureLocation(WorkerEntity object) {
+	public Identifier getTextureResource(WorkerEntity object) {
 		return new Identifier(ArachnidsMod.MODID, "textures/entity/worker.png");
 	}
 
