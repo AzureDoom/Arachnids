@@ -15,14 +15,16 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.encryption.PlayerPublicKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(AbstractClientPlayerEntity.class)
 public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity {
 
-	public AbstractClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
-		super(world, pos, yaw, profile);
+	public AbstractClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile,
+			PlayerPublicKey playerPublicKey) {
+		super(world, pos, yaw, profile, playerPublicKey);
 	}
 
 	@SuppressWarnings("resource")

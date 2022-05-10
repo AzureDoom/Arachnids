@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.network.GeckoLibNetwork;
@@ -71,7 +70,8 @@ public class MAR2Item extends BaseGunItem {
 						stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
 						playerentity.getItemCooldownManager().set(this, 3);
 					}
-					worldIn.setBlockState(playerentity.getCameraBlockPos(), ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
+					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 					worldIn.spawnEntity(abstractarrowentity);
 					final int id = GeckoLibUtil.guaranteeIDForStack(stack, (ServerWorld) worldIn);
 					GeckoLibNetwork.syncAnimation(playerentity, this, id, ANIM_OPEN);
@@ -87,9 +87,10 @@ public class MAR2Item extends BaseGunItem {
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		super.appendTooltip(stack, world, tooltip, context);
-		tooltip.add(new TranslatableText(
-				"Damage: " + (j > 0 ? (config.MAR2_bullet_damage + (j * 1.5F + 0.5F)) : config.MAR2_bullet_damage))
-						.formatted(Formatting.ITALIC));
+		tooltip.add(Text
+				.translatable("Damage: "
+						+ (j > 0 ? (config.MAR2_bullet_damage + (j * 1.5F + 0.5F)) : config.MAR2_bullet_damage))
+				.formatted(Formatting.ITALIC));
 	}
 
 	public BulletEntity createBullet(World worldIn, ItemStack stack, LivingEntity shooter) {

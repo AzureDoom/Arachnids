@@ -1,10 +1,7 @@
 package mod.azure.arachnids.entity;
 
-import java.util.Random;
-
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.config.ArachnidsConfig.MobStats;
-import mod.azure.arachnids.network.EntityPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -21,18 +18,14 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -100,11 +93,6 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
-	}
-
-	@Override
 	protected void updatePostDeath() {
 		++this.deathTime;
 		if (this.deathTime == 25) {
@@ -118,17 +106,6 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
 		this.setVariant(this.random.nextInt());
 		return entityData;
-	}
-
-	public static boolean canSpawn(EntityType<? extends MobEntity> type, ServerWorldAccess serverWorldAccess,
-			SpawnReason spawnReason, BlockPos pos, Random random) {
-		if (serverWorldAccess.getDifficulty() == Difficulty.PEACEFUL)
-			return false;
-		if ((spawnReason != SpawnReason.CHUNK_GENERATION && spawnReason != SpawnReason.NATURAL))
-			return !serverWorldAccess.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-					&& !serverWorldAccess.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
-		return !serverWorldAccess.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-				&& !serverWorldAccess.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
 	}
 
 	@Override
@@ -171,8 +148,8 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	}
 
 	@Override
-	protected float getSoundVolume() {
-		return 1.0F;
+	public float getSoundVolume() {
+		return 0.5F;
 	}
 
 	@Override
@@ -291,6 +268,14 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	@Override
 	protected EntityNavigation createNavigation(World world) {
 		return new SpiderNavigation(this, world);
+	}
+
+	@Override
+	public void playAmbientSound() {
+		SoundEvent soundEvent = this.getAmbientSound();
+		if (soundEvent != null) {
+			this.playSound(soundEvent, 0.25F, this.getSoundPitch());
+		}
 	}
 
 }

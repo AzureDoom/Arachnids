@@ -4,12 +4,15 @@ import java.util.List;
 
 import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsClientInit;
 import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
 import mod.azure.arachnids.entity.projectiles.TacticalOxygenNukeEntity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -19,15 +22,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class M55Item extends Item {
 
 	public static Weapons config = ArachnidsMod.config.weapons;
+	private BlockPos lightBlockPos = null;
 
 	public M55Item() {
 		super(new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup).maxCount(1).maxDamage(2));
@@ -41,8 +45,8 @@ public class M55Item extends Item {
 				playerentity.getItemCooldownManager().set(this, 15);
 				if (!worldIn.isClient) {
 					TacticalOxygenNukeEntity abstractarrowentity = createNuke(worldIn, stack, playerentity);
-					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(),
-							0.0F, 0.75F * 3.0F, 1.0F);
+					abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F,
+							0.75F * 3.0F, 1.0F);
 					abstractarrowentity.refreshPositionAndAngles(entityLiving.getX(), entityLiving.getBodyY(0.95),
 							entityLiving.getZ(), 0, 0);
 					stack.damage(1, entityLiving, p -> p.sendToolBreakStatus(entityLiving.getActiveHand()));
@@ -50,7 +54,8 @@ public class M55Item extends Item {
 					worldIn.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(),
 							playerentity.getZ(), ArachnidsSounds.M55FIRE, SoundCategory.PLAYERS, 1.0F,
 							1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
-					worldIn.setBlockState(playerentity.getCameraBlockPos(), ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
+					boolean isInsideWaterBlock = playerentity.world.isWater(playerentity.getBlockPos());
+					spawnLightSource(entityLiving, isInsideWaterBlock);
 				}
 			}
 		}
@@ -131,9 +136,54 @@ public class M55Item extends Item {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText(
-				"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
-						.formatted(Formatting.ITALIC));
+		tooltip.add(Text
+				.translatable(
+						"Ammo: " + (stack.getMaxDamage() - stack.getDamage() - 1) + " / " + (stack.getMaxDamage() - 1))
+				.formatted(Formatting.ITALIC));
+	}
+
+	protected void spawnLightSource(Entity entity, boolean isInWaterBlock) {
+		if (lightBlockPos == null) {
+			lightBlockPos = findFreeSpace(entity.world, entity.getBlockPos(), 2);
+			if (lightBlockPos == null)
+				return;
+			entity.world.setBlockState(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
+		} else if (checkDistance(lightBlockPos, entity.getBlockPos(), 2)) {
+			BlockEntity blockEntity = entity.world.getBlockEntity(lightBlockPos);
+			if (blockEntity instanceof TickingLightEntity) {
+				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
+			} else
+				lightBlockPos = null;
+		} else
+			lightBlockPos = null;
+	}
+
+	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
+		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance
+				&& Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance
+				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+	}
+
+	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+		if (blockPos == null)
+			return null;
+
+		int[] offsets = new int[maxDistance * 2 + 1];
+		offsets[0] = 0;
+		for (int i = 2; i <= maxDistance * 2; i += 2) {
+			offsets[i - 1] = i / 2;
+			offsets[i] = -i / 2;
+		}
+		for (int x : offsets)
+			for (int y : offsets)
+				for (int z : offsets) {
+					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockState state = world.getBlockState(offsetPos);
+					if (state.isAir() || state.getBlock().equals(ArachnidsMod.TICKING_LIGHT_BLOCK))
+						return offsetPos;
+				}
+
+		return null;
 	}
 
 }

@@ -32,10 +32,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -52,8 +52,10 @@ public class ArachnidsClientInit implements ClientModInitializer {
 	public static KeyBinding reload = new KeyBinding("key.arachnids.reload", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R,
 			"category.arachnids.binds");
 
-	public static KeyBinding scope = new KeyBinding("key.arachnids.scope", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT,
-			"category.arachnids.binds");
+	public static KeyBinding scope = new KeyBinding("key.arachnids.scope", InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_LEFT_ALT, "category.arachnids.binds");
+
+	public static final Identifier PacketID = new Identifier(ArachnidsMod.MODID, "spawn_packet");
 
 	@Override
 	public void onInitializeClient() {
@@ -76,13 +78,12 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		EntityRendererRegistry.register(ProjectilesEntityRegister.BULLETS, (ctx) -> new BulletRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.MZ90, (ctx) -> new MZ90Render(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.TON, (ctx) -> new TonEntityRender(ctx));
-		EntityRendererRegistry.register(ProjectilesEntityRegister.BUGPLASMA,
-				(ctx) -> new BugPlasmaRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.BUGPLASMA, (ctx) -> new BugPlasmaRender(ctx));
 		requestParticleTexture(new Identifier("minecraft:particle/big_smoke_0"));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FLARE, (ctx) -> new FlareRender(ctx));
 		ParticleFactoryRegistry.getInstance().register(ArachnidsParticles.FLARE, FlareParticle.RedSmokeFactory::new);
-		ClientSidePacketRegistry.INSTANCE.register(EntityPacket.ID, (ctx, buf) -> {
-			EntityPacketOnClient.onPacket(ctx, buf);
+		ClientPlayNetworking.registerGlobalReceiver(EntityPacket.ID, (client, handler, buf, responseSender) -> {
+			EntityPacketOnClient.onPacket(client, buf);
 		});
 		FabricModelPredicateProviderRegistry.register(ArachnidsItems.M55, new Identifier("broken"),
 				(itemStack, clientWorld, livingEntity, seed) -> {

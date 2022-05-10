@@ -27,13 +27,16 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -92,6 +95,17 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 		return this.factory;
 	}
 
+	public static boolean canSpawn(EntityType<WarriorEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos,
+			AbstractRandom random) {
+		if (world.getDifficulty() == Difficulty.PEACEFUL)
+			return false;
+		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
+			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
+					&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
+		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
+				&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
+	}
+
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
@@ -141,9 +155,8 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 
 	@Override
 	public Text getCustomName() {
-		return this.getVariant() == 1 ? new TranslatableText("entity.arachnids.workertiger")
-				: this.getVariant() == 2 ? new TranslatableText("entity.arachnids.workerplasma")
-						: super.getCustomName();
+		return this.getVariant() == 1 ? Text.translatable("entity.arachnids.workertiger")
+				: this.getVariant() == 2 ? Text.translatable("entity.arachnids.workerplasma") : super.getCustomName();
 	}
 
 	@Override

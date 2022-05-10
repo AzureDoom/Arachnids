@@ -4,7 +4,14 @@ import java.util.List;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.config.ArachnidsConfig.Spawning;
-import mod.azure.arachnids.entity.BaseBugEntity;
+import mod.azure.arachnids.entity.bugs.ArkellianEntity;
+import mod.azure.arachnids.entity.bugs.BrainEntity;
+import mod.azure.arachnids.entity.bugs.HopperEntity;
+import mod.azure.arachnids.entity.bugs.PlasmaEntity;
+import mod.azure.arachnids.entity.bugs.ScorpionEntity;
+import mod.azure.arachnids.entity.bugs.TankerEntity;
+import mod.azure.arachnids.entity.bugs.WarriorEntity;
+import mod.azure.arachnids.entity.bugs.WorkerEntity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -43,21 +50,21 @@ public class MobSpawn {
 				SpawnGroup.MONSTER, ArachnidsMobs.WORKERBUG, config.worker_spawn_weight, config.worker_min_group,
 				config.worker_max_group);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.ARKELLIANBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, ArkellianEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.BRAINBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BrainEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.HOOPERBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HopperEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.PLASMABUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PlasmaEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.SCORPIONBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, ScorpionEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.TANKERBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, TankerEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.WARRIORBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WarriorEntity::canSpawn);
 		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.WORKERBUG, SpawnRestriction.Location.ON_GROUND,
-				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
+				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WorkerEntity::canSpawn);
 	}
 
 	private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {

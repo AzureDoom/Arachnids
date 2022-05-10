@@ -10,7 +10,6 @@ import net.minecraft.item.ArrowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
@@ -32,7 +31,7 @@ public class BulletAmmo extends ArrowItem {
 
 	@Override
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText("arachnids.tooltip.762ammo").formatted(Formatting.ITALIC));
+		tooltip.add(Text.translatable("arachnids.tooltip.762ammo").formatted(Formatting.ITALIC));
 	}
 
 }

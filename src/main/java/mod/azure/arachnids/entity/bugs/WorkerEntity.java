@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
@@ -17,9 +18,13 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.AbstractRandom;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -74,6 +79,17 @@ public class WorkerEntity extends BaseBugEntity {
 	@Override
 	public AnimationFactory getFactory() {
 		return this.factory;
+	}
+
+	public static boolean canSpawn(EntityType<WorkerEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos,
+			AbstractRandom random) {
+		if (world.getDifficulty() == Difficulty.PEACEFUL)
+			return false;
+		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
+			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
+					&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
+		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
+				&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
 	}
 
 	@Override
