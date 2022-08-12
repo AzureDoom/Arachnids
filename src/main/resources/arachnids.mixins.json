@@ -7,9 +7,6 @@
 		"AnvilScreenHandlerMixin",
 		"BuilderAccessor",
 		"HeldItemRendererMixin",
-		"LootContextAccessor",
-		"LootManagerAccessor",
-		"LootTableMixin",
 		"VillagerMixin"
 	],
 	"client": [

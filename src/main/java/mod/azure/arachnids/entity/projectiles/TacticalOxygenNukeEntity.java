@@ -1,7 +1,6 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
@@ -42,7 +41,6 @@ public class TacticalOxygenNukeEntity extends PersistentProjectileEntity impleme
 			TrackedDataHandlerRegistry.BOOLEAN);
 	protected String type;
 	private int ticksInAir;
-	public static Weapons config = ArachnidsMod.config.weapons;
 
 	public TacticalOxygenNukeEntity(EntityType<? extends TacticalOxygenNukeEntity> entityType, World world) {
 		super(entityType, world);
@@ -117,7 +115,7 @@ public class TacticalOxygenNukeEntity extends PersistentProjectileEntity impleme
 		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(),
 				this.getZ());
 		areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
-		areaeffectcloudentity.setRadius(config.TON_damage + 5);
+		areaeffectcloudentity.setRadius(ArachnidsConfig.TON_damage + 5);
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.updatePosition(this.getX(), this.getEyeY(), this.getZ());
 		this.world.spawnEntity(areaeffectcloudentity);
@@ -199,9 +197,9 @@ public class TacticalOxygenNukeEntity extends PersistentProjectileEntity impleme
 	}
 
 	protected void explode() {
-		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), config.TON_damage,
-				(config.cause_fire ? true : false),
-				(config.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
+		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), ArachnidsConfig.TON_damage,
+				(ArachnidsConfig.cause_fire ? true : false),
+				(ArachnidsConfig.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
 	}
 
 	@Override

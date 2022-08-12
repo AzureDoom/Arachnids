@@ -3,6 +3,7 @@ package mod.azure.arachnids.items.weapons;
 import java.util.List;
 
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.projectiles.BulletEntity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -27,7 +28,7 @@ public class MAR1Item extends BaseGunItem {
 
 	public MAR1Item() {
 		super(new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup).maxCount(1)
-				.maxDamage((config.MAR1_max_ammo + 1)));
+				.maxDamage((ArachnidsConfig.MAR1_max_ammo + 1)));
 	}
 
 	@Override
@@ -88,16 +89,14 @@ public class MAR1Item extends BaseGunItem {
 	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		super.appendTooltip(stack, world, tooltip, context);
-		tooltip.add(Text
-				.translatable("Damage: "
-						+ (j > 0 ? (config.MAR1_bullet_damage + (j * 1.5F + 0.5F)) : config.MAR2_bullet_damage))
-				.formatted(Formatting.ITALIC));
+		tooltip.add(Text.translatable("Damage: " + (j > 0 ? (ArachnidsConfig.MAR1_bullet_damage + (j * 1.5F + 0.5F))
+				: ArachnidsConfig.MAR2_bullet_damage)).formatted(Formatting.ITALIC));
 	}
 
 	public BulletEntity createBullet(World worldIn, ItemStack stack, LivingEntity shooter) {
 		float j = EnchantmentHelper.getLevel(Enchantments.POWER, stack);
 		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
-				j > 0 ? (config.MAR1_bullet_damage + (j * 1.5F + 0.5F)) : config.MAR2_bullet_damage);
+				j > 0 ? (ArachnidsConfig.MAR1_bullet_damage + (j * 1.5F + 0.5F)) : ArachnidsConfig.MAR2_bullet_damage);
 		return arrowentity;
 	}
 

@@ -1,30 +1,31 @@
 package mod.azure.arachnids.entity.bugs;
 
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
+import mod.azure.arachnids.entity.goals.BugMeleeGoal;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.passive.IronGolemEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.AbstractRandom;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -39,28 +40,20 @@ public class WorkerEntity extends BaseBugEntity {
 
 	public WorkerEntity(EntityType<? extends BaseBugEntity> entityType, World world) {
 		super(entityType, world);
-		this.experiencePoints = config.worker_exp;
+		this.experiencePoints = ArachnidsConfig.worker_exp;
 	}
 
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 0 && event.isMoving() && !this.isAttacking()) {
+		if (event.isMoving() && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.dataTracker.get(STATE) == 0 && this.isAttacking() && event.isMoving()) {
+		if (this.isAttacking() && event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("running", true));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("light_attack", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("normal_attack", true));
-			return PlayState.CONTINUE;
-		}
-		if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("heavy_attack", true));
 			return PlayState.CONTINUE;
 		}
 		if ((this.dead || this.getHealth() < 0.01 || this.isDead())) {
@@ -81,28 +74,22 @@ public class WorkerEntity extends BaseBugEntity {
 		return this.factory;
 	}
 
-	public static boolean canSpawn(EntityType<WorkerEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos,
-			AbstractRandom random) {
-		if (world.getDifficulty() == Difficulty.PEACEFUL)
-			return false;
-		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
-			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-					&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
-		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-				&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
-	}
-
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
 		this.goalSelector.add(8, new LookAroundGoal(this));
 		this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
+		this.goalSelector.add(2, new BugMeleeGoal(this, 1.35D));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
+		this.targetSelector.add(2, new RevengeGoal(this).setGroupRevenge());
 	}
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.worker_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.worker_melee)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, ArachnidsConfig.worker_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, ArachnidsConfig.worker_melee)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 15.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
@@ -118,7 +105,7 @@ public class WorkerEntity extends BaseBugEntity {
 
 	@Override
 	public int getArmor() {
-		return config.worker_armor;
+		return ArachnidsConfig.worker_armor;
 	}
 
 	public int getVariant() {

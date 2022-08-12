@@ -1,13 +1,12 @@
 package mod.azure.arachnids;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 //import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
 import mod.azure.arachnids.blocks.TickingLightBlock;
 import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.config.CustomMidnightConfig;
 import mod.azure.arachnids.enchantment.FlareEnchantment;
 import mod.azure.arachnids.enchantment.GrenadeEnchantment;
 import mod.azure.arachnids.enchantment.SnipingEnchantment;
@@ -39,7 +38,6 @@ import software.bernie.geckolib3.GeckoLib;
 public class ArachnidsMod implements ModInitializer {
 
 	public static ArachnidsItems ITEMS;
-	public static ArachnidsConfig config;
 	public static ArachnidsSounds SOUNDS;
 	public static final String MODID = "arachnids";
 	public static ProjectilesEntityRegister PROJECTILES;
@@ -57,8 +55,7 @@ public class ArachnidsMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		AutoConfig.register(ArachnidsConfig.class, GsonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(ArachnidsConfig.class).getConfig();
+		CustomMidnightConfig.init(MODID, ArachnidsConfig.class);
 		Registry.register(Registry.BLOCK, new Identifier(MODID, "mz90"), MZ90BLOCK);
 		Registry.register(Registry.BLOCK, new Identifier(MODID, "ton"), TONBLOCK);
 		Registry.register(Registry.ENCHANTMENT, new Identifier(MODID, "grenadeattachment"), GRENADEATTACHMENT);

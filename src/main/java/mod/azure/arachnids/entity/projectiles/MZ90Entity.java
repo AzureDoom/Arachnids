@@ -1,7 +1,6 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
@@ -40,7 +39,6 @@ public class MZ90Entity extends PersistentProjectileEntity implements IAnimatabl
 	protected boolean inAir;
 	protected String type;
 	private int ticksInAir;
-	public static Weapons config = ArachnidsMod.config.weapons;
 	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(MZ90Entity.class,
 			TrackedDataHandlerRegistry.BOOLEAN);
 
@@ -114,7 +112,7 @@ public class MZ90Entity extends PersistentProjectileEntity implements IAnimatabl
 		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(),
 				this.getZ());
 		areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
-		areaeffectcloudentity.setRadius(config.MZ90_explode_damage + 2);
+		areaeffectcloudentity.setRadius(ArachnidsConfig.MZ90_explode_damage + 2);
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.updatePosition(this.getX(), this.getEyeY(), this.getZ());
 		this.world.spawnEntity(areaeffectcloudentity);
@@ -196,9 +194,9 @@ public class MZ90Entity extends PersistentProjectileEntity implements IAnimatabl
 	}
 
 	protected void explode() {
-		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), config.MZ90_explode_damage,
-				(config.cause_fire ? true : false),
-				(config.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
+		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(),
+				ArachnidsConfig.MZ90_explode_damage, (ArachnidsConfig.cause_fire ? true : false),
+				(ArachnidsConfig.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
 	}
 
 	@Override

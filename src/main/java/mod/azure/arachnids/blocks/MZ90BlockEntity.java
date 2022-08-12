@@ -2,8 +2,7 @@ package mod.azure.arachnids.blocks;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.util.ArachnidsMobs;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,15 +19,15 @@ public class MZ90BlockEntity extends Entity {
 
 	@Nullable
 	private LivingEntity causingEntity;
-	public static Weapons config = ArachnidsMod.config.weapons;
 
 	public MZ90BlockEntity(EntityType<?> entityTypeIn, World worldIn) {
 		super(entityTypeIn, worldIn);
 	}
 
 	protected void explode() {
-		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), config.MZ90_explode_damage, true,
-				(config.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
+		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(),
+				ArachnidsConfig.MZ90_explode_damage, true,
+				(ArachnidsConfig.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
 	}
 
 	public MZ90BlockEntity(World worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {

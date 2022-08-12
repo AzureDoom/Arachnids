@@ -1,7 +1,5 @@
 package mod.azure.arachnids.entity;
 
-import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.config.ArachnidsConfig.MobStats;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -25,7 +23,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -45,12 +47,12 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 			TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(BaseBugEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
-	public static MobStats config = ArachnidsMod.config.stats;
 	public AnimationFactory factory = new AnimationFactory(this);
 
 	public BaseBugEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
 		super(entityType, world);
 		this.ignoreCameraFrustum = true;
+		stepHeight = 1.5f;
 	}
 
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -66,6 +68,15 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	@Override
 	public AnimationFactory getFactory() {
 		return this.factory;
+	}
+
+	public static boolean canSpawn(EntityType<? extends PathAwareEntity> type, ServerWorldAccess world, SpawnReason reason,
+			BlockPos pos, Random random) {
+		if (world.getDifficulty() == Difficulty.PEACEFUL)
+			return false;
+		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
+			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS);
+		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS);
 	}
 
 	public int getAttckingState() {
@@ -135,7 +146,7 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 
 	@Override
 	public boolean isPushable() {
-		return false;
+		return true;
 	}
 
 	@Override

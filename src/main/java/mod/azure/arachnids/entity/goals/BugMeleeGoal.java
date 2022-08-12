@@ -3,6 +3,7 @@ package mod.azure.arachnids.entity.goals;
 import java.util.SplittableRandom;
 
 import mod.azure.arachnids.entity.BaseBugEntity;
+import mod.azure.arachnids.entity.bugs.WarriorEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 
@@ -51,29 +52,37 @@ public class BugMeleeGoal extends Goal {
 					this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
 					this.attackTime = -5;
 				} else {
-					if (this.attackTime == 4) {
-						this.entity.getNavigation().startMovingTo(livingentity, this.moveSpeedAmp);
+					this.entity.getLookControl().lookAt(livingentity.getX(), livingentity.getEyeY(),
+							livingentity.getZ());
+					if (this.attackTime == 1) {
+						this.entity.getNavigation().stop();
+						this.entity.setAttackingState(2);
+					}
+					if (this.attackTime == 9) {
 						if (d0 <= d1) {
-							if (var == 1) {
+							if (this.entity instanceof WarriorEntity) {
+								if (var == 1) {
+									this.entity.setAttackingState(1);
+									this.entity.tryLightAttack(livingentity);
+								}
+								if (var == 2) {
+									this.entity.setAttackingState(2);
+									this.entity.tryAttack(livingentity);
+								}
+								if (var == 3) {
+									this.entity.setAttackingState(3);
+									this.entity.tryHeavyAttack(livingentity);
+								}
+							} else {
 								this.entity.setAttackingState(1);
-								this.entity.tryLightAttack(livingentity);
-							}
-							if (var == 2) {
-								this.entity.setAttackingState(2);
 								this.entity.tryAttack(livingentity);
 							}
-							if (var == 3) {
-								this.entity.setAttackingState(3);
-								this.entity.tryHeavyAttack(livingentity);
-							}
 						}
-						livingentity.timeUntilRegen = 0;
 					}
-					if (this.attackTime == 8) {
+					if (this.attackTime == 15) {
+						this.attackTime = 0;
 						this.entity.setAttackingState(0);
-					}
-					if (this.attackTime == 12) {
-						this.attackTime = -15;
+						this.entity.getNavigation().startMovingTo(livingentity, 1.35);
 					}
 				}
 			}

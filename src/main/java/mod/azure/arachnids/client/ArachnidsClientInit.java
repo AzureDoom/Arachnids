@@ -3,6 +3,7 @@ package mod.azure.arachnids.client;
 import org.lwjgl.glfw.GLFW;
 
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.client.particles.FlareParticle;
 import mod.azure.arachnids.client.render.mobs.ArkellianRender;
 import mod.azure.arachnids.client.render.mobs.BrainRender;
 import mod.azure.arachnids.client.render.mobs.HopperRender;
@@ -22,7 +23,6 @@ import mod.azure.arachnids.client.render.mobs.projectiles.TonEntityRender;
 import mod.azure.arachnids.client.render.weapons.FlareRender;
 import mod.azure.arachnids.client.render.weapons.MAR1Render;
 import mod.azure.arachnids.client.render.weapons.MAR2Render;
-import mod.azure.arachnids.entity.projectiles.FlareParticle;
 import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.network.EntityPacketOnClient;
 import mod.azure.arachnids.util.ArachnidsItems;

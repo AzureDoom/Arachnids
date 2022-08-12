@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsClientInit;
-import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.projectiles.FlareEntity;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
 import mod.azure.arachnids.util.ArachnidsItems;
@@ -44,7 +44,6 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 
 	public static final int ANIM_OPEN = 0;
 	public String controllerName = "controller";
-	public static Weapons config = ArachnidsMod.config.weapons;
 	public AnimationFactory factory = new AnimationFactory(this);
 	private BlockPos lightBlockPos = null;
 
@@ -170,7 +169,8 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 			while (!user.isCreative() && user.getStackInHand(hand).getDamage() != 0
 					&& user.getInventory().count(ArachnidsItems.BULLETS) > 0) {
 				removeAmmo(ArachnidsItems.BULLETS, user);
-				user.getStackInHand(hand).damage(-config.MAR1_mag_size, user, s -> user.sendToolBreakStatus(hand));
+				user.getStackInHand(hand).damage(-ArachnidsConfig.MAR1_mag_size, user,
+						s -> user.sendToolBreakStatus(hand));
 				user.getStackInHand(hand).setBobbingAnimationTime(3);
 				user.getEntityWorld().playSound((PlayerEntity) null, user.getX(), user.getY(), user.getZ(),
 						ArachnidsSounds.CLIPRELOAD, SoundCategory.PLAYERS, 1.00F, 1.0F);

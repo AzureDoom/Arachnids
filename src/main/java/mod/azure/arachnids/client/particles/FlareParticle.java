@@ -1,4 +1,4 @@
-package mod.azure.arachnids.entity.projectiles;
+package mod.azure.arachnids.client.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

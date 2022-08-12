@@ -1,5 +1,6 @@
 package mod.azure.arachnids.entity.bugs;
 
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.goals.HopperFlightMoveControl;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -8,7 +9,6 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
@@ -22,14 +22,10 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.AbstractRandom;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -44,7 +40,7 @@ public class HopperEntity extends BaseBugEntity {
 
 	public HopperEntity(EntityType<? extends BaseBugEntity> entityType, World world) {
 		super(entityType, world);
-		this.experiencePoints = config.hopper_exp;
+		this.experiencePoints = ArachnidsConfig.hopper_exp;
 		this.moveControl = new HopperFlightMoveControl(this, 90, false);
 	}
 
@@ -65,17 +61,6 @@ public class HopperEntity extends BaseBugEntity {
 	@Override
 	public void registerControllers(AnimationData data) {
 		data.addAnimationController(new AnimationController<HopperEntity>(this, "idle_controller", 5, this::predicate));
-	}
-
-	public static boolean canSpawn(EntityType<HopperEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos,
-			AbstractRandom random) {
-		if (world.getDifficulty() == Difficulty.PEACEFUL)
-			return false;
-		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
-			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-					&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
-		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-				&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
 	}
 
 	@Override
@@ -109,8 +94,8 @@ public class HopperEntity extends BaseBugEntity {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.hopper_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.hopper_melee)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, ArachnidsConfig.hopper_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, ArachnidsConfig.hopper_melee)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 15.0D)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D).add(EntityAttributes.GENERIC_FLYING_SPEED, 2.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
@@ -126,7 +111,7 @@ public class HopperEntity extends BaseBugEntity {
 
 	@Override
 	public int getArmor() {
-		return config.hopper_armor;
+		return ArachnidsConfig.hopper_armor;
 	}
 
 	public int getVariant() {

@@ -6,7 +6,6 @@ import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsClientInit;
-import mod.azure.arachnids.config.ArachnidsConfig.Weapons;
 import mod.azure.arachnids.entity.projectiles.TacticalOxygenNukeEntity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -30,7 +29,6 @@ import net.minecraft.world.World;
 
 public class M55Item extends Item {
 
-	public static Weapons config = ArachnidsMod.config.weapons;
 	private BlockPos lightBlockPos = null;
 
 	public M55Item() {

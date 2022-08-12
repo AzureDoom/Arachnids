@@ -2,6 +2,7 @@ package mod.azure.arachnids.entity.bugs;
 
 import java.util.SplittableRandom;
 
+import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.goals.BugMeleeGoal;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -27,16 +28,12 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.AbstractRandom;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -51,16 +48,16 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 
 	public WarriorEntity(EntityType<? extends BaseBugEntity> entityType, World world) {
 		super(entityType, world);
-		this.experiencePoints = config.warrior_exp;
+		this.experiencePoints = ArachnidsConfig.warrior_exp;
 	}
 
 	@Override
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (this.dataTracker.get(STATE) == 0 && event.isMoving() && !this.isAttacking()) {
+		if (event.isMoving() && !this.isAttacking()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("moving", true));
 			return PlayState.CONTINUE;
 		}
-		if (this.dataTracker.get(STATE) == 0 && this.isAttacking() && event.isMoving()) {
+		if (this.isAttacking() && event.isMoving()) {
 			event.getController().setAnimation(new AnimationBuilder().addAnimation("running", true));
 			return PlayState.CONTINUE;
 		}
@@ -69,15 +66,15 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("light_attack", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("light_attack", false));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("normal_attack", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("normal_attack", false));
 			return PlayState.CONTINUE;
 		}
 		if (this.dataTracker.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDead())) {
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("heavy_attack", true));
+			event.getController().setAnimation(new AnimationBuilder().addAnimation("heavy_attack", false));
 			return PlayState.CONTINUE;
 		}
 		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
@@ -95,17 +92,6 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 		return this.factory;
 	}
 
-	public static boolean canSpawn(EntityType<WarriorEntity> type, WorldAccess world, SpawnReason reason, BlockPos pos,
-			AbstractRandom random) {
-		if (world.getDifficulty() == Difficulty.PEACEFUL)
-			return false;
-		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
-			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-					&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
-		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS)
-				&& !world.getBlockState(pos.down()).isIn(BlockTags.LEAVES);
-	}
-
 	@Override
 	protected void initGoals() {
 		this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
@@ -120,8 +106,8 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 
 	public static DefaultAttributeContainer.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, config.warrior_health)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, config.warrior_melee)
+				.add(EntityAttributes.GENERIC_MAX_HEALTH, ArachnidsConfig.warrior_health)
+				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, ArachnidsConfig.warrior_melee)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 				.add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 15.0D)
 				.add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0D);
@@ -137,7 +123,7 @@ public class WarriorEntity extends BaseBugEntity implements IAnimatable {
 
 	@Override
 	public int getArmor() {
-		return config.warrior_armor;
+		return ArachnidsConfig.warrior_armor;
 	}
 
 	public int getVariant() {
