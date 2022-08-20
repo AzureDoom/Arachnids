@@ -1,5 +1,5 @@
-v.0.0.6
+v.0.0.7
 
-- Fixed for latest Fabric API.
+- All audio is now mono.
 
 - This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.
