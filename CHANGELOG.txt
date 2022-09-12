@@ -1,4 +1,4 @@
-v.0.0.5
+v.0.0.8
 
 - Fixed entity rendering glitching
 

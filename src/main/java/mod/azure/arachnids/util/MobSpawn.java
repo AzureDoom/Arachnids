@@ -7,7 +7,6 @@ import mod.azure.arachnids.entity.BaseBugEntity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.world.Heightmap;
@@ -41,21 +40,21 @@ public class MobSpawn {
 				BiomeSelectors.all().and(context -> parseBiomes(ArachnidsConfig.warrior_biomes, context)),
 				SpawnGroup.MONSTER, ArachnidsMobs.WORKERBUG, ArachnidsConfig.worker_spawn_weight,
 				ArachnidsConfig.worker_min_group, ArachnidsConfig.worker_max_group);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.ARKELLIANBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.ARKELLIANBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.BRAINBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.BRAINBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.HOOPERBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.HOOPERBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.PLASMABUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.PLASMABUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.SCORPIONBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.SCORPIONBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.TANKERBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.TANKERBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.WARRIORBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.WARRIORBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
-		SpawnRestrictionAccessor.callRegister(ArachnidsMobs.WORKERBUG, SpawnRestriction.Location.ON_GROUND,
+		SpawnRestriction.register(ArachnidsMobs.WORKERBUG, SpawnRestriction.Location.ON_GROUND,
 				Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseBugEntity::canSpawn);
 	}
 

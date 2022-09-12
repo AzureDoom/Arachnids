@@ -45,7 +45,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
-@SuppressWarnings("deprecation")
 @Environment(EnvType.CLIENT)
 public class ArachnidsClientInit implements ClientModInitializer {
 
