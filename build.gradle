@@ -90,7 +90,7 @@ publishing {
 	}
 
 	repositories {
-	
+
 	}
 }
 
@@ -114,8 +114,8 @@ if (file('key.properties').exists()) {
 			addGameVersion("Java 17")
 
         	relations {
-            	requiredDependency 'fabric-api'  
-            	requiredDependency 'geckolib' 
+            	requiredDependency 'fabric-api'
+            	requiredDependency 'geckolib'
         	}
         	mainArtifact(remapJar)
 
@@ -135,16 +135,16 @@ if (file('key.properties').exists()) {
 		def modrinthProp = new Properties()
 		File secretPropsFile = file("key.properties")
 		modrinthProp.load(secretPropsFile.newInputStream())
-		
+
 		token = modrinthProp.getProperty('modrinthKey')
-		projectId = 'AOs8oaMT' 
-		versionNumber = project.mod_version 
+		projectId = 'AOs8oaMT'
+		versionNumber = project.mod_version
 		versionName = 'Fabric 1.19'
-		uploadFile = remapJar 
+		uploadFile = remapJar
 		changelog = rootProject.file("changelog.txt").text
 		gameVersions = ['1.19.1', '1.19.2']
 		loaders = ['fabric']
-		dependencies { 
+		dependencies {
         	required.project "geckolib"
         	required.project "fabric-api"
             optional.project "modmenu"
