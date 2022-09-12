@@ -1,41 +1,41 @@
 {
-	"schemaVersion": 1,
-	"id": "arachnids",
-	"version": "${version}",
-	"name": "Arachnids",
-	"description": "Arachnids is a mod based on the first Starship Troopers movie and 2005 game about an alien race of bugs. This mod brings those creatures into the Minecraft world, where the bugs control the deserts of the Overworld.",
-	"authors": [
-		"AzureDoom",
-		"Batpixxler"
-	],
-	"contact": {
-		"homepage": "https://www.curseforge.com/minecraft/mc-mods/arachnids",
-		"sources": "https://github.com/AzureDoom/Arachnids",
-		"issues": "https://github.com/AzureDoom/Arachnids/issues"
-	},
-	"license": "CC-BY-NC-4.0",
-	"icon": "assets/arachnids/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"mod.azure.arachnids.ArachnidsMod"
-		],
-		"client": [
-			"mod.azure.arachnids.client.ArachnidsClientInit"
-		],
-		"modmenu": [
-			"mod.azure.arachnids.config.ModMenuArachnids"
-		]
-	},
-	"mixins": [
-		"arachnids.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.14.9",
-		"fabric": "*",
-		"minecraft": ">=1.19.1",
-		"java": ">=17",
-		"geckolib3": ">=3.0.0"
-	},
-	"accessWidener": "arachnids.accesswidener"
+  "schemaVersion": 1,
+  "id": "arachnids",
+  "version": "${version}",
+  "name": "Arachnids",
+  "description": "Arachnids is a mod based on the first Starship Troopers movie and 2005 game about an alien race of bugs. This mod brings those creatures into the Minecraft world, where the bugs control the deserts of the Overworld.",
+  "authors": [
+    "AzureDoom",
+    "Batpixxler"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/arachnids",
+    "sources": "https://github.com/AzureDoom/Arachnids",
+    "issues": "https://github.com/AzureDoom/Arachnids/issues"
+  },
+  "license": "CC-BY-NC-4.0",
+  "icon": "assets/arachnids/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "mod.azure.arachnids.ArachnidsMod"
+    ],
+    "client": [
+      "mod.azure.arachnids.client.ArachnidsClientInit"
+    ],
+    "modmenu": [
+      "mod.azure.arachnids.config.ModMenuArachnids"
+    ]
+  },
+  "mixins": [
+    "arachnids.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": ">=1.19.1",
+    "java": ">=17",
+    "geckolib3": ">=3.0.0"
+  },
+  "accessWidener": "arachnids.accesswidener"
 }
