@@ -1,7 +1,6 @@
 package mod.azure.arachnids.items.ammo;
 
 import java.util.List;
-
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
 import net.minecraft.block.Block;
@@ -24,49 +23,54 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class MZ90Item extends BlockItem implements IAnimatable {
 
-	public AnimationFactory factory = new AnimationFactory(this);
-	public String controllerName = "controller";
+  public AnimationFactory factory = new AnimationFactory(this);
+  public String controllerName = "controller";
 
-	public MZ90Item(Block block) {
-		super(block, new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup));
-	}
+  public MZ90Item(Block block) {
+    super(block, new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup));
+  }
 
-	public <P extends BlockItem & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
-	}
+  public <P extends BlockItem & IAnimatable>
+      PlayState predicate(AnimationEvent<P> event) {
+    return PlayState.CONTINUE;
+  }
 
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
-	}
+  @Override
+  public void registerControllers(AnimationData data) {
+    data.addAnimationController(
+        new AnimationController(this, controllerName, 1, this::predicate));
+  }
 
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
+  @Override
+  public AnimationFactory getFactory() {
+    return this.factory;
+  }
 
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		if (!user.getItemCooldownManager().isCoolingDown(this)
-				&& user.getMainHandStack().getItem() instanceof MZ90Item) {
-			user.getItemCooldownManager().set(this, 25);
-			if (!world.isClient) {
-				MZ90Entity snowballEntity = new MZ90Entity(world, user, true);
-				snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 1.0F, 1.0F);
-				world.spawnEntity(snowballEntity);
-			}
-			if (!user.getAbilities().creativeMode) {
-				itemStack.decrement(1);
-			}
-			return TypedActionResult.success(itemStack, world.isClient());
-		} else {
-			return TypedActionResult.fail(itemStack);
-		}
-	}
+  public TypedActionResult<ItemStack> use(World world, PlayerEntity user,
+                                          Hand hand) {
+    ItemStack itemStack = user.getStackInHand(hand);
+    if (!user.getItemCooldownManager().isCoolingDown(this) &&
+        user.getMainHandStack().getItem() instanceof MZ90Item) {
+      user.getItemCooldownManager().set(this, 25);
+      if (!world.isClient) {
+        MZ90Entity snowballEntity = new MZ90Entity(world, user, true);
+        snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F,
+                                   1.0F, 1.0F);
+        world.spawnEntity(snowballEntity);
+      }
+      if (!user.getAbilities().creativeMode) {
+        itemStack.decrement(1);
+      }
+      return TypedActionResult.success(itemStack, world.isClient());
+    } else {
+      return TypedActionResult.fail(itemStack);
+    }
+  }
 
-	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("arachnids.tooltip.mz90tootip").formatted(Formatting.ITALIC));
-	}
-
+  @Override
+  public void appendTooltip(ItemStack stack, World world, List<Text> tooltip,
+                            TooltipContext context) {
+    tooltip.add(Text.translatable("arachnids.tooltip.mz90tootip")
+                    .formatted(Formatting.ITALIC));
+  }
 }

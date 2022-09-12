@@ -1,7 +1,6 @@
 package mod.azure.arachnids.items.ammo;
 
 import java.util.List;
-
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.projectiles.TacticalOxygenNukeEntity;
 import net.minecraft.block.Block;
@@ -24,55 +23,62 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class TONItem extends BlockItem implements IAnimatable {
 
-	public AnimationFactory factory = new AnimationFactory(this);
-	public String controllerName = "controller";
+  public AnimationFactory factory = new AnimationFactory(this);
+  public String controllerName = "controller";
 
-	public TONItem(Block block) {
-		super(block, new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup));
-	}
+  public TONItem(Block block) {
+    super(block, new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup));
+  }
 
-	public <P extends BlockItem & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
-	}
+  public <P extends BlockItem & IAnimatable>
+      PlayState predicate(AnimationEvent<P> event) {
+    return PlayState.CONTINUE;
+  }
 
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
-	}
+  @Override
+  public void registerControllers(AnimationData data) {
+    data.addAnimationController(
+        new AnimationController(this, controllerName, 1, this::predicate));
+  }
 
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
+  @Override
+  public AnimationFactory getFactory() {
+    return this.factory;
+  }
 
-	@Override
-	public boolean hasGlint(ItemStack stack) {
-		return false;
-	}
+  @Override
+  public boolean hasGlint(ItemStack stack) {
+    return false;
+  }
 
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		if (!user.getItemCooldownManager().isCoolingDown(this)
-				&& user.getMainHandStack().getItem() instanceof TONItem) {
-			user.getItemCooldownManager().set(this, 25);
-			if (!world.isClient) {
-				TacticalOxygenNukeEntity snowballEntity = new TacticalOxygenNukeEntity(world, user, true);
-				snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 1.0F, 1.0F);
-				snowballEntity.refreshPositionAndAngles(user.getX(), user.getBodyY(0.95), user.getZ(), 0, 0);
-				world.spawnEntity(snowballEntity);
-			}
-			if (!user.getAbilities().creativeMode) {
-				itemStack.decrement(1);
-			}
-			return TypedActionResult.success(itemStack, world.isClient());
-		} else {
-			return TypedActionResult.fail(itemStack);
-		}
-	}
+  public TypedActionResult<ItemStack> use(World world, PlayerEntity user,
+                                          Hand hand) {
+    ItemStack itemStack = user.getStackInHand(hand);
+    if (!user.getItemCooldownManager().isCoolingDown(this) &&
+        user.getMainHandStack().getItem() instanceof TONItem) {
+      user.getItemCooldownManager().set(this, 25);
+      if (!world.isClient) {
+        TacticalOxygenNukeEntity snowballEntity =
+            new TacticalOxygenNukeEntity(world, user, true);
+        snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F,
+                                   1.0F, 1.0F);
+        snowballEntity.refreshPositionAndAngles(
+            user.getX(), user.getBodyY(0.95), user.getZ(), 0, 0);
+        world.spawnEntity(snowballEntity);
+      }
+      if (!user.getAbilities().creativeMode) {
+        itemStack.decrement(1);
+      }
+      return TypedActionResult.success(itemStack, world.isClient());
+    } else {
+      return TypedActionResult.fail(itemStack);
+    }
+  }
 
-	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("arachnids.tooltip.tontootip").formatted(Formatting.ITALIC));
-	}
-
+  @Override
+  public void appendTooltip(ItemStack stack, World world, List<Text> tooltip,
+                            TooltipContext context) {
+    tooltip.add(Text.translatable("arachnids.tooltip.tontootip")
+                    .formatted(Formatting.ITALIC));
+  }
 }
