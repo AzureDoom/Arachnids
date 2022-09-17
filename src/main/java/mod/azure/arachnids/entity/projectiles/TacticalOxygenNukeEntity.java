@@ -13,9 +13,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.particle.ParticleTypes;
@@ -60,10 +60,7 @@ public class TacticalOxygenNukeEntity extends PersistentProjectileEntity impleme
 			World world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
-		if (owner instanceof PlayerEntity) {
-			this.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
-		}
-
+		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 	}
 
 	public TacticalOxygenNukeEntity(World world, LivingEntity user, boolean spinning) {
@@ -119,6 +116,7 @@ public class TacticalOxygenNukeEntity extends PersistentProjectileEntity impleme
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.updatePosition(this.getX(), this.getEyeY(), this.getZ());
 		this.world.spawnEntity(areaeffectcloudentity);
+		this.explode();
 		super.remove(reason);
 	}
 
@@ -204,7 +202,7 @@ public class TacticalOxygenNukeEntity extends PersistentProjectileEntity impleme
 
 	@Override
 	public ItemStack asItemStack() {
-		return new ItemStack(ArachnidsItems.TON);
+		return new ItemStack(Items.AIR);
 	}
 
 	@Override

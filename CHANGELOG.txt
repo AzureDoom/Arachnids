@@ -1,5 +1,6 @@
-v.0.0.10
+v.0.0.11
 
-- Fixed issue with code pulled from wrong branch
+- Fixed issue with Advancement.
+- Fixed Grenades not doing damage or breaking blocks.
 
 - This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.
