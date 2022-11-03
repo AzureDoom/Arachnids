@@ -38,6 +38,7 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatable, IAnimationTickable {
 
@@ -47,7 +48,7 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 			TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(BaseBugEntity.class,
 			TrackedDataHandlerRegistry.INTEGER);
-	public AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
 	public BaseBugEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
 		super(entityType, world);

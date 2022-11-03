@@ -32,6 +32,7 @@ import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -44,7 +45,7 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 
 	public static final int ANIM_OPEN = 0;
 	public String controllerName = "controller";
-	public AnimationFactory factory = new AnimationFactory(this);
+	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 	private BlockPos lightBlockPos = null;
 
 	public BaseGunItem(Settings properties) {
@@ -72,7 +73,7 @@ public class BaseGunItem extends Item implements IAnimatable, ISyncable {
 			final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
 			if (controller.getAnimationState() == AnimationState.Stopped) {
 				controller.markNeedsReload();
-				controller.setAnimation(new AnimationBuilder().addAnimation("firing", false));
+				controller.setAnimation(new AnimationBuilder().addAnimation("firing", EDefaultLoopTypes.LOOP));
 			}
 		}
 	}
