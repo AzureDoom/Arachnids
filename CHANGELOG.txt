@@ -1,6 +1,5 @@
-v.0.0.11
+v.0.0.12
 
-- Fixed issue with Advancement.
-- Fixed Grenades not doing damage or breaking blocks.
+- Updated for latest Geckolib methods
 
 - This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.
