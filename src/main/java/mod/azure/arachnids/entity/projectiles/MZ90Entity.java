@@ -1,126 +1,116 @@
 package mod.azure.arachnids.entity.projectiles;
 
 import mod.azure.arachnids.config.ArachnidsConfig;
-import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MZ90Entity extends PersistentProjectileEntity implements IAnimatable {
+public class MZ90Entity extends AbstractArrow implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
 	protected String type;
 	private int ticksInAir;
-	private static final TrackedData<Boolean> SPINNING = DataTracker.registerData(MZ90Entity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(MZ90Entity.class,
+			EntityDataSerializers.BOOLEAN);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public MZ90Entity(EntityType<? extends MZ90Entity> entityType, World world) {
+	public MZ90Entity(EntityType<? extends MZ90Entity> entityType, Level world) {
 		super(entityType, world);
-		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
-	public MZ90Entity(World world, LivingEntity owner) {
+	public MZ90Entity(Level world, LivingEntity owner) {
 		super(ProjectilesEntityRegister.MZ90, owner, world);
 	}
 
-	protected MZ90Entity(EntityType<? extends MZ90Entity> type, double x, double y, double z, World world) {
+	protected MZ90Entity(EntityType<? extends MZ90Entity> type, double x, double y, double z, Level world) {
 		this(type, world);
 	}
 
-	protected MZ90Entity(EntityType<? extends MZ90Entity> type, LivingEntity owner, World world) {
+	protected MZ90Entity(EntityType<? extends MZ90Entity> type, LivingEntity owner, Level world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
-		this.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+		this.pickup = AbstractArrow.Pickup.DISALLOWED;
 	}
 
-	public MZ90Entity(World world, LivingEntity user, boolean spinning) {
+	public MZ90Entity(Level world, LivingEntity user, boolean spinning) {
 		super(ProjectilesEntityRegister.MZ90, user, world);
-		this.dataTracker.set(SPINNING, spinning);
-	}
-
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(SPINNING, false);
+		this.entityData.set(SPINNING, spinning);
 	}
 
 	public boolean isSpinning() {
-		return (Boolean) this.dataTracker.get(SPINNING);
+		return (Boolean) this.entityData.get(SPINNING);
 	}
 
 	public void setSpinning(boolean spin) {
-		this.dataTracker.set(SPINNING, spin);
-	}
-
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		if (!this.inGround && this.isSpinning())
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("spin", EDefaultLoopTypes.LOOP));
-		else
-			event.getController().setAnimation(new AnimationBuilder().addAnimation("bullet", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
+		this.entityData.set(SPINNING, spin);
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<MZ90Entity>(this, "controller", 0, this::predicate));
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, event -> {
+			if (!this.inGround && this.isSpinning())
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("spin"));
+			else
+				event.getController().setAnimation(RawAnimation.begin().thenLoop("bullet"));
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return new ClientboundAddEntityPacket(this);
 	}
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(this.world, this.getX(), this.getY(),
+		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
 				this.getZ());
-		areaeffectcloudentity.setParticleType(ParticleTypes.EXPLOSION);
+		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 		areaeffectcloudentity.setRadius(ArachnidsConfig.MZ90_explode_damage + 2);
 		areaeffectcloudentity.setDuration(1);
-		areaeffectcloudentity.updatePosition(this.getX(), this.getEyeY(), this.getZ());
-		this.world.spawnEntity(areaeffectcloudentity);
+		areaeffectcloudentity.setPos(this.getX(), this.getEyeY(), this.getZ());
+		this.level.addFreshEntity(areaeffectcloudentity);
 		this.explode();
 		super.remove(reason);
 	}
 
 	@Override
-	public void age() {
+	public void tickDespawn() {
 		++this.ticksInAir;
 		if (this.ticksInAir >= 80) {
 			this.remove(Entity.RemovalReason.DISCARDED);
@@ -128,21 +118,29 @@ public class MZ90Entity extends PersistentProjectileEntity implements IAnimatabl
 	}
 
 	@Override
-	public void setVelocity(double x, double y, double z, float speed, float divergence) {
-		super.setVelocity(x, y, z, speed, divergence);
+	public void shoot(double x, double y, double z, float speed, float divergence) {
+		super.shoot(x, y, z, speed, divergence);
 		this.ticksInAir = 0;
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putShort("life", (short) this.ticksInAir);
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putBoolean("isSpinning", isSpinning());
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
-		this.ticksInAir = tag.getShort("life");
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		if (compound.contains("isSpinning")) {
+			setSpinning(compound.getBoolean("isSpinning"));
+		}
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(SPINNING, false);
 	}
 
 	@Override
@@ -155,63 +153,63 @@ public class MZ90Entity extends PersistentProjectileEntity implements IAnimatabl
 		}
 	}
 
-	public SoundEvent hitSound = this.getHitSound();
+	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
 	@Override
-	public void setSound(SoundEvent soundIn) {
+	public void setSoundEvent(SoundEvent soundIn) {
 		this.hitSound = soundIn;
 	}
 
 	@Override
-	protected SoundEvent getHitSound() {
-		return SoundEvents.PARTICLE_SOUL_ESCAPE;
+	protected SoundEvent getDefaultHitGroundSoundEvent() {
+		return SoundEvents.SOUL_ESCAPE;
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
-		super.onBlockHit(blockHitResult);
-		if (!this.world.isClient) {
-			if (this.age >= 45) {
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
+		if (!this.level.isClientSide()) {
+			if (this.tickCount >= 45) {
 				this.explode();
-				this.dataTracker.set(SPINNING, false);
+				this.entityData.set(SPINNING, false);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
-		this.setSound(SoundEvents.ENTITY_GENERIC_EXPLODE);
+		this.setSoundEvent(SoundEvents.GENERIC_EXPLODE);
 	}
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
-		if (!this.world.isClient) {
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		super.onHitEntity(entityHitResult);
+		if (!this.level.isClientSide()) {
 			this.explode();
-			if (this.age >= 45) {
+			if (this.tickCount >= 45) {
 				this.explode();
-				this.dataTracker.set(SPINNING, false);
+				this.entityData.set(SPINNING, false);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
 		}
 	}
 
 	protected void explode() {
-		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(),
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(),
 				ArachnidsConfig.MZ90_explode_damage, (ArachnidsConfig.cause_fire ? true : false),
-				(ArachnidsConfig.break_blocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE));
+				(ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	@Override
-	public ItemStack asItemStack() {
+	public ItemStack getPickupItem() {
 		return new ItemStack(Items.AIR);
 	}
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		return true;
 	}
 
 	@Override
-	public boolean doesRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 

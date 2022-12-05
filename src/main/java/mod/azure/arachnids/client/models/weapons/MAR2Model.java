@@ -2,22 +2,22 @@ package mod.azure.arachnids.client.models.weapons;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.items.weapons.MAR2Item;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class MAR2Model extends AnimatedGeoModel<MAR2Item> {
+public class MAR2Model extends GeoModel<MAR2Item> {
 	@Override
-	public Identifier getModelResource(MAR2Item object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/mar2.geo.json");
+	public ResourceLocation getModelResource(MAR2Item object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/mar2.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(MAR2Item object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/items/morita_assault_rifle_2.png");
+	public ResourceLocation getTextureResource(MAR2Item object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/item/morita_assault_rifle_2.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(MAR2Item animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/mar2.animation.json");
+	public ResourceLocation getAnimationResource(MAR2Item animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/mar2.animation.json");
 	}
 }

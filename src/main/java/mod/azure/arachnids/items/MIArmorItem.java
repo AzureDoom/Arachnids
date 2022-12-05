@@ -2,53 +2,34 @@ package mod.azure.arachnids.items;
 
 import java.util.List;
 
-import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.armor.MIArmorMateral;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 
 public class MIArmorItem extends ArmorItem {
 
 	public MIArmorItem(EquipmentSlot slot) {
-		super(MIArmorMateral.MIARMOR, slot, new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup));
+		super(MIArmorMateral.MIARMOR, slot, new Item.Properties());
 	}
 
 	@Override
-	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-		ItemStack stack = new ItemStack(this);
-		stack.hasNbt();
+	public void onCraftedBy(ItemStack stack, Level world, Player player) {
+		stack.hasTag();
 		if (slot == EquipmentSlot.HEAD)
-			stack.addEnchantment(Enchantments.PROTECTION, 5);
-		if ((group == ArachnidsMod.ArachnidsItemGroup) || (group == ItemGroup.SEARCH)) {
-			stacks.add(stack);
-		}
+			stack.enchant(Enchantments.FIRE_PROTECTION, 5);
 	}
 
 	@Override
-	public void onCraft(ItemStack stack, World world, PlayerEntity player) {
-		stack.hasNbt();
-		if (slot == EquipmentSlot.HEAD)
-			stack.addEnchantment(Enchantments.PROTECTION, 5);
-	}
-
-	@Override
-	public boolean hasGlint(ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("arachnids.tooltip.miarmor").formatted(Formatting.ITALIC));
+	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+		tooltip.add(Component.translatable("arachnids.tooltip.miarmor").withStyle(ChatFormatting.ITALIC));
 	}
 
 }

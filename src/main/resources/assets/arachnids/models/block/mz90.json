@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"1": "arachnids:items/mz-90_fragmentation_grenade",
-		"particle": "arachnids:items/mz-90_fragmentation_grenade"
+		"1": "arachnids:item/mz-90_fragmentation_grenade",
+		"particle": "arachnids:item/mz-90_fragmentation_grenade"
 	},
 	"elements": [
 		{

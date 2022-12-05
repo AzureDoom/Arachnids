@@ -2,22 +2,28 @@ package mod.azure.arachnids.client.models.mobs.projectiles;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class MZ90Model extends AnimatedGeoModel<MZ90Entity> {
+public class MZ90Model extends GeoModel<MZ90Entity> {
 	@Override
-	public Identifier getModelResource(MZ90Entity object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/mz90.geo.json");
+	public ResourceLocation getModelResource(MZ90Entity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/mz90.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(MZ90Entity object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/items/mz-90_fragmentation_grenade.png");
+	public ResourceLocation getTextureResource(MZ90Entity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/item/mz-90_fragmentation_grenade.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(MZ90Entity animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/mz90.animation.json");
+	public ResourceLocation getAnimationResource(MZ90Entity animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/mz90.animation.json");
+	}
+
+	@Override
+	public RenderType getRenderType(MZ90Entity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

@@ -1,72 +1,93 @@
 package mod.azure.arachnids.items.ammo;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.client.render.mobs.projectiles.MZ90BlockItemRender;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
-import net.minecraft.block.Block;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.client.RenderProvider;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MZ90Item extends BlockItem implements IAnimatable {
-
-	public AnimationFactory factory = new AnimationFactory(this);
-	public String controllerName = "controller";
+public class MZ90Item extends BlockItem implements GeoItem {
+	
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public MZ90Item(Block block) {
-		super(block, new Item.Settings().group(ArachnidsMod.ArachnidsItemGroup));
+		super(block, new Item.Properties());
 	}
 
-	public <P extends BlockItem & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-		return PlayState.CONTINUE;
+	// Utilise our own render hook to define our custom renderer
+	@Override
+	public void createRenderer(Consumer<Object> consumer) {
+		consumer.accept(new RenderProvider() {
+			private final MZ90BlockItemRender renderer = new MZ90BlockItemRender();
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return this.renderer;
+			}
+		});
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController(this, controllerName, 1, this::predicate));
+	public Supplier<Object> getRenderProvider() {
+		return this.renderProvider;
+	}
+
+	// Register our animation controllers
+	@Override
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE));
+		// We've marked the "shoot" animation as being triggerable from the server
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		ItemStack itemStack = user.getStackInHand(hand);
-		if (!user.getItemCooldownManager().isCoolingDown(this)
-				&& user.getMainHandStack().getItem() instanceof MZ90Item) {
-			user.getItemCooldownManager().set(this, 25);
-			if (!world.isClient) {
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+		ItemStack itemStack = user.getItemInHand(hand);
+		if (!user.getCooldowns().isOnCooldown(this)
+				&& user.getMainHandItem().getItem() instanceof MZ90Item) {
+			user.getCooldowns().addCooldown(this, 25);
+			if (!world.isClientSide()) {
 				MZ90Entity snowballEntity = new MZ90Entity(world, user, true);
-				snowballEntity.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 1.0F, 1.0F);
-				world.spawnEntity(snowballEntity);
+				snowballEntity.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.0F, 1.0F);
+				world.addFreshEntity(snowballEntity);
 			}
-			if (!user.getAbilities().creativeMode) {
-				itemStack.decrement(1);
+			if (!user.getAbilities().instabuild) {
+				itemStack.shrink(1);
 			}
-			return TypedActionResult.success(itemStack, world.isClient());
+			return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide());
 		} else {
-			return TypedActionResult.fail(itemStack);
+			return InteractionResultHolder.fail(itemStack);
 		}
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(Text.translatable("arachnids.tooltip.mz90tootip").formatted(Formatting.ITALIC));
+	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+		tooltip.add(Component.translatable("arachnids.tooltip.mz90tootip").withStyle(ChatFormatting.ITALIC));
 	}
 
 }

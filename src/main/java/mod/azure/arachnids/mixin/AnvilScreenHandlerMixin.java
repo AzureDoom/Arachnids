@@ -8,46 +8,46 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.items.weapons.BaseGunItem;
 import mod.azure.arachnids.items.weapons.M55Item;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.AnvilScreenHandler;
-import net.minecraft.screen.ForgingScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ItemCombinerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 
-@Mixin(value = AnvilScreenHandler.class)
-public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
+@Mixin(value = AnvilMenu.class)
+public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
 
-	public AnvilScreenHandlerMixin(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory,
-			ScreenHandlerContext context) {
+	public AnvilScreenHandlerMixin(MenuType<?> type, int syncId, Inventory playerInventory,
+			ContainerLevelAccess context) {
 		super(type, syncId, playerInventory, context);
 	}
 
-	@Inject(method = "updateResult", at = @At(value = "RETURN"))
+	@Inject(method = "createResult", at = @At(value = "RETURN"))
 	private void blockEnchantments(CallbackInfo ci) {
-		ItemStack leftStack = this.input.getStack(0).copy();
-		ItemStack rightStack = this.input.getStack(1).copy();
+		ItemStack leftStack = this.inputSlots.getItem(0).copy();
+		ItemStack rightStack = this.inputSlots.getItem(1).copy();
 		if ((leftStack.getItem() instanceof BaseGunItem || leftStack.getItem() instanceof M55Item)
-				&& (EnchantmentHelper.getLevel(Enchantments.MENDING, rightStack) > 0
-						|| EnchantmentHelper.getLevel(Enchantments.UNBREAKING, rightStack) > 0
-						|| EnchantmentHelper.get(rightStack).containsKey(Enchantments.MENDING)
-						|| EnchantmentHelper.get(rightStack).containsKey(Enchantments.UNBREAKING))) {
+				&& (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, rightStack) > 0
+						|| EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, rightStack) > 0
+						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING)
+						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.UNBREAKING))) {
 			ItemStack repaired = ItemStack.EMPTY;
-			this.output.setStack(0, repaired);
-			this.sendContentUpdates();
+			this.resultSlots.setItem(0, repaired);
+			this.broadcastChanges();
 		}
 		if (!(leftStack.getItem() instanceof BaseGunItem)
-				&& (EnchantmentHelper.getLevel(ArachnidsMod.FLAREATTACHMENT, rightStack) > 0
-						|| EnchantmentHelper.getLevel(ArachnidsMod.GRENADEATTACHMENT, rightStack) > 0
-						|| EnchantmentHelper.getLevel(ArachnidsMod.SNIPERATTACHMENT, rightStack) > 0
-						|| EnchantmentHelper.get(rightStack).containsKey(ArachnidsMod.FLAREATTACHMENT)
-						|| EnchantmentHelper.get(rightStack).containsKey(ArachnidsMod.GRENADEATTACHMENT)
-						|| EnchantmentHelper.get(rightStack).containsKey(ArachnidsMod.SNIPERATTACHMENT))) {
+				&& (EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, rightStack) > 0
+						|| EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.GRENADEATTACHMENT, rightStack) > 0
+						|| EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.SNIPERATTACHMENT, rightStack) > 0
+						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.FLAREATTACHMENT)
+						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.GRENADEATTACHMENT)
+						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.SNIPERATTACHMENT))) {
 			ItemStack repaired = ItemStack.EMPTY;
-			this.output.setStack(0, repaired);
-			this.sendContentUpdates();
+			this.resultSlots.setItem(0, repaired);
+			this.broadcastChanges();
 		}
 	}
 }

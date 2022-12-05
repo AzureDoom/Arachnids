@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "arachnids:items/m55_rocket_launcher",
-		"particle": "arachnids:items/m55_rocket_launcher"
+		"0": "arachnids:item/m55_rocket_launcher",
+		"particle": "arachnids:item/m55_rocket_launcher"
 	},
 	"elements": [
 		{

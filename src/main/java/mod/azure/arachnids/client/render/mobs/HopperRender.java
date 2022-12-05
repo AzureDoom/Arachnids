@@ -1,27 +1,20 @@
 package mod.azure.arachnids.client.render.mobs;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mod.azure.arachnids.client.models.mobs.HopperModel;
 import mod.azure.arachnids.entity.bugs.HopperEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class HopperRender extends GeoEntityRenderer<HopperEntity> {
 
-	public HopperRender(EntityRendererFactory.Context renderManagerIn) {
+	public HopperRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn, new HopperModel());
 		this.shadowRadius = 1.5F;
-	}
-
-	@Override
-	public RenderLayer getRenderType(HopperEntity animatable, float partialTicks, MatrixStack stack,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			Identifier textureLocation) {
-		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}
 
 	@Override
@@ -30,17 +23,17 @@ public class HopperRender extends GeoEntityRenderer<HopperEntity> {
 	}
 
 	@Override
-	protected boolean hasLabel(HopperEntity entity) {
+	public boolean shouldShowName(HopperEntity entity) {
 		return false;
 	}
-
+	
 	@Override
-	public void renderEarly(HopperEntity animatable, MatrixStack stackIn, float ticks,
-			VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn,
-			int packedOverlayIn, float red, float green, float blue, float partialTicks) {
-		super.renderEarly(animatable, stackIn, ticks, renderTypeBuffer, vertexBuilder, packedLightIn, packedOverlayIn,
-				red, green, blue, partialTicks);
-		stackIn.scale(1.25F, 1.25F, 1.25F);
+	public void preRender(PoseStack poseStack, HopperEntity animatable, BakedGeoModel model,
+			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
+			int packedOverlay, float red, float green, float blue, float alpha) {
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight, packedOverlay, red, green,
+				blue, alpha);
+		poseStack.scale(1.25F, 1.25F, 1.25F);
 	}
 
 }

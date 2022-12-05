@@ -1,51 +1,51 @@
 {
 	"variants": {
-		"level=0": {
+		"age=0": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=1": {
+		"age=1": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=2": {
+		"age=2": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=3": {
+		"age=3": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=4": {
+		"age=4": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=5": {
+		"age=5": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=6": {
+		"age=6": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=7": {
+		"age=7": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=8": {
+		"age=8": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=9": {
+		"age=9": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=10": {
+		"age=10": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=11": {
+		"age=11": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=12": {
+		"age=12": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=13": {
+		"age=13": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=14": {
+		"age=14": {
 			"model": "arachnids:block/lightblock"
 		},
-		"level=15": {
+		"age=15": {
 			"model": "arachnids:block/lightblock"
 		}
 	}

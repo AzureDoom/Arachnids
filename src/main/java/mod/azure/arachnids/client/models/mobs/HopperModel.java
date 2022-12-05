@@ -2,24 +2,30 @@ package mod.azure.arachnids.client.models.mobs;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.HopperEntity;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class HopperModel extends AnimatedTickingGeoModel<HopperEntity> {
+public class HopperModel extends GeoModel<HopperEntity> {
 
 	@Override
-	public Identifier getAnimationResource(HopperEntity animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/hopper.animation.json");
+	public ResourceLocation getAnimationResource(HopperEntity animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/hopper.animation.json");
 	}
 
 	@Override
-	public Identifier getModelResource(HopperEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/hopper.geo.json");
+	public ResourceLocation getModelResource(HopperEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/hopper.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(HopperEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/entity/hopper_" + object.getVariant() + ".png");
+	public ResourceLocation getTextureResource(HopperEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/entity/hopper_" + object.getVariant() + ".png");
+	}
+
+	@Override
+	public RenderType getRenderType(HopperEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }

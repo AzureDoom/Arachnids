@@ -793,7 +793,7 @@
 				},
 				"lAntenna3": {
 					"rotation": {
-						"vector": ["-50+math.sin(query.anim_time*180*4)*4;", 0, "+math.cos(query.anim_time*180*4)*10;"]
+						"vector": ["-50+math.sin(query.anim_time*180*4)*4;", 0, "math.cos(query.anim_time*180*4)*10;"]
 					}
 				},
 				"rAntenna2": {
@@ -945,7 +945,7 @@
 				},
 				"rWing1": {
 					"rotation": {
-						"vector": ["-15+math.sin(query.anim_time*180*2*temp.sp)*4;", 0, "+math.cos(query.anim_time*180*2*temp.sp)*4;"]
+						"vector": ["-15+math.sin(query.anim_time*180*2*temp.sp)*4;", 0, "math.cos(query.anim_time*180*2*temp.sp)*4;"]
 					}
 				},
 				"lShell": {

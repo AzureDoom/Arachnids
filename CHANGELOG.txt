@@ -1,5 +1,5 @@
-v.0.0.12
+v.0.0.13
 
-- Updated for latest Geckolib methods
+- Slight tweak for some Geckolib stuff.
 
 - This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.

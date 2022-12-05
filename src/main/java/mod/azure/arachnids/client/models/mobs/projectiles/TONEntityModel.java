@@ -2,22 +2,28 @@ package mod.azure.arachnids.client.models.mobs.projectiles;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.projectiles.TacticalOxygenNukeEntity;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class TONEntityModel extends AnimatedGeoModel<TacticalOxygenNukeEntity> {
+public class TONEntityModel extends GeoModel<TacticalOxygenNukeEntity> {
 	@Override
-	public Identifier getModelResource(TacticalOxygenNukeEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/ton.geo.json");
+	public ResourceLocation getModelResource(TacticalOxygenNukeEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/ton.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(TacticalOxygenNukeEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/items/tactical_oxygen_nuke.png");
+	public ResourceLocation getTextureResource(TacticalOxygenNukeEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/item/tactical_oxygen_nuke.png");
 	}
 
 	@Override
-	public Identifier getAnimationResource(TacticalOxygenNukeEntity animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/ton.animation.json");
+	public ResourceLocation getAnimationResource(TacticalOxygenNukeEntity animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/ton.animation.json");
+	}
+
+	@Override
+	public RenderType getRenderType(TacticalOxygenNukeEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 }

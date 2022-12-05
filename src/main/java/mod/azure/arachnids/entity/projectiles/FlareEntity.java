@@ -5,155 +5,155 @@ import org.jetbrains.annotations.Nullable;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsParticles;
-import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 
-public class FlareEntity extends PersistentProjectileEntity {
+public class FlareEntity extends AbstractArrow {
 
 	public int life;
 	protected int timeInAir;
 	protected boolean inAir;
 	protected String type;
-	private int ticksInAir;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
+	private static final EntityDataAccessor<Boolean> PATHING = SynchedEntityData.defineId(FlareEntity.class,
+			EntityDataSerializers.BOOLEAN);
 
-	private static final TrackedData<Boolean> PATHING = DataTracker.registerData(FlareEntity.class,
-			TrackedDataHandlerRegistry.BOOLEAN);
-
-	public FlareEntity(World world, double x, double y, double z, ItemStack stack) {
+	public FlareEntity(Level world, double x, double y, double z, ItemStack stack) {
 		super(ProjectilesEntityRegister.FLARE, world);
-		this.updatePosition(x, y, z);
+		this.absMoveTo(x, y, z);
 	}
 
-	public FlareEntity(EntityType<? extends FlareEntity> entityType, World world) {
+	public FlareEntity(EntityType<? extends FlareEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	public FlareEntity(World world, @Nullable Entity entity, double x, double y, double z, ItemStack stack) {
+	public FlareEntity(Level world, @Nullable Entity entity, double x, double y, double z, ItemStack stack) {
 		this(world, x, y, z, stack);
 		this.setOwner(entity);
 	}
 
-	public FlareEntity(World world, ItemStack stack, LivingEntity shooter) {
+	public FlareEntity(Level world, ItemStack stack, LivingEntity shooter) {
 		this(world, shooter, shooter.getX(), shooter.getY(), shooter.getZ(), stack);
 	}
 
-	public FlareEntity(World world, ItemStack stack, double x, double y, double z, boolean shotAtAngle) {
+	public FlareEntity(Level world, ItemStack stack, double x, double y, double z, boolean shotAtAngle) {
 		this(world, x, y, z, stack);
 	}
 
-	public FlareEntity(World world, ItemStack stack, Entity entity, double x, double y, double z, boolean shotAtAngle) {
+	public FlareEntity(Level world, ItemStack stack, Entity entity, double x, double y, double z, boolean shotAtAngle) {
 		this(world, stack, x, y, z, shotAtAngle);
 		this.setOwner(entity);
 	}
 
-	public FlareEntity(World world, ItemStack stack, LivingEntity user, boolean firingmethod) {
+	public FlareEntity(Level world, ItemStack stack, LivingEntity user, boolean firingmethod) {
 		super(ProjectilesEntityRegister.FLARE, user, world);
-		this.dataTracker.set(PATHING, firingmethod);
+		this.entityData.set(PATHING, firingmethod);
 	}
 
 	@Override
-	public void setVelocity(double x, double y, double z, float speed, float divergence) {
-		super.setVelocity(x, y, z, speed, divergence);
-		this.ticksInAir = 0;
+	public void shoot(double x, double y, double z, float speed, float divergence) {
+		super.shoot(x, y, z, speed, divergence);
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putShort("life", (short) this.ticksInAir);
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putBoolean("isGunFired", isGunFired());
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
-		this.ticksInAir = tag.getShort("life");
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		if (compound.contains("isGunFired")) {
+			setFireMethod(compound.getBoolean("isGunFired"));
+		}
 	}
 
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(PATHING, false);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(PATHING, false);
 	}
 
 	public boolean isGunFired() {
-		return (Boolean) this.dataTracker.get(PATHING);
+		return (Boolean) this.entityData.get(PATHING);
 	}
 
 	public void setFireMethod(boolean spin) {
-		this.dataTracker.set(PATHING, spin);
+		this.entityData.set(PATHING, spin);
 	}
 
 	@Override
 	public void tick() {
 		int idleOpt = 100;
-		if (getVelocity().lengthSquared() < 0.01)
+		if (getDeltaMovement().lengthSqr() < 0.01)
 			idleTicks++;
 		else
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
-		if (this.age >= 800) {
+		if (this.tickCount >= 800) {
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
 		setNoGravity(false);
 		++this.life;
-		if (this.world.isClient) {
-			this.world.addParticle(ArachnidsParticles.FLARE, true, this.getX(), this.getY() - 0.3D, this.getZ(),
-					this.random.nextGaussian() * 0.05D, -this.getVelocity().y * 0.07D,
+		if (this.level.isClientSide()) {
+			this.level.addParticle(ArachnidsParticles.FLARE, true, this.getX(), this.getY() - 0.3D, this.getZ(),
+					this.random.nextGaussian() * 0.05D, -this.getDeltaMovement().y * 0.07D,
 					this.random.nextGaussian() * 0.05D);
 		}
-		boolean isInsideWaterBlock = world.isWater(getBlockPos());
+		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
 	}
 
 	@Override
-	public void handleStatus(byte status) {
-		super.handleStatus(status);
+	public void handleEntityEvent(byte status) {
+		super.handleEntityEvent(status);
 	}
 
-	public SoundEvent hitSound = this.getHitSound();
+	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
 	@Override
-	public void setSound(SoundEvent soundIn) {
+	public void setSoundEvent(SoundEvent soundIn) {
 		this.hitSound = soundIn;
 	}
 
 	@Override
-	protected SoundEvent getHitSound() {
+	protected SoundEvent getDefaultHitGroundSoundEvent() {
 		return ArachnidsSounds.FLAREGUN;
 	}
 
 	@Override
-	protected void onBlockHit(BlockHitResult blockHitResult) {
-		super.onBlockHit(blockHitResult);
+	protected void onHitBlock(BlockHitResult blockHitResult) {
+		super.onHitBlock(blockHitResult);
 	}
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		this.setSound(ArachnidsSounds.FLAREGUN);
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		this.setSoundEvent(ArachnidsSounds.FLAREGUN);
 		this.setSilent(true);
 	}
 
@@ -163,34 +163,34 @@ public class FlareEntity extends PersistentProjectileEntity {
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return new ClientboundAddEntityPacket(this);
 	}
 
 	@Override
-	protected ItemStack asItemStack() {
+	protected ItemStack getPickupItem() {
 		return new ItemStack(ArachnidsItems.FLARE);
 	}
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
+	public boolean shouldRenderAtSqrDistance(double distance) {
 		return true;
 	}
 
 	@Override
-	protected boolean tryPickup(PlayerEntity player) {
+	protected boolean tryPickup(Player player) {
 		return false;
 	}
 
 	private void spawnLightSource(boolean isInWaterBlock) {
 		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(world, getBlockPos(), 2);
+			lightBlockPos = findFreeSpace(level, blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			world.setBlockState(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.getDefaultState());
-		} else if (checkDistance(lightBlockPos, getBlockPos(), 2)) {
-			BlockEntity blockEntity = world.getBlockEntity(lightBlockPos);
+			level.setBlockAndUpdate(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
+			BlockEntity blockEntity = level.getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity) {
 				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
 			} else
@@ -205,7 +205,7 @@ public class FlareEntity extends PersistentProjectileEntity {
 				&& Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
 	}
 
-	private BlockPos findFreeSpace(World world, BlockPos blockPos, int maxDistance) {
+	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
 		if (blockPos == null)
 			return null;
 
@@ -218,7 +218,7 @@ public class FlareEntity extends PersistentProjectileEntity {
 		for (int x : offsets)
 			for (int y : offsets)
 				for (int z : offsets) {
-					BlockPos offsetPos = blockPos.add(x, y, z);
+					BlockPos offsetPos = blockPos.offset(x, y, z);
 					BlockState state = world.getBlockState(offsetPos);
 					if (state.isAir() || state.getBlock().equals(ArachnidsMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;

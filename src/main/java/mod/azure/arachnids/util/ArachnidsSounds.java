@@ -1,9 +1,10 @@
 package mod.azure.arachnids.util;
 
 import mod.azure.arachnids.ArachnidsMod;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 public class ArachnidsSounds {
 
@@ -60,8 +61,8 @@ public class ArachnidsSounds {
 	public static SoundEvent WORKER_IDLE = of("arachnids.worker_idle");
 
 	static SoundEvent of(String id) {
-		SoundEvent sound = new SoundEvent(new Identifier(ArachnidsMod.MODID, id));
-		Registry.register(Registry.SOUND_EVENT, new Identifier(ArachnidsMod.MODID, id), sound);
+		SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(ArachnidsMod.MODID, id));
+		Registry.register(BuiltInRegistries.SOUND_EVENT, new ResourceLocation(ArachnidsMod.MODID, id), sound);
 		return sound;
 	}
 }

@@ -2,25 +2,31 @@ package mod.azure.arachnids.client.models.mobs;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.PlasmaEntity;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class PlasmaModel extends AnimatedTickingGeoModel<PlasmaEntity> {
+public class PlasmaModel extends GeoModel<PlasmaEntity> {
 
 	@Override
-	public Identifier getAnimationResource(PlasmaEntity animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/plasma.animation.json");
+	public ResourceLocation getAnimationResource(PlasmaEntity animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/plasma.animation.json");
 	}
 
 	@Override
-	public Identifier getModelResource(PlasmaEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/plasma.geo.json");
+	public ResourceLocation getModelResource(PlasmaEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/plasma.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(PlasmaEntity object) {
-		return new Identifier(ArachnidsMod.MODID,
+	public ResourceLocation getTextureResource(PlasmaEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID,
 				"textures/entity/" + (object.getAttckingState() == 1 ? "plasma_glow" : "plasma") + ".png");
+	}
+
+	@Override
+	public RenderType getRenderType(PlasmaEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }

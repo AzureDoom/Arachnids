@@ -10,11 +10,12 @@ import mod.azure.arachnids.items.ammo.TONItem;
 import mod.azure.arachnids.items.weapons.M55Item;
 import mod.azure.arachnids.items.weapons.MAR1Item;
 import mod.azure.arachnids.items.weapons.MAR2Item;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 
 public class ArachnidsItems {
 
@@ -52,7 +53,7 @@ public class ArachnidsItems {
 	public static final Item MI_BOOTS = item(new MIArmorItem(EquipmentSlot.FEET), "miarmor_boots");
 
 	static <T extends Item> T item(T c, String id) {
-		Registry.register(Registry.ITEM, new Identifier(ArachnidsMod.MODID, id), c);
+		Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(ArachnidsMod.MODID, id), c);
 		return c;
 	}
 }

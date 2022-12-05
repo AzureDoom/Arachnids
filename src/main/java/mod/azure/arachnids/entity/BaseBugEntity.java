@@ -1,111 +1,102 @@
 package mod.azure.arachnids.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.SpiderNavigation;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
+import mod.azure.arachnids.entity.pathing.CrawlerNavigation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatable, IAnimationTickable {
+public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 
-	public static final TrackedData<Integer> STATE = DataTracker.registerData(BaseBugEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	public static final TrackedData<Integer> MOVING = DataTracker.registerData(BaseBugEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(BaseBugEntity.class,
-			TrackedDataHandlerRegistry.INTEGER);
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+	public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(BaseBugEntity.class,
+			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> MOVING = SynchedEntityData.defineId(BaseBugEntity.class,
+			EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(BaseBugEntity.class,
+			EntityDataSerializers.INT);
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public BaseBugEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
+	public BaseBugEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
 		super(entityType, world);
-		this.ignoreCameraFrustum = true;
-		stepHeight = 1.5f;
-	}
-
-	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		return PlayState.CONTINUE;
+		maxUpStep = 1.5f;
 	}
 
 	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(
-				new AnimationController<BaseBugEntity>(this, "idle_controller", 3, this::predicate));
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
-	public static boolean canSpawn(EntityType<? extends PathAwareEntity> type, ServerWorldAccess world, SpawnReason reason,
-			BlockPos pos, Random random) {
+	public static boolean canSpawn(EntityType<? extends PathfinderMob> type, ServerLevelAccessor world,
+			MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (world.getDifficulty() == Difficulty.PEACEFUL)
 			return false;
-		if ((reason != SpawnReason.CHUNK_GENERATION && reason != SpawnReason.NATURAL))
-			return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS);
-		return !world.getBlockState(pos.down()).isIn(BlockTags.LOGS);
+		if ((reason != MobSpawnType.CHUNK_GENERATION && reason != MobSpawnType.NATURAL))
+			return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
+		return !world.getBlockState(pos.below()).is(BlockTags.LOGS);
 	}
 
 	public int getAttckingState() {
-		return this.dataTracker.get(STATE);
+		return this.entityData.get(STATE);
 	}
 
 	public void setAttackingState(int time) {
-		this.dataTracker.set(STATE, time);
+		this.entityData.set(STATE, time);
 	}
 
 	public int getMovingState() {
-		return this.dataTracker.get(MOVING);
+		return this.entityData.get(MOVING);
 	}
 
 	public void setMovingState(int time) {
-		this.dataTracker.set(MOVING, time);
+		this.entityData.set(MOVING, time);
 	}
 
 	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(VARIANT, 0);
-		this.dataTracker.startTracking(STATE, 0);
-		this.dataTracker.startTracking(MOVING, 0);
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(VARIANT, 0);
+		this.entityData.define(STATE, 0);
+		this.entityData.define(MOVING, 0);
 	}
 
 	@Override
-	protected void updatePostDeath() {
+	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 25) {
 			this.remove(Entity.RemovalReason.KILLED);
@@ -113,35 +104,35 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	}
 
 	@Override
-	public EntityData initialize(ServerWorldAccess serverWorldAccess, LocalDifficulty difficulty,
-			SpawnReason spawnReason, EntityData entityData, NbtCompound entityTag) {
-		entityData = super.initialize(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverWorldAccess, DifficultyInstance difficulty,
+			MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityTag) {
+		entityData = super.finalizeSpawn(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
 		this.setVariant(this.random.nextInt());
 		return entityData;
 	}
 
 	@Override
-	protected boolean isDisallowedInPeaceful() {
+	protected boolean shouldDespawnInPeaceful() {
 		return true;
 	}
 
 	@Override
-	public void readCustomDataFromNbt(NbtCompound tag) {
-		super.readCustomDataFromNbt(tag);
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
 		this.setVariant(tag.getInt("Variant"));
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
 	}
 
 	public void setVariant(int variant) {
-		this.dataTracker.set(VARIANT, variant);
+		this.entityData.set(VARIANT, variant);
 	}
 
 	@Override
-	public boolean doesRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
@@ -151,12 +142,12 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 	}
 
 	@Override
-	protected void tickCramming() {
+	protected void pushEntities() {
 	}
 
 	@Override
-	public EntityGroup getGroup() {
-		return EntityGroup.ARTHROPOD;
+	public MobType getMobType() {
+		return MobType.ARTHROPOD;
 	}
 
 	@Override
@@ -164,129 +155,118 @@ public abstract class BaseBugEntity extends PathAwareEntity implements IAnimatab
 		return 0.5F;
 	}
 
-	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRender(double distance) {
-		return true;
-	}
-
 	public boolean tryLightAttack(Entity target) {
-		float f = (float) this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-		float g = (float) this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK);
+		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+		float g = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
 		if (target instanceof LivingEntity) {
-			f += EnchantmentHelper.getAttackDamage(this.getMainHandStack(), ((LivingEntity) target).getGroup());
-			g += (float) EnchantmentHelper.getKnockback(this);
+			f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) target).getMobType());
+			g += (float) EnchantmentHelper.getKnockbackBonus(this);
 		}
 		int i = EnchantmentHelper.getFireAspect(this);
 		if (i > 0) {
-			target.setOnFireFor(i * 4);
+			target.setSecondsOnFire(i * 4);
 		}
-		boolean bl = target.damage(DamageSource.mob(this), f - 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this), f - 4);
 		if (bl) {
 			if (g > 0.0F && target instanceof LivingEntity) {
-				((LivingEntity) target).takeKnockback((double) (g * 0.5F),
-						(double) MathHelper.sin(this.getYaw() * 0.017453292F),
-						(double) (-MathHelper.cos(this.getYaw() * 0.017453292F)));
-				this.setVelocity(this.getVelocity().multiply(0.6D, 1.0D, 0.6D));
+				((LivingEntity) target).knockback((double) (g * 0.5F),
+						(double) Math.sin(this.getYRot() * 0.017453292F),
+						(double) (-Math.cos(this.getYRot() * 0.017453292F)));
+				this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
 			}
-			if (target instanceof PlayerEntity) {
-				PlayerEntity playerEntity = (PlayerEntity) target;
-				this.disablePlayerShield(playerEntity, this.getMainHandStack(),
-						playerEntity.isUsingItem() ? playerEntity.getActiveItem() : ItemStack.EMPTY);
+			if (target instanceof Player) {
+				Player playerEntity = (Player) target;
+				this.disablePlayerShield(playerEntity, this.getMainHandItem(),
+						playerEntity.isUsingItem() ? playerEntity.getUseItem() : ItemStack.EMPTY);
 			}
-			this.applyDamageEffects(this, target);
-			this.onAttacking(target);
+			this.doEnchantDamageEffects(this, target);
+			this.setLastHurtMob(target);
 		}
 		return bl;
 	}
 
 	@Override
-	public boolean tryAttack(Entity target) {
-		float f = (float) this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-		float g = (float) this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK);
+	public boolean doHurtTarget(Entity target) {
+		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+		float g = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
 		if (target instanceof LivingEntity) {
-			f += EnchantmentHelper.getAttackDamage(this.getMainHandStack(), ((LivingEntity) target).getGroup());
-			g += (float) EnchantmentHelper.getKnockback(this);
+			f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) target).getMobType());
+			g += (float) EnchantmentHelper.getKnockbackBonus(this);
 		}
 		int i = EnchantmentHelper.getFireAspect(this);
 		if (i > 0) {
-			target.setOnFireFor(i * 4);
+			target.setSecondsOnFire(i * 4);
 		}
-		boolean bl = target.damage(DamageSource.mob(this), f);
+		boolean bl = target.hurt(DamageSource.mobAttack(this), f);
 		if (bl) {
 			if (g > 0.0F && target instanceof LivingEntity) {
-				((LivingEntity) target).takeKnockback((double) (g * 0.5F),
-						(double) MathHelper.sin(this.getYaw() * 0.017453292F),
-						(double) (-MathHelper.cos(this.getYaw() * 0.017453292F)));
-				this.setVelocity(this.getVelocity().multiply(0.6D, 1.0D, 0.6D));
+				((LivingEntity) target).knockback((double) (g * 0.5F),
+						(double) Math.sin(this.getYRot() * 0.017453292F),
+						(double) (-Math.cos(this.getYRot() * 0.017453292F)));
+				this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
 			}
-			if (target instanceof PlayerEntity) {
-				PlayerEntity playerEntity = (PlayerEntity) target;
-				this.disablePlayerShield(playerEntity, this.getMainHandStack(),
-						playerEntity.isUsingItem() ? playerEntity.getActiveItem() : ItemStack.EMPTY);
+			if (target instanceof Player) {
+				Player playerEntity = (Player) target;
+				this.disablePlayerShield(playerEntity, this.getMainHandItem(),
+						playerEntity.isUsingItem() ? playerEntity.getUseItem() : ItemStack.EMPTY);
 			}
-			this.applyDamageEffects(this, target);
-			this.onAttacking(target);
+			this.doEnchantDamageEffects(this, target);
+			this.setLastHurtMob(target);
 		}
 		return bl;
 	}
 
 	public boolean tryHeavyAttack(Entity target) {
-		float f = (float) this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-		float g = (float) this.getAttributeValue(EntityAttributes.GENERIC_ATTACK_KNOCKBACK);
+		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+		float g = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
 		if (target instanceof LivingEntity) {
-			f += EnchantmentHelper.getAttackDamage(this.getMainHandStack(), ((LivingEntity) target).getGroup());
-			g += (float) EnchantmentHelper.getKnockback(this);
+			f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) target).getMobType());
+			g += (float) EnchantmentHelper.getKnockbackBonus(this);
 		}
 		int i = EnchantmentHelper.getFireAspect(this);
 		if (i > 0) {
-			target.setOnFireFor(i * 4);
+			target.setSecondsOnFire(i * 4);
 		}
-		boolean bl = target.damage(DamageSource.mob(this), f + 4);
+		boolean bl = target.hurt(DamageSource.mobAttack(this), f + 4);
 		if (bl) {
 			if (g > 0.0F && target instanceof LivingEntity) {
-				((LivingEntity) target).takeKnockback((double) (g * 0.5F),
-						(double) MathHelper.sin(this.getYaw() * 0.017453292F),
-						(double) (-MathHelper.cos(this.getYaw() * 0.017453292F)));
-				this.setVelocity(this.getVelocity().multiply(0.6D, 1.0D, 0.6D));
+				((LivingEntity) target).knockback((double) (g * 0.5F),
+						(double) Math.sin(this.getYRot() * 0.017453292F),
+						(double) (-Math.cos(this.getYRot() * 0.017453292F)));
+				this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
 			}
-			if (target instanceof PlayerEntity) {
-				PlayerEntity playerEntity = (PlayerEntity) target;
-				this.disablePlayerShield(playerEntity, this.getMainHandStack(),
-						playerEntity.isUsingItem() ? playerEntity.getActiveItem() : ItemStack.EMPTY);
+			if (target instanceof Player) {
+				Player playerEntity = (Player) target;
+				this.disablePlayerShield(playerEntity, this.getMainHandItem(),
+						playerEntity.isUsingItem() ? playerEntity.getUseItem() : ItemStack.EMPTY);
 			}
-			this.applyDamageEffects(this, target);
-			this.onAttacking(target);
+			this.doEnchantDamageEffects(this, target);
+			this.setLastHurtMob(target);
 		}
 		return bl;
 	}
 
-	private void disablePlayerShield(PlayerEntity player, ItemStack mobStack, ItemStack playerStack) {
+	private void disablePlayerShield(Player player, ItemStack mobStack, ItemStack playerStack) {
 		if (!mobStack.isEmpty() && !playerStack.isEmpty() && mobStack.getItem() instanceof AxeItem
-				&& playerStack.isOf(Items.SHIELD)) {
-			float f = 0.25F + (float) EnchantmentHelper.getEfficiency(this) * 0.05F;
+				&& playerStack.is(Items.SHIELD)) {
+			float f = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
 			if (this.random.nextFloat() < f) {
-				player.getItemCooldownManager().set(Items.SHIELD, 100);
-				this.world.sendEntityStatus(player, (byte) 30);
+				player.getCooldowns().addCooldown(Items.SHIELD, 100);
+				this.level.broadcastEntityEvent(player, (byte) 30);
 			}
 		}
 	}
 
 	@Override
-	public int tickTimer() {
-		return age;
-	}
-
-	@Override
-	protected EntityNavigation createNavigation(World world) {
-		return new SpiderNavigation(this, world);
+	protected PathNavigation createNavigation(Level world) {
+		return new CrawlerNavigation(this, world);
 	}
 
 	@Override
 	public void playAmbientSound() {
 		SoundEvent soundEvent = this.getAmbientSound();
 		if (soundEvent != null) {
-			this.playSound(soundEvent, 0.25F, this.getSoundPitch());
+			this.playSound(soundEvent, 0.25F, this.getVoicePitch());
 		}
 	}
 

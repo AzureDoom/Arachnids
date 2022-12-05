@@ -2,24 +2,30 @@ package mod.azure.arachnids.client.models.mobs;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.TankerEntity;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class TankerModel extends AnimatedTickingGeoModel<TankerEntity> {
+public class TankerModel extends GeoModel<TankerEntity> {
 
 	@Override
-	public Identifier getAnimationResource(TankerEntity animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/tanker.animation.json");
+	public ResourceLocation getAnimationResource(TankerEntity animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/tanker.animation.json");
 	}
 
 	@Override
-	public Identifier getModelResource(TankerEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/tanker.geo.json");
+	public ResourceLocation getModelResource(TankerEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/tanker.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(TankerEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/entity/tanker.png");
+	public ResourceLocation getTextureResource(TankerEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/entity/tanker.png");
+	}
+
+	@Override
+	public RenderType getRenderType(TankerEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }

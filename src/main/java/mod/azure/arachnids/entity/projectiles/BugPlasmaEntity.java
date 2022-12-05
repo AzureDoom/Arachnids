@@ -1,40 +1,36 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import mod.azure.arachnids.network.EntityPacket;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType.EDefaultLoopTypes;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class BugPlasmaEntity extends ExplosiveProjectileEntity implements IAnimatable {
+public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEntity {
 
 	public int explosionPower = 1;
 	protected int timeInAir;
 	protected boolean inAir;
-	private int ticksInAir;
 	private float directHitDamage = 0F;
 	private LivingEntity shooter;
 	private SoundEvent attacksound;
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public BugPlasmaEntity(EntityType<? extends BugPlasmaEntity> entity, World world) {
+	public BugPlasmaEntity(EntityType<? extends BugPlasmaEntity> entity, Level world) {
 		super(entity, world);
 	}
 
@@ -42,7 +38,7 @@ public class BugPlasmaEntity extends ExplosiveProjectileEntity implements IAnima
 		this.directHitDamage = directHitDamage;
 	}
 
-	public BugPlasmaEntity(World worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
+	public BugPlasmaEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
 			float directHitDamage, SoundEvent attacksound) {
 		super(ProjectilesEntityRegister.BUGPLASMA, shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
@@ -50,52 +46,40 @@ public class BugPlasmaEntity extends ExplosiveProjectileEntity implements IAnima
 		this.directHitDamage = directHitDamage;
 	}
 
-	private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", EDefaultLoopTypes.LOOP));
-		return PlayState.CONTINUE;
-	}
-
-	@Override
-	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<BugPlasmaEntity>(this, "controller", 0, this::predicate));
-	}
-
-	@Override
-	public AnimationFactory getFactory() {
-		return this.factory;
-	}
-
-	public BugPlasmaEntity(World worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
+	public BugPlasmaEntity(Level worldIn, double x, double y, double z, double accelX, double accelY, double accelZ) {
 		super(ProjectilesEntityRegister.BUGPLASMA, x, y, z, accelX, accelY, accelZ, worldIn);
 	}
 
 	@Override
-	public void setVelocity(double x, double y, double z, float speed, float divergence) {
-		super.setVelocity(x, y, z, speed, divergence);
-		this.ticksInAir = 0;
+	public void registerControllers(AnimatableManager<?> manager) {
+		manager.addController(new AnimationController<>(this, event -> {
+			return PlayState.CONTINUE;
+		}));
 	}
 
 	@Override
-	public void writeCustomDataToNbt(NbtCompound tag) {
-		super.writeCustomDataToNbt(tag);
-		tag.putShort("life", (short) this.ticksInAir);
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return this.cache;
 	}
 
 	@Override
-	protected boolean isBurning() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return new ClientboundAddEntityPacket(this);
+	}
+
+	@Override
+	public void shoot(double x, double y, double z, float speed, float divergence) {
+		super.shoot(x, y, z, speed, divergence);
+	}
+
+	@Override
+	protected boolean shouldBurn() {
 		return false;
 	}
 
 	@Override
-	public Packet<?> createSpawnPacket() {
-		return EntityPacket.createPacket(this);
-	}
-
-	@Override
-	public boolean hasNoGravity() {
-		if (this.isSubmergedInWater()) {
+	public boolean isNoGravity() {
+		if (this.isInWater()) {
 			return false;
 		} else {
 			return true;
@@ -103,9 +87,9 @@ public class BugPlasmaEntity extends ExplosiveProjectileEntity implements IAnima
 	}
 
 	@Override
-	protected void onCollision(HitResult result) {
-		super.onCollision(result);
-		if (!this.world.isClient) {
+	protected void onHit(HitResult result) {
+		super.onHit(result);
+		if (!this.level.isClientSide()) {
 			this.explode();
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -114,22 +98,22 @@ public class BugPlasmaEntity extends ExplosiveProjectileEntity implements IAnima
 	}
 
 	@Override
-	protected void onEntityHit(EntityHitResult entityHitResult) {
-		super.onEntityHit(entityHitResult);
-		if (!this.world.isClient) {
+	protected void onHitEntity(EntityHitResult entityHitResult) {
+		super.onHitEntity(entityHitResult);
+		if (!this.level.isClientSide()) {
 			Entity entity = entityHitResult.getEntity();
 			Entity entity2 = this.getOwner();
-			entity.damage(DamageSource.mob((LivingEntity) entity2), directHitDamage);
+			entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
 			if (entity2 instanceof LivingEntity) {
-				this.applyDamageEffects((LivingEntity) entity2, entity);
+				this.doEnchantDamageEffects((LivingEntity) entity2, entity);
 			}
 		}
 		this.playSound(this.attacksound, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void explode() {
-		this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 1.0F, false,
-				Explosion.DestructionType.NONE);
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false,
+				Level.ExplosionInteraction.NONE);
 	}
 
 	public LivingEntity getShooter() {
@@ -141,7 +125,7 @@ public class BugPlasmaEntity extends ExplosiveProjectileEntity implements IAnima
 	}
 	
 	@Override
-	public boolean doesRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 

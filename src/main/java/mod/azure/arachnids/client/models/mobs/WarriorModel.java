@@ -2,24 +2,30 @@ package mod.azure.arachnids.client.models.mobs;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.WarriorEntity;
-import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
-public class WarriorModel extends AnimatedTickingGeoModel<WarriorEntity> {
+public class WarriorModel extends GeoModel<WarriorEntity> {
 
 	@Override
-	public Identifier getAnimationResource(WarriorEntity animatable) {
-		return new Identifier(ArachnidsMod.MODID, "animations/warriorworker.animation.json");
+	public ResourceLocation getAnimationResource(WarriorEntity animatable) {
+		return new ResourceLocation(ArachnidsMod.MODID, "animations/warriorworker.animation.json");
 	}
 
 	@Override
-	public Identifier getModelResource(WarriorEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "geo/warriorworker.geo.json");
+	public ResourceLocation getModelResource(WarriorEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "geo/warriorworker.geo.json");
 	}
 
 	@Override
-	public Identifier getTextureResource(WarriorEntity object) {
-		return new Identifier(ArachnidsMod.MODID, "textures/entity/soldier_" + object.getVariant() + ".png");
+	public ResourceLocation getTextureResource(WarriorEntity object) {
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/entity/soldier_" + object.getVariant() + ".png");
+	}
+
+	@Override
+	public RenderType getRenderType(WarriorEntity animatable, ResourceLocation texture) {
+		return RenderType.entityTranslucent(getTextureResource(animatable));
 	}
 
 }
