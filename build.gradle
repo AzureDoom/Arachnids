@@ -40,7 +40,7 @@ dependencies {
 	//})
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
-    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3-rc2:4.0.0'
+    modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.0'
 	modImplementation ("com.terraformersmc:modmenu:5.0.0-alpha.4")
 }
 

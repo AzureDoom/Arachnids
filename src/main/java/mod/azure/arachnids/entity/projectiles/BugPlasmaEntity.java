@@ -15,7 +15,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -51,8 +51,8 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	}
 
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, event -> {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
 			return PlayState.CONTINUE;
 		}));
 	}

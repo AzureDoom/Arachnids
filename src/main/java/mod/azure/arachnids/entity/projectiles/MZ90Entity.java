@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
@@ -76,8 +76,8 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	}
 
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, event -> {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
 			if (!this.inGround && this.isSpinning())
 				event.getController().setAnimation(RawAnimation.begin().thenLoop("spin"));
 			else

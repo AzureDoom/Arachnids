@@ -27,7 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
@@ -43,8 +43,8 @@ public class WorkerEntity extends BaseBugEntity {
 	}
 
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, event -> {
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, event -> {
 			if (event.isMoving() && !this.isAggressive()) {
 				event.getController().setAnimation(RawAnimation.begin().thenLoop("moving"));
 				return PlayState.CONTINUE;

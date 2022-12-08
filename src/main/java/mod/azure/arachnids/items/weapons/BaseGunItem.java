@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.Animation.LoopType;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
@@ -50,8 +50,8 @@ public abstract class BaseGunItem extends Item implements GeoItem {
 
 	// Register our animation controllers
 	@Override
-	public void registerControllers(AnimatableManager<?> manager) {
-		manager.addController(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE)
+	public void registerControllers(ControllerRegistrar controllers) {
+		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE)
 				.triggerableAnim("firing", RawAnimation.begin().then("firing", LoopType.PLAY_ONCE)));
 	}
 
