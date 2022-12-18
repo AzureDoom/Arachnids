@@ -30,7 +30,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class HopperEntity extends BaseBugEntity {
@@ -46,16 +45,11 @@ public class HopperEntity extends BaseBugEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(MOVING) == 1) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("flying"));
-				return PlayState.CONTINUE;
-			}
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-				event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("death"));
-				return PlayState.CONTINUE;
-			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-			return PlayState.CONTINUE;
+			if (this.entityData.get(MOVING) == 1)
+				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
 	}
 
@@ -86,7 +80,8 @@ public class HopperEntity extends BaseBugEntity {
 	}
 
 	@Override
-	protected void checkFallDamage(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+	protected void checkFallDamage(double heightDifference, boolean onGround, BlockState landedState,
+			BlockPos landedPosition) {
 	}
 
 	public boolean isInAir() {
@@ -96,8 +91,7 @@ public class HopperEntity extends BaseBugEntity {
 	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, ArachnidsConfig.hopper_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.hopper_melee)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D)
+				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.hopper_melee).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D)
 				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 2.0D)
 				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}

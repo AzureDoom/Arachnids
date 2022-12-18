@@ -21,7 +21,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class ArkellianEntity extends BaseBugEntity {
@@ -36,16 +35,11 @@ public class ArkellianEntity extends BaseBugEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (event.isMoving()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("moving"));
-				return PlayState.CONTINUE;
-			}
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-				event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("death"));
-				return PlayState.CONTINUE;
-			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-			return PlayState.CONTINUE;
+			if (event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
 	}
 

@@ -21,14 +21,16 @@ public class WorkerRender extends GeoEntityRenderer<WorkerEntity> {
 	protected float getDeathMaxRotation(WorkerEntity entityLivingBaseIn) {
 		return 0.0F;
 	}
-	
+
 	@Override
 	public void preRender(PoseStack poseStack, WorkerEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
-			int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight, packedOverlay, red, green,
-				blue, alpha);
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		poseStack.pushPose();
 		poseStack.scale(1.25F, 1.25F, 1.25F);
+		poseStack.popPose();
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

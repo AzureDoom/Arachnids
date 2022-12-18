@@ -30,7 +30,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity {
@@ -81,10 +80,9 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
 			if (!this.inGround && this.isSpinning())
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("spin"));
+				return event.setAndContinue(RawAnimation.begin().thenLoop("spin"));
 			else
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("bullet"));
-			return PlayState.CONTINUE;
+				return event.setAndContinue(RawAnimation.begin().thenLoop("bullet"));
 		}));
 	}
 

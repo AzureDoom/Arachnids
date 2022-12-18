@@ -30,7 +30,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class MZ90Entity extends AbstractArrow implements GeoEntity {
@@ -79,10 +78,9 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
 			if (!this.inGround && this.isSpinning())
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("spin"));
+				return event.setAndContinue(RawAnimation.begin().thenLoop("spin"));
 			else
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("bullet"));
-			return PlayState.CONTINUE;
+				return event.setAndContinue(RawAnimation.begin().thenLoop("bullet"));
 		}));
 	}
 
@@ -98,8 +96,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
-				this.getZ());
+		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 		areaeffectcloudentity.setRadius(ArachnidsConfig.MZ90_explode_damage + 2);
 		areaeffectcloudentity.setDuration(1);
@@ -192,8 +189,8 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(),
-				ArachnidsConfig.MZ90_explode_damage, (ArachnidsConfig.cause_fire ? true : false),
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.MZ90_explode_damage,
+				(ArachnidsConfig.cause_fire ? true : false),
 				(ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 

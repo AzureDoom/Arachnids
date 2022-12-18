@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
 public class BulletRender extends GeoEntityRenderer<BulletEntity> {
 
@@ -21,15 +22,15 @@ public class BulletRender extends GeoEntityRenderer<BulletEntity> {
 	protected int getBlockLightLevel(BulletEntity entityIn, BlockPos partialTicks) {
 		return 15;
 	}
-	
+
 	@Override
 	public void preRender(PoseStack poseStack, BulletEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
-			int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight, packedOverlay, red, green,
-				blue, alpha);
-		poseStack.scale(animatable.tickCount > 2 ? 0.5F : 0.0F, animatable.tickCount > 2 ? 0.5F : 0.0F,
-				animatable.tickCount > 2 ? 0.5F : 0.0F);
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		poseStack.scale(0.0F, 0.0F, 0.0F);
+		RenderUtils.faceRotation(poseStack, animatable, partialTick);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

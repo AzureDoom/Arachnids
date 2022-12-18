@@ -16,7 +16,7 @@ public class WarriorRender extends GeoEntityRenderer<WarriorEntity> {
 		super(renderManagerIn, new WarriorModel());
 		this.shadowRadius = 1.5F;
 	}
-	
+
 	@Override
 	protected float getDeathMaxRotation(WarriorEntity entityLivingBaseIn) {
 		return 0.0F;
@@ -26,14 +26,16 @@ public class WarriorRender extends GeoEntityRenderer<WarriorEntity> {
 	public boolean shouldShowName(WarriorEntity entity) {
 		return false;
 	}
-	
+
 	@Override
 	public void preRender(PoseStack poseStack, WarriorEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
-			int packedOverlay, float red, float green, float blue, float alpha) {
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight, packedOverlay, red, green,
-				blue, alpha);
+			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		poseStack.pushPose();
 		poseStack.scale(1.25F, 1.25F, 1.25F);
+		poseStack.popPose();
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight,
+				packedOverlay, red, green, blue, alpha);
 	}
 
 }

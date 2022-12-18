@@ -48,7 +48,6 @@ public abstract class BaseGunItem extends Item implements GeoItem {
 		super(properties);
 	}
 
-	// Register our animation controllers
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE)

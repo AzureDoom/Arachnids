@@ -30,7 +30,6 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class WorkerEntity extends BaseBugEntity {
@@ -45,24 +44,15 @@ public class WorkerEntity extends BaseBugEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (event.isMoving() && !this.isAggressive()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("moving"));
-				return PlayState.CONTINUE;
-			}
-			if (this.isAggressive() && event.isMoving()) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("running"));
-				return PlayState.CONTINUE;
-			}
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-				event.getController().setAnimation(RawAnimation.begin().thenLoop("light_attack"));
-				return PlayState.CONTINUE;
-			}
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying())) {
-				event.getController().setAnimation(RawAnimation.begin().thenPlayAndHold("death"));
-				return PlayState.CONTINUE;
-			}
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
-			return PlayState.CONTINUE;
+			if (event.isMoving() && !this.isAggressive())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
+			if (this.isAggressive() && event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("running"));
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("light_attack"));
+			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
 	}
 
@@ -86,10 +76,8 @@ public class WorkerEntity extends BaseBugEntity {
 	public static AttributeSupplier.Builder createMobAttributes() {
 		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
 				.add(Attributes.MAX_HEALTH, ArachnidsConfig.worker_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.worker_melee)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.worker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D)
+				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

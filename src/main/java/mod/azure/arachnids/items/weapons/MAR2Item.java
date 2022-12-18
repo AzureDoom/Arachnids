@@ -34,9 +34,6 @@ public class MAR2Item extends BaseGunItem {
 
 	public MAR2Item() {
 		super(new Item.Properties().stacksTo(1).durability((ArachnidsConfig.MAR2_max_ammo + 1)));
-
-		// Register our item as server-side handled.
-		// This enables both animation data syncing and server-side animation triggering
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -76,13 +73,9 @@ public class MAR2Item extends BaseGunItem {
 						}
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
 								playerentity.getZ(), ArachnidsSounds.MAR2FIRE, SoundSource.PLAYERS, 0.25F,
-								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
+								1.0F);
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						playerentity.getCooldowns().addCooldown(this, 3);
-
-						// Trigger our animation
-						// We could trigger this outside of the client-side check if only wanted the animation to play for the shooter
-						// But we'll fire it on the server so all nearby players can see it
 						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel)worldIn), "shoot_controller", "firing");
 					}
 					worldIn.addFreshEntity(abstractarrowentity);

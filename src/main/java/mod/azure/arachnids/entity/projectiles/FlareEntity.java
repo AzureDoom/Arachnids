@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class FlareEntity extends AbstractArrow {
 
@@ -125,8 +126,18 @@ public class FlareEntity extends AbstractArrow {
 					this.random.nextGaussian() * 0.05D, -this.getDeltaMovement().y * 0.07D,
 					this.random.nextGaussian() * 0.05D);
 		}
+		if (this.tickCount > 25)
+			this.setDeltaMovement(0.0, -0.1, 0.0);
 		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
+	}
+	
+	@Override
+	public void startFalling() {
+        this.inGround = false;
+        Vec3 vec3 = this.getDeltaMovement();
+        this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * -2.0f, this.random.nextFloat() * -2.0f, this.random.nextFloat() * -2.0f));
+        this.life = 0;
 	}
 
 	@Override
