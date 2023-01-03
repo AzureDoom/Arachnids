@@ -4,6 +4,7 @@ import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.HopperEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 public class HopperModel extends GeoModel<HopperEntity> {
@@ -26,6 +27,11 @@ public class HopperModel extends GeoModel<HopperEntity> {
 	@Override
 	public RenderType getRenderType(HopperEntity animatable, ResourceLocation texture) {
 		return RenderType.entityTranslucent(getTextureResource(animatable));
+	}
+
+	@Override
+	public void setCustomAnimations(HopperEntity animatable, long instanceId, AnimationState<HopperEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 	}
 
 }

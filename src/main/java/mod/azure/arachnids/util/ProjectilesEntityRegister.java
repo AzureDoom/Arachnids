@@ -6,6 +6,7 @@ import java.util.List;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.projectiles.BugPlasmaEntity;
 import mod.azure.arachnids.entity.projectiles.BulletEntity;
+import mod.azure.arachnids.entity.projectiles.FlameFiring;
 import mod.azure.arachnids.entity.projectiles.FlareEntity;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
 import mod.azure.arachnids.entity.projectiles.TacticalOxygenNukeEntity;
@@ -28,6 +29,7 @@ public class ProjectilesEntityRegister {
 	public static EntityType<MZ90Entity> MZ90 = projectile(MZ90Entity::new, "mz90");
 	public static EntityType<BugPlasmaEntity> BUGPLASMA = projectile(BugPlasmaEntity::new, "bugplasma");
 	public static EntityType<FlareEntity> FLARE = projectile(FlareEntity::new, "flare");
+	public static EntityType<FlameFiring> FIRING = projectile(FlameFiring::new, "flame_firing");
 
 	private static <T extends Entity> EntityType<T> projectile(EntityType.EntityFactory<T> factory, String id) {
 		return projectile(factory, id, true);

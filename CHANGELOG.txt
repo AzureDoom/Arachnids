@@ -1,5 +1,12 @@
-v.0.0.14
+v.0.0.15
 
-- Updated for 1.19.3
+- Added SmartBrainLib as a required library now.
+- Reworked Workers, Warriors, and Arkellians to use SmartBrainLib instead of goals.
+- Hopper Entity WIP added to natural spawn list.
+- Arkellian Bugs added to natural spawn list.
+- Basic AI set up for Tanker, Scorpion, and Plasma Bugs. 
+- Tanker Bugs added to natural spawn list.
+- Scorpion Bugs added to natural spawn list.
+- Plasma Bugs added to natural spawn list.
 
-- This is just a WIP build, only the Workers/Warriors have actual API and spawn in deserts. All mobs will spawn via structures later on.
+- This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.

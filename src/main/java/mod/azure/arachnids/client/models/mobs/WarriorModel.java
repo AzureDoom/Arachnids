@@ -4,6 +4,7 @@ import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.WarriorEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 public class WarriorModel extends GeoModel<WarriorEntity> {
@@ -26,6 +27,12 @@ public class WarriorModel extends GeoModel<WarriorEntity> {
 	@Override
 	public RenderType getRenderType(WarriorEntity animatable, ResourceLocation texture) {
 		return RenderType.entityTranslucent(getTextureResource(animatable));
+	}
+
+	@Override
+	public void setCustomAnimations(WarriorEntity animatable, long instanceId,
+			AnimationState<WarriorEntity> animationState) {
+		super.setCustomAnimations(animatable, instanceId, animationState);
 	}
 
 }

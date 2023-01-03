@@ -1,7 +1,11 @@
 package mod.azure.arachnids.entity.bugs;
 
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
+import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -14,26 +18,40 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ScorpionEntity extends BaseBugEntity {
+public class ScorpionEntity extends BaseBugEntity implements SmartBrainOwner<ScorpionEntity> {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -45,8 +63,8 @@ public class ScorpionEntity extends BaseBugEntity {
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (event.isMoving())
-				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
+			if (this.entityData.get(STATE) == 0 && event.isMoving())
+				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
 			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("melee"));
 			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
@@ -63,14 +81,47 @@ public class ScorpionEntity extends BaseBugEntity {
 	}
 
 	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
-		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
-		this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<ScorpionEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<ScorpionEntity>().setPredicate((target, entity) -> target instanceof Player
+						|| !(target instanceof BaseBugEntity) || target instanceof Villager),
+				new HurtBySensor<>(), new UnreachableTargetSensor<ScorpionEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<ScorpionEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new MoveToWalkTarget<>());
+	}
+
+	@Override
+	public BrainActivityGroup<ScorpionEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(
+				new FirstApplicableBehaviour<ScorpionEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(
+						new SetRandomWalkTarget<>().speedModifier(1).startCondition(entity -> !entity.isAggressive()),
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<ScorpionEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(
+				new InvalidateAttackTarget<>().stopIf(
+						target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
+				new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(20)
+						.whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	@Override

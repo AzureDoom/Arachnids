@@ -48,7 +48,7 @@ public class ArachnidsMobs {
 	public static final EntityType<HopperEntity> HOOPERBUG = Registry.register(BuiltInRegistries.ENTITY_TYPE,
 			new ResourceLocation(ArachnidsMod.MODID, "hopper"),
 			FabricEntityTypeBuilder.create(MobCategory.MONSTER, HopperEntity::new)
-					.dimensions(EntityDimensions.fixed(2.3f, 2.15F)).trackRangeBlocks(90).trackedUpdateRate(1).build());
+					.dimensions(EntityDimensions.fixed(1.6f, 1.15F)).trackRangeBlocks(90).trackedUpdateRate(1).build());
 
 	public static final EntityType<PlasmaEntity> PLASMABUG = Registry.register(BuiltInRegistries.ENTITY_TYPE,
 			new ResourceLocation(ArachnidsMod.MODID, "plasma"),

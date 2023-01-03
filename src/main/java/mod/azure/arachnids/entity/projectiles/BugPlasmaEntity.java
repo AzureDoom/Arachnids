@@ -4,20 +4,19 @@ import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEntity {
@@ -27,7 +26,6 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	protected boolean inAir;
 	private float directHitDamage = 0F;
 	private LivingEntity shooter;
-	private SoundEvent attacksound;
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public BugPlasmaEntity(EntityType<? extends BugPlasmaEntity> entity, Level world) {
@@ -39,10 +37,9 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	}
 
 	public BugPlasmaEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
-			float directHitDamage, SoundEvent attacksound) {
+			float directHitDamage) {
 		super(ProjectilesEntityRegister.BUGPLASMA, shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
-		this.attacksound = attacksound;
 		this.directHitDamage = directHitDamage;
 	}
 
@@ -53,7 +50,7 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			return PlayState.CONTINUE;
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 		}));
 	}
 
@@ -87,14 +84,12 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	}
 
 	@Override
-	protected void onHit(HitResult result) {
-		super.onHit(result);
+	protected void onHitBlock(BlockHitResult result) {
+		super.onHitBlock(result);
 		if (!this.level.isClientSide()) {
 			this.explode();
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
-		this.playSound(this.attacksound, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-
 	}
 
 	@Override
@@ -108,7 +103,6 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 				this.doEnchantDamageEffects((LivingEntity) entity2, entity);
 			}
 		}
-		this.playSound(this.attacksound, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 	}
 
 	protected void explode() {
@@ -123,7 +117,7 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	public void setShooter(LivingEntity shooter) {
 		this.shooter = shooter;
 	}
-	
+
 	@Override
 	public boolean displayFireAnimation() {
 		return false;

@@ -1,55 +1,99 @@
 package mod.azure.arachnids.entity.bugs;
 
+import java.util.List;
+import java.util.SplittableRandom;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
-import mod.azure.arachnids.entity.goals.HopperFlightMoveControl;
+import mod.azure.arachnids.entity.pathing.HopperFlightMoveControl;
+import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
+import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
+import mod.azure.arachnids.entity.tasks.RandomFlyConvergeOnTargetGoal;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.StrafeTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class HopperEntity extends BaseBugEntity {
+public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<HopperEntity> {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public HopperEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
 		this.xpReward = ArachnidsConfig.hopper_exp;
-		this.moveControl = new HopperFlightMoveControl(this, 90, false);
+		this.moveControl = new HopperFlightMoveControl(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(MOVING) == 1)
+			if (!this.isAggressive() && event.isMoving()
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
+			if (this.entityData.get(STATE) == 0 && this.isAggressive() && event.isMoving()
+					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
+			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("melee"));
+			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("flame_breath"));
 			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying"))
+					&& !event.isCurrentAnimation(RawAnimation.begin().thenLoop("moving")))
+				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+			return PlayState.CONTINUE;
 		}));
 	}
 
@@ -59,10 +103,52 @@ public class HopperEntity extends BaseBugEntity {
 	}
 
 	@Override
-	protected void registerGoals() {
-		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+	protected Brain.Provider<?> brainProvider() {
+		return new SmartBrainProvider<>(this);
+	}
+
+	@Override
+	protected void customServerAiStep() {
+		tickBrain(this);
+	}
+
+	@Override
+	public List<ExtendedSensor<HopperEntity>> getSensors() {
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
+				new NearbyLivingEntitySensor<HopperEntity>().setPredicate((target, entity) -> target instanceof Player
+						|| !(target instanceof BaseBugEntity) || target instanceof Villager),
+				new HurtBySensor<>(), new UnreachableTargetSensor<HopperEntity>());
+	}
+
+	@Override
+	public BrainActivityGroup<HopperEntity> getCoreTasks() {
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(),
+				new StrafeTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1),
+				new MoveToWalkTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1));
+	}
+
+	@Override
+	public BrainActivityGroup<HopperEntity> getIdleTasks() {
+		return BrainActivityGroup.idleTasks(
+				new FirstApplicableBehaviour<HopperEntity>(new TargetOrRetaliate<>(),
+						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
+								|| target instanceof Player && ((Player) target).isCreative()),
+						new SetRandomLookTarget<>()),
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1),
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+	}
+
+	@Override
+	public BrainActivityGroup<HopperEntity> getFightTasks() {
+		return BrainActivityGroup.fightTasks(
+				new InvalidateAttackTarget<>().stopIf(
+						target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()
+								|| !(target instanceof BaseBugEntity) || target instanceof Villager),
+				new SetWalkTargetToAttackTarget<>().speedMod(this.getEntityData().get(VARIANT) == 2 ? 0.0F : 2.5F)
+						.stopIf(entity -> this.getEntityData().get(VARIANT) == 2),
+				new BugProjectileAttack<>(5).startCondition(entity -> this.getEntityData().get(VARIANT) != 1),
+				new BugMeleeAttack<>(15).whenStarting(entity -> setAggressive(true))
+						.whenStarting(entity -> setAggressive(false)));
 	}
 
 	@Override
@@ -72,6 +158,27 @@ public class HopperEntity extends BaseBugEntity {
 		birdNavigation.setCanFloat(true);
 		birdNavigation.setCanPassDoors(true);
 		return birdNavigation;
+	}
+
+	public void travel(Vec3 movementInput) {
+		if (this.tickCount % 10 == 0) {
+			this.refreshDimensions();
+		}
+		if (this.isAggressive() && this.getTarget() != null) {
+			float f = 0.91F;
+			float f1 = 0.16277137F / (f * f * f);
+			this.moveRelative(this.onGround ? 0.3F * f1 : 3.6F, movementInput);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
+			this.lookAt(this.getTarget(), 30.0F, 30.0F);
+			this.calculateEntityAnimation(this, false);
+		} else
+			super.travel(movementInput);
+	}
+	
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(5, new RandomFlyConvergeOnTargetGoal(this, 2, 15, 0.5));
 	}
 
 	@Override
@@ -121,6 +228,22 @@ public class HopperEntity extends BaseBugEntity {
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", this.getVariant());
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.setVariant(tag.getInt("Variant"));
+	}
+
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
+			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		SplittableRandom random = new SplittableRandom();
+		int var = random.nextInt(0, 3);
+		this.setVariant(var);
+		return spawnDataIn;
 	}
 
 	@Override

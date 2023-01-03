@@ -65,12 +65,13 @@ public class ArachnidsConfig extends CustomMidnightConfig {
 	@Entry public static double hopper_health = 35;
 	@Entry public static int hopper_armor = 10;
 	@Entry public static double hopper_melee = 10;
+	@Entry public static float hopper_firefly_ranged = 10;
 	@Entry public static int hopper_exp = 3;
 
 	@Entry public static double plasma_health = 100;
 	@Entry public static int plasma_armor = 6;
 	@Entry public static double plasma_melee = 10;
-	@Entry public static double plasma_ranged = 20;
+	@Entry public static float plasma_ranged = 20;
 	@Entry public static int plasma_exp = 6;
 
 	@Entry public static double scorpion_health = 75;

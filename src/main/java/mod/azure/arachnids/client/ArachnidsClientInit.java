@@ -16,6 +16,7 @@ import mod.azure.arachnids.client.render.mobs.WarriorRender;
 import mod.azure.arachnids.client.render.mobs.WorkerRender;
 import mod.azure.arachnids.client.render.mobs.projectiles.BugPlasmaRender;
 import mod.azure.arachnids.client.render.mobs.projectiles.BulletRender;
+import mod.azure.arachnids.client.render.mobs.projectiles.FlameFiringRender;
 import mod.azure.arachnids.client.render.mobs.projectiles.MZ90BlockRender;
 import mod.azure.arachnids.client.render.mobs.projectiles.MZ90Render;
 import mod.azure.arachnids.client.render.mobs.projectiles.TonBlockRender;
@@ -69,6 +70,7 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		EntityRendererRegistry.register(ProjectilesEntityRegister.TON, (ctx) -> new TonEntityRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.BUGPLASMA, (ctx) -> new BugPlasmaRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FLARE, (ctx) -> new FlareRender(ctx));
+		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRING, (ctx) -> new FlameFiringRender(ctx));
 		ParticleFactoryRegistry.getInstance().register(ArachnidsParticles.FLARE, FlareParticle.RedSmokeFactory::new);
 		ClientPlayNetworking.registerGlobalReceiver(EntityPacket.ID, (client, handler, buf, responseSender) -> {
 			EntityPacketOnClient.onPacket(client, buf);

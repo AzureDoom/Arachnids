@@ -1,6 +1,11 @@
 package mod.azure.arachnids.entity;
 
-import mod.azure.arachnids.entity.pathing.CrawlerNavigation;
+import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.entity.bugs.WarriorEntity;
+import mod.azure.arachnids.entity.pathing.BugNavigation;
+import mod.azure.arachnids.entity.projectiles.BugPlasmaEntity;
+import mod.azure.arachnids.entity.projectiles.CustomSmallFireballEntity;
+import mod.azure.arachnids.entity.projectiles.FlameFiring;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -28,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -155,40 +161,11 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 		return 0.5F;
 	}
 
-	public boolean tryLightAttack(Entity target) {
-		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-		float g = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-		if (target instanceof LivingEntity) {
-			f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) target).getMobType());
-			g += (float) EnchantmentHelper.getKnockbackBonus(this);
-		}
-		int i = EnchantmentHelper.getFireAspect(this);
-		if (i > 0) {
-			target.setSecondsOnFire(i * 4);
-		}
-		boolean bl = target.hurt(DamageSource.mobAttack(this), f - 4);
-		if (bl) {
-			if (g > 0.0F && target instanceof LivingEntity) {
-				((LivingEntity) target).knockback((double) (g * 0.5F),
-						(double) Math.sin(this.getYRot() * 0.017453292F),
-						(double) (-Math.cos(this.getYRot() * 0.017453292F)));
-				this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
-			}
-			if (target instanceof Player) {
-				Player playerEntity = (Player) target;
-				this.disablePlayerShield(playerEntity, this.getMainHandItem(),
-						playerEntity.isUsingItem() ? playerEntity.getUseItem() : ItemStack.EMPTY);
-			}
-			this.doEnchantDamageEffects(this, target);
-			this.setLastHurtMob(target);
-		}
-		return bl;
-	}
-
 	@Override
 	public boolean doHurtTarget(Entity target) {
 		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 		float g = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
+		int var = this.getRandom().nextInt(0, 4);
 		if (target instanceof LivingEntity) {
 			f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) target).getMobType());
 			g += (float) EnchantmentHelper.getKnockbackBonus(this);
@@ -197,41 +174,19 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 		if (i > 0) {
 			target.setSecondsOnFire(i * 4);
 		}
-		boolean bl = target.hurt(DamageSource.mobAttack(this), f);
+		boolean bl = false;
+		if (this instanceof WarriorEntity) {
+			if (var == 1)
+				bl = target.hurt(DamageSource.mobAttack(this), f - 4);
+			if (var == 2)
+				bl = target.hurt(DamageSource.mobAttack(this), f);
+			else
+				bl = target.hurt(DamageSource.mobAttack(this), f + 4);
+		} else
+			bl = target.hurt(DamageSource.mobAttack(this), f);
 		if (bl) {
 			if (g > 0.0F && target instanceof LivingEntity) {
-				((LivingEntity) target).knockback((double) (g * 0.5F),
-						(double) Math.sin(this.getYRot() * 0.017453292F),
-						(double) (-Math.cos(this.getYRot() * 0.017453292F)));
-				this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
-			}
-			if (target instanceof Player) {
-				Player playerEntity = (Player) target;
-				this.disablePlayerShield(playerEntity, this.getMainHandItem(),
-						playerEntity.isUsingItem() ? playerEntity.getUseItem() : ItemStack.EMPTY);
-			}
-			this.doEnchantDamageEffects(this, target);
-			this.setLastHurtMob(target);
-		}
-		return bl;
-	}
-
-	public boolean tryHeavyAttack(Entity target) {
-		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-		float g = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-		if (target instanceof LivingEntity) {
-			f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) target).getMobType());
-			g += (float) EnchantmentHelper.getKnockbackBonus(this);
-		}
-		int i = EnchantmentHelper.getFireAspect(this);
-		if (i > 0) {
-			target.setSecondsOnFire(i * 4);
-		}
-		boolean bl = target.hurt(DamageSource.mobAttack(this), f + 4);
-		if (bl) {
-			if (g > 0.0F && target instanceof LivingEntity) {
-				((LivingEntity) target).knockback((double) (g * 0.5F),
-						(double) Math.sin(this.getYRot() * 0.017453292F),
+				((LivingEntity) target).knockback((double) (g * 0.5F), (double) Math.sin(this.getYRot() * 0.017453292F),
 						(double) (-Math.cos(this.getYRot() * 0.017453292F)));
 				this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
 			}
@@ -257,9 +212,59 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 		}
 	}
 
+	public void shootPlasma(Entity target) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				LivingEntity livingentity = this.getTarget();
+				Level world = this.getCommandSenderWorld();
+				Vec3 vector3d = this.getViewVector(1.0F);
+				double d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
+				double d3 = livingentity.getY(0.5) - (this.getY(0.5));
+				double d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
+				BugPlasmaEntity projectile = new BugPlasmaEntity(level, this, d2, d3, d4,
+						ArachnidsConfig.plasma_ranged);
+				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
+				world.addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootFlames(Entity target) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				LivingEntity livingentity = this.getTarget();
+				Level world = this.getCommandSenderWorld();
+				Vec3 vector3d = this.getViewVector(1.0F);
+				double d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
+				double d3 = livingentity.getY(0.5) - (this.getY(0.5));
+				double d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
+				FlameFiring projectile = new FlameFiring(level, this, d2, d3, d4);
+				projectile.setPos(this.getX() + vector3d.x * 7, this.getY(0.5), this.getZ() + vector3d.z * 7);
+				world.addFreshEntity(projectile);
+			}
+		}
+	}
+
+	public void shootFire(Entity target) {
+		if (!this.level.isClientSide) {
+			if (this.getTarget() != null) {
+				LivingEntity livingentity = this.getTarget();
+				Level world = this.getCommandSenderWorld();
+				Vec3 vector3d = this.getViewVector(1.0F);
+				double d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
+				double d3 = livingentity.getY(0.5D) - (this.getY(0.5));
+				double d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
+				CustomSmallFireballEntity projectile = new CustomSmallFireballEntity(level, this, d2, d3, d4,
+						ArachnidsConfig.hopper_firefly_ranged);
+				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
+				world.addFreshEntity(projectile);
+			}
+		}
+	}
+
 	@Override
 	protected PathNavigation createNavigation(Level world) {
-		return new CrawlerNavigation(this, world);
+		return new BugNavigation(this, world);
 	}
 
 	@Override
@@ -268,6 +273,17 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 		if (soundEvent != null) {
 			this.playSound(soundEvent, 0.25F, this.getVoicePitch());
 		}
+	}
+
+	@Override
+	public boolean isWithinMeleeAttackRange(LivingEntity entity) {
+		double d = this.getPerceivedTargetDistanceSquareForMeleeAttack(entity);
+		return d <= this.getMeleeAttackRangeSqr(entity);
+	}
+
+	@Override
+	public double getMeleeAttackRangeSqr(LivingEntity entity) {
+		return this.getBbWidth() * 2.0f * this.getBbWidth() + entity.getBbWidth();
 	}
 
 }
