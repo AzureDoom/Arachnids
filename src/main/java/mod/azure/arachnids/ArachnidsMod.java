@@ -1,11 +1,11 @@
 package mod.azure.arachnids;
 
+import eu.midnightdust.lib.config.MidnightConfig;
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
 import mod.azure.arachnids.blocks.TickingLightBlock;
 import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.config.ArachnidsConfig;
-import mod.azure.arachnids.config.CustomMidnightConfig;
 import mod.azure.arachnids.enchantment.FlareEnchantment;
 import mod.azure.arachnids.enchantment.GrenadeEnchantment;
 import mod.azure.arachnids.enchantment.SnipingEnchantment;
@@ -77,7 +77,7 @@ public class ArachnidsMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CustomMidnightConfig.init(MODID, ArachnidsConfig.class);
+		MidnightConfig.init(MODID, ArachnidsConfig.class);
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "mz90"), MZ90BLOCK);
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "ton"), TONBLOCK);
 		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "grenadeattachment"),

@@ -1,12 +1,6 @@
-v.0.0.15
+v.0.0.16
 
-- Added SmartBrainLib as a required library now.
-- Reworked Workers, Warriors, and Arkellians to use SmartBrainLib instead of goals.
-- Hopper Entity WIP added to natural spawn list.
-- Arkellian Bugs added to natural spawn list.
-- Basic AI set up for Tanker, Scorpion, and Plasma Bugs. 
-- Tanker Bugs added to natural spawn list.
-- Scorpion Bugs added to natural spawn list.
-- Plasma Bugs added to natural spawn list.
+- Fixes Config not saving in Mod Menu.
+- Fixes MonsterMixin that broke spawning.
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.

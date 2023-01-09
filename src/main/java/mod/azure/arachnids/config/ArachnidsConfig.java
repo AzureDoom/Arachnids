@@ -3,7 +3,9 @@ package mod.azure.arachnids.config;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArachnidsConfig extends CustomMidnightConfig {
+import eu.midnightdust.lib.config.MidnightConfig;
+
+public class ArachnidsConfig extends MidnightConfig {
 
 	@Entry public static List<String> arkellian_biomes = Arrays.asList("minecraft:desert", "minecraft:desert_hills",
 			"minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands");

@@ -2,11 +2,15 @@ buildscript {
     repositories {
     	maven { url  = 'https://plugins.gradle.org/m2/' }
     }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.0"
+    }
 }
 
 plugins {
     id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -30,6 +34,11 @@ repositories {
     maven { url "https://api.modrinth.com/maven" }
     maven { url "https://maven.terraformersmc.com" }
     maven { url "https://maven.parchmentmc.org" }
+	maven { url 'https://api.modrinth.com/maven' }
+}
+
+configurations {
+    shade
 }
 
 dependencies {
@@ -41,8 +50,18 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabricVersion}"
     modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19.3:4.0.3'
-	modImplementation ("com.terraformersmc:modmenu:5.0.1")
+	modImplementation "maven.modrinth:midnightlib:1.1.0-fabric"
+    shade group: 'maven.modrinth', name: 'midnightlib', version: '1.1.0-fabric'
+	modImplementation ("com.terraformersmc:modmenu:5.0.2")
 	modCompileOnly "curse.maven:SBL-661293:4277537-sources-4277538"
+}
+
+shadowJar {
+    configurations = [project.configurations.shade]
+    from sourceSets.main.output
+    duplicatesStrategy = 'exclude'
+    relocate 'eu.midnightdust', 'mod.azure.arachnids.shadowed.midnightlib'
+    classifier 'dev'
 }
 
 processResources {
@@ -64,6 +83,15 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
+}
+
+artifacts {
+    archives shadowJar
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    inputFile = shadowJar.archiveFile
 }
 
 loom {
