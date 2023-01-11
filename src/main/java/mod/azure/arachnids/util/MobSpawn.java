@@ -59,6 +59,6 @@ public class MobSpawn {
 	}
 
 	private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {
-		return biomes.contains(biomeContext.getBiomeKey().registry().toString());
+		return biomes.contains(biomeContext.getBiomeKey().location().toString());
 	}
 }
