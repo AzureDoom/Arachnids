@@ -1,6 +1,5 @@
-v.0.0.16
+v.0.0.17
 
-- Fixes Config not saving in Mod Menu.
-- Fixes MonsterMixin that broke spawning.
+- Fixes mob spawning due to mojmap change to wrong method. 
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
