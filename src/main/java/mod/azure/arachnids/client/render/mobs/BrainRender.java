@@ -3,7 +3,7 @@ package mod.azure.arachnids.client.render.mobs;
 import mod.azure.arachnids.client.models.mobs.BrainModel;
 import mod.azure.arachnids.entity.bugs.BrainEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class BrainRender extends GeoEntityRenderer<BrainEntity> {
 

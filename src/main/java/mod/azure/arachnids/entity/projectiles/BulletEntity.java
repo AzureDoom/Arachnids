@@ -2,12 +2,18 @@ package mod.azure.arachnids.entity.projectiles;
 
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -24,12 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class BulletEntity extends AbstractArrow implements GeoEntity {
 
@@ -37,7 +37,7 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	protected boolean inAir;
 	private int ticksInAir;
 	private static float bulletdamage;
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public BulletEntity(EntityType<? extends BulletEntity> entityType, Level world) {
 		super(entityType, world);
@@ -76,7 +76,7 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return new ClientboundAddEntityPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override
@@ -180,8 +180,8 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 				this.doPostHurtEffects(livingEntity);
 				if (entity2 != null && livingEntity != entity2 && livingEntity instanceof Player
 						&& entity2 instanceof ServerPlayer && !this.isSilent()) {
-					((ServerPlayer) entity2).connection.send(
-							new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+					((ServerPlayer) entity2).connection
+							.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 				}
 			}
 		} else {

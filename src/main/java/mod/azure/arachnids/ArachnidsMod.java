@@ -17,6 +17,7 @@ import mod.azure.arachnids.util.ArachnidsVillagerTrades;
 import mod.azure.arachnids.util.MobAttributes;
 import mod.azure.arachnids.util.MobSpawn;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
+import mod.azure.azurelib.AzureLib;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -33,7 +34,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import software.bernie.geckolib.GeckoLib;
 
 public class ArachnidsMod implements ModInitializer {
 
@@ -92,7 +92,7 @@ public class ArachnidsMod implements ModInitializer {
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "lightblock"), TICKING_LIGHT_BLOCK);
 		TICKING_LIGHT_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
 				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, TICKING_LIGHT_BLOCK).build(null));
-		GeckoLib.initialize();
+		AzureLib.initialize();
 		MobSpawn.addSpawnEntries();
 		MobAttributes.init();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> ArachnidsVillagerTrades.addTrades());

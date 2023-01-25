@@ -22,8 +22,6 @@ import mod.azure.arachnids.client.render.mobs.projectiles.MZ90Render;
 import mod.azure.arachnids.client.render.mobs.projectiles.TonBlockRender;
 import mod.azure.arachnids.client.render.mobs.projectiles.TonEntityRender;
 import mod.azure.arachnids.client.render.weapons.FlareRender;
-import mod.azure.arachnids.network.EntityPacket;
-import mod.azure.arachnids.network.EntityPacketOnClient;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsMobs;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
@@ -31,7 +29,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.KeyMapping;
@@ -72,9 +69,6 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FLARE, (ctx) -> new FlareRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRING, (ctx) -> new FlameFiringRender(ctx));
 		ParticleFactoryRegistry.getInstance().register(ArachnidsParticles.FLARE, FlareParticle.RedSmokeFactory::new);
-		ClientPlayNetworking.registerGlobalReceiver(EntityPacket.ID, (client, handler, buf, responseSender) -> {
-			EntityPacketOnClient.onPacket(client, buf);
-		});
 		ItemProperties.register(ArachnidsItems.M55, new ResourceLocation("broken"),
 				(itemStack, clientWorld, livingEntity, seed) -> {
 					return isUsable(itemStack) ? 0.0F : 1.0F;

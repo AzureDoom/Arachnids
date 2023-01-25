@@ -9,8 +9,8 @@ import mod.azure.arachnids.items.weapons.MAR1Item;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoItemRenderer;
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.renderer.GeoItemRenderer;
 
 public class MAR1Render extends GeoItemRenderer<MAR1Item> {
 	public MAR1Render() {

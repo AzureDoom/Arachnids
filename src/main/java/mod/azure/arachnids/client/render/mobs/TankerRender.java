@@ -3,7 +3,7 @@ package mod.azure.arachnids.client.render.mobs;
 import mod.azure.arachnids.client.models.mobs.TankerModel;
 import mod.azure.arachnids.entity.bugs.TankerEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class TankerRender extends GeoEntityRenderer<TankerEntity> {
 

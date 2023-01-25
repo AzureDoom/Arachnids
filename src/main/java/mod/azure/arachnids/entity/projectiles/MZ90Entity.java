@@ -3,13 +3,19 @@ package mod.azure.arachnids.entity.projectiles;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -25,12 +31,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class MZ90Entity extends AbstractArrow implements GeoEntity {
 
@@ -40,7 +40,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	private int ticksInAir;
 	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(MZ90Entity.class,
 			EntityDataSerializers.BOOLEAN);
-	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public MZ90Entity(EntityType<? extends MZ90Entity> entityType, Level world) {
 		super(entityType, world);
@@ -91,7 +91,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return new ClientboundAddEntityPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override

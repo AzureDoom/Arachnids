@@ -7,8 +7,8 @@ import mod.azure.arachnids.client.models.mobs.HopperModel;
 import mod.azure.arachnids.entity.bugs.HopperEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 
 public class HopperRender extends GeoEntityRenderer<HopperEntity> {
 

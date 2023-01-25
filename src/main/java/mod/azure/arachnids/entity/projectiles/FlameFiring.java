@@ -3,12 +3,12 @@ package mod.azure.arachnids.entity.projectiles;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
+import mod.azure.azurelib.network.packet.EntityPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -56,7 +56,7 @@ public class FlameFiring extends AbstractHurtingProjectile {
 
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return new ClientboundAddEntityPacket(this);
+		return EntityPacket.createPacket(this);
 	}
 
 	@Override
