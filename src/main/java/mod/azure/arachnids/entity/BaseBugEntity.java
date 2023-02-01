@@ -2,10 +2,16 @@ package mod.azure.arachnids.entity;
 
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.bugs.WarriorEntity;
-import mod.azure.arachnids.entity.pathing.BugNavigation;
 import mod.azure.arachnids.entity.projectiles.BugPlasmaEntity;
 import mod.azure.arachnids.entity.projectiles.CustomSmallFireballEntity;
 import mod.azure.arachnids.entity.projectiles.FlameFiring;
+import mod.azure.azurelib.ai.pathing.AzureNavigation;
+import mod.azure.azurelib.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -34,12 +40,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 
@@ -264,7 +264,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 
 	@Override
 	protected PathNavigation createNavigation(Level world) {
-		return new BugNavigation(this, world);
+		return new AzureNavigation(this, world);
 	}
 
 	@Override
