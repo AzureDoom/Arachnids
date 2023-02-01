@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import mod.azure.arachnids.items.weapons.BaseGunItem;
+import mod.azure.arachnids.items.weapons.BaseGunItemExtended;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -19,7 +19,7 @@ public class WeaponRenderingMixin {
 	private static void tryItemPose(AbstractClientPlayer player, InteractionHand hand,
 			CallbackInfoReturnable<HumanoidModel.ArmPose> ci) {
 		ItemStack itemstack = player.getItemInHand(hand);
-		if (itemstack.getItem() instanceof BaseGunItem) {
+		if (itemstack.getItem() instanceof BaseGunItemExtended) {
 			ci.setReturnValue(HumanoidModel.ArmPose.BOW_AND_ARROW);
 		}
 	}

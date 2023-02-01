@@ -7,9 +7,11 @@ import java.util.function.Supplier;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.client.render.weapons.MAR1Render;
 import mod.azure.arachnids.config.ArachnidsConfig;
-import mod.azure.arachnids.entity.projectiles.BulletEntity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -24,11 +26,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
-import mod.azure.azurelib.animatable.client.RenderProvider;
 
-public class MAR1Item extends BaseGunItem {
+public class MAR1Item extends BaseGunItemExtended {
 	
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
@@ -66,7 +65,7 @@ public class MAR1Item extends BaseGunItem {
 						removeOffHandItem(ArachnidsItems.FLARE, playerentity);
 						playerentity.getCooldowns().addCooldown(this, 8);
 					} else {
-						abstractarrowentity = createBullet(worldIn, stack, playerentity);
+						abstractarrowentity = createBullet(worldIn, stack, playerentity, ArachnidsConfig.MAR1_bullet_damage);
 						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(),
 								playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
 						if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0) {
@@ -93,14 +92,7 @@ public class MAR1Item extends BaseGunItem {
 		super.appendHoverText(stack, world, tooltip, context);
 		tooltip.add(
 				Component.translatable("Damage: " + (j > 0 ? (ArachnidsConfig.MAR1_bullet_damage + (j * 1.5F + 0.5F))
-						: ArachnidsConfig.MAR2_bullet_damage)).withStyle(ChatFormatting.ITALIC));
-	}
-
-	public BulletEntity createBullet(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
-				j > 0 ? (ArachnidsConfig.MAR1_bullet_damage + (j * 1.5F + 0.5F)) : ArachnidsConfig.MAR2_bullet_damage);
-		return arrowentity;
+						: ArachnidsConfig.MAR1_bullet_damage)).withStyle(ChatFormatting.ITALIC));
 	}
 	
 	@Override

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.items.weapons.BaseGunItem;
+import mod.azure.arachnids.items.weapons.BaseGunItemExtended;
 import mod.azure.arachnids.items.weapons.M55Item;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AnvilMenu;
@@ -29,7 +29,7 @@ public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
 	private void blockEnchantments(CallbackInfo ci) {
 		ItemStack leftStack = this.inputSlots.getItem(0).copy();
 		ItemStack rightStack = this.inputSlots.getItem(1).copy();
-		if ((leftStack.getItem() instanceof BaseGunItem || leftStack.getItem() instanceof M55Item)
+		if ((leftStack.getItem() instanceof BaseGunItemExtended || leftStack.getItem() instanceof M55Item)
 				&& (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, rightStack) > 0
 						|| EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, rightStack) > 0
 						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING)
@@ -38,7 +38,7 @@ public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
 			this.resultSlots.setItem(0, repaired);
 			this.broadcastChanges();
 		}
-		if (!(leftStack.getItem() instanceof BaseGunItem)
+		if (!(leftStack.getItem() instanceof BaseGunItemExtended)
 				&& (EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, rightStack) > 0
 						|| EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.GRENADEATTACHMENT, rightStack) > 0
 						|| EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.SNIPERATTACHMENT, rightStack) > 0

@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import mod.azure.arachnids.items.weapons.BaseGunItem;
+import mod.azure.arachnids.items.weapons.BaseGunItemExtended;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -25,7 +25,7 @@ public abstract class VillagerMixin extends AbstractVillager {
 	@Inject(at = @At("RETURN"), method = "mobInteract", cancellable = true)
 	private void killVillager(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> ci) {
 		ItemStack itemStack = player.getItemInHand(hand);
-		if (itemStack.getItem() instanceof BaseGunItem) {
+		if (itemStack.getItem() instanceof BaseGunItemExtended) {
 			ci.setReturnValue(InteractionResult.FAIL);
 		}
 	}

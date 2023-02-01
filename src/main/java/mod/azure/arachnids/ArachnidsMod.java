@@ -3,13 +3,11 @@ package mod.azure.arachnids;
 import eu.midnightdust.lib.config.MidnightConfig;
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
-import mod.azure.arachnids.blocks.TickingLightBlock;
-import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.enchantment.FlareEnchantment;
 import mod.azure.arachnids.enchantment.GrenadeEnchantment;
 import mod.azure.arachnids.enchantment.SnipingEnchantment;
-import mod.azure.arachnids.items.weapons.BaseGunItem;
+import mod.azure.arachnids.items.weapons.BaseGunItemExtended;
 import mod.azure.arachnids.items.weapons.M55Item;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -22,7 +20,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ArachnidsMod implements ModInitializer {
 
@@ -43,8 +39,6 @@ public class ArachnidsMod implements ModInitializer {
 	public static ProjectilesEntityRegister PROJECTILES;
 	public static final Block TONBLOCK = new TONBlock();
 	public static final Block MZ90BLOCK = new MZ90Block();
-	public static BlockEntityType<TickingLightEntity> TICKING_LIGHT_ENTITY;
-	public static final TickingLightBlock TICKING_LIGHT_BLOCK = new TickingLightBlock();
 	public static final ResourceLocation RELOAD_BULLETS = new ResourceLocation(MODID, "reload_bullets");
 	public static final ResourceLocation RELOAD_TON = new ResourceLocation(MODID, "reload_ton");
 	public static final Enchantment SNIPERATTACHMENT = new SnipingEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
@@ -89,17 +83,14 @@ public class ArachnidsMod implements ModInitializer {
 		ITEMS = new ArachnidsItems();
 		SOUNDS = new ArachnidsSounds();
 		PROJECTILES = new ProjectilesEntityRegister();
-		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "lightblock"), TICKING_LIGHT_BLOCK);
-		TICKING_LIGHT_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID + ":lightblock",
-				FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, TICKING_LIGHT_BLOCK).build(null));
 		AzureLib.initialize();
 		MobSpawn.addSpawnEntries();
 		MobAttributes.init();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> ArachnidsVillagerTrades.addTrades());
 		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_BULLETS,
 				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandItem().getItem() instanceof BaseGunItem) {
-						((BaseGunItem) player.getMainHandItem().getItem()).reloadBullets(player,
+					if (player.getMainHandItem().getItem() instanceof BaseGunItemExtended) {
+						((BaseGunItemExtended) player.getMainHandItem().getItem()).reloadBullets(player,
 								InteractionHand.MAIN_HAND);
 					}
 					;

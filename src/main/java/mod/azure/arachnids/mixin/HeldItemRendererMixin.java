@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import mod.azure.arachnids.items.weapons.BaseGunItem;
+import mod.azure.arachnids.items.weapons.BaseGunItemExtended;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -37,12 +37,12 @@ public abstract class HeldItemRendererMixin {
 		LocalPlayer clientPlayerEntity = this.minecraft.player;
 		ItemStack itemStack = clientPlayerEntity.getMainHandItem();
 		ItemStack itemStack2 = clientPlayerEntity.getOffhandItem();
-		if (this.mainHandItem.getItem() instanceof BaseGunItem && itemStack.getItem() instanceof BaseGunItem
+		if (this.mainHandItem.getItem() instanceof BaseGunItemExtended && itemStack.getItem() instanceof BaseGunItemExtended
 				&& ItemStack.isSame(mainHandItem, itemStack)) {
 			this.mainHandHeight = 1;
 			this.mainHandItem = itemStack;
 		}
-		if (this.offHandItem.getItem() instanceof BaseGunItem && itemStack2.getItem() instanceof BaseGunItem
+		if (this.offHandItem.getItem() instanceof BaseGunItemExtended && itemStack2.getItem() instanceof BaseGunItemExtended
 				&& ItemStack.isSame(offHandItem, itemStack2)) {
 			this.offHandHeight = 1;
 			this.offHandItem = itemStack2;
