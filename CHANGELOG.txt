@@ -2,6 +2,6 @@ v.0.0.20
 
 - Fixes Projectiles not properly despawning over x amount of time.
 - Cleaned up Projectile code.
-- Added Recipes for 7.62, Flares, Tactical Oxygen Nuke, and the Mobile Infantry armor. Recipe credit to Merith#5829
+- Added Recipes for 7.62, Flares, MZ-90, Tactical Oxygen Nuke, and the Mobile Infantry armor. Recipe credit to Merith#5829
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
