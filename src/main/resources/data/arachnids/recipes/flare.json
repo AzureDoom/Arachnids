@@ -1,0 +1,26 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"#R#",
+		"#G#",
+		" i "
+	],
+	"key": {
+		"#": {
+			"item": "minecraft:iron_nugget"
+		},
+		"R": {
+			"item": "minecraft:red_dye"
+		},
+		"G": {
+			"item": "minecraft:gunpowder"
+		},
+		"i": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"result": {
+		"item": "arachnids:flare",
+		"count": 1
+	}
+}

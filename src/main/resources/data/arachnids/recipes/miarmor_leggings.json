@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "iLi",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:white_wool"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "L": {
+            "item": "minecraft:leather_leggings"
+        }
+    },
+    "result": {
+        "item": "arachnids:miarmor_leggings",
+        "count": 1
+    }
+}

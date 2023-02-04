@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"#c#",
+		"cGc"
+	],
+	"key": {
+		"#": {
+			"item": "minecraft:iron_nugget"
+		},
+		"c": {
+			"item": "minecraft:copper_ingot"
+		},
+		"G": {
+			"item": "minecraft:gunpowder"
+		}
+	},
+	"result": {
+		"item": "arachnids:762",
+		"count": 1
+	}
+}

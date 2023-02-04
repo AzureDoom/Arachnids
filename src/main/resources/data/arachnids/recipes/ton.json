@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "iTi",
+        "iGi"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:redstone"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "T": {
+            "item": "minecraft:blaze_powder"
+        },
+        "G": {
+            "item": "minecraft:tnt"
+        }
+    },
+    "result": {
+        "item": "arachnids:ton",
+        "count": 1
+    }
+}
