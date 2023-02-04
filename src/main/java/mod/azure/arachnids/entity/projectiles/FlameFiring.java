@@ -94,10 +94,8 @@ public class FlameFiring extends AbstractHurtingProjectile {
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
-		++this.ticksInAir;
-		if (this.ticksInAir >= 120) {
+		if (this.tickCount >= 120)
 			this.remove(Entity.RemovalReason.DISCARDED);
-		}
 		boolean isInsideWaterBlock = level.isWaterAt(blockPosition());
 		spawnLightSource(isInsideWaterBlock);
 		if (getOwner()instanceof Player owner)

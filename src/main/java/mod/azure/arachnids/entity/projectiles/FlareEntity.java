@@ -116,9 +116,8 @@ public class FlareEntity extends AbstractArrow {
 			idleTicks = 0;
 		if (idleOpt <= 0 || idleTicks < idleOpt)
 			super.tick();
-		if (this.tickCount >= 800) {
+		if (this.tickCount >= 800)
 			this.remove(Entity.RemovalReason.DISCARDED);
-		}
 		setNoGravity(false);
 		++this.life;
 		if (this.level.isClientSide()) {

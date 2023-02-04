@@ -105,9 +105,8 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.ticksInAir >= 80) {
+		if (this.tickCount >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
-		}
 		if (this.level.isClientSide()) {
 			double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
 			double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
