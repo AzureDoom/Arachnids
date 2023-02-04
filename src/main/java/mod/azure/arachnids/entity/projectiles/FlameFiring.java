@@ -34,7 +34,6 @@ public class FlameFiring extends AbstractHurtingProjectile {
 
 	protected int timeInAir;
 	protected boolean inAir;
-	private int ticksInAir;
 	protected LivingEntity shooter;
 	private BlockPos lightBlockPos = null;
 	private int idleTicks = 0;
@@ -62,7 +61,6 @@ public class FlameFiring extends AbstractHurtingProjectile {
 	@Override
 	public void shoot(double x, double y, double z, float speed, float divergence) {
 		super.shoot(x, y, z, speed, divergence);
-		this.ticksInAir = 0;
 	}
 
 	@Override
@@ -74,14 +72,12 @@ public class FlameFiring extends AbstractHurtingProjectile {
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putShort("life", (short) this.ticksInAir);
 		tag.putFloat("ForcedYaw", entityData.get(FORCED_YAW));
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.ticksInAir = tag.getShort("life");
 		entityData.set(FORCED_YAW, tag.getFloat("ForcedYaw"));
 	}
 
@@ -123,8 +119,7 @@ public class FlameFiring extends AbstractHurtingProjectile {
 	public boolean isNoGravity() {
 		if (this.isInWater())
 			return false;
-		else
-			return true;
+		return true;
 	}
 
 	@Override

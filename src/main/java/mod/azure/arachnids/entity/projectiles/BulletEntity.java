@@ -35,7 +35,6 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 
 	protected int timeInAir;
 	protected boolean inAir;
-	private int ticksInAir;
 	private static float bulletdamage;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -89,17 +88,8 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	}
 
 	@Override
-	public void tickDespawn() {
-		++this.ticksInAir;
-		if (this.ticksInAir >= 40) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-	}
-
-	@Override
 	public void shoot(double x, double y, double z, float speed, float divergence) {
 		super.shoot(x, y, z, speed, divergence);
-		this.ticksInAir = 0;
 	}
 
 	@Override
@@ -121,11 +111,9 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater()) {
+		if (this.isInWater())
 			return false;
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();

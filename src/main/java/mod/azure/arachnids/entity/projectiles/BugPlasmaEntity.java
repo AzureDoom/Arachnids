@@ -76,11 +76,9 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 
 	@Override
 	public boolean isNoGravity() {
-		if (this.isInWater()) {
+		if (this.isInWater())
 			return false;
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 	@Override

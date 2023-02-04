@@ -36,10 +36,9 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 
 	protected int timeInAir;
 	protected boolean inAir;
-	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(TacticalOxygenNukeEntity.class,
-			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData
+			.defineId(TacticalOxygenNukeEntity.class, EntityDataSerializers.BOOLEAN);
 	protected String type;
-	private int ticksInAir;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public TacticalOxygenNukeEntity(EntityType<? extends TacticalOxygenNukeEntity> entityType, Level world) {
@@ -67,7 +66,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 		super(ProjectilesEntityRegister.TON, user, world);
 		this.entityData.set(SPINNING, spinning);
 	}
-	
+
 	public boolean isSpinning() {
 		return (Boolean) this.entityData.get(SPINNING);
 	}
@@ -98,8 +97,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(),
-				this.getZ());
+		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 		areaeffectcloudentity.setRadius(ArachnidsConfig.TON_damage + 5);
 		areaeffectcloudentity.setDuration(1);
@@ -110,17 +108,8 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	}
 
 	@Override
-	public void tickDespawn() {
-		++this.ticksInAir;
-		if (this.ticksInAir >= 80) {
-			this.remove(Entity.RemovalReason.DISCARDED);
-		}
-	}
-
-	@Override
 	public void shoot(double x, double y, double z, float speed, float divergence) {
 		super.shoot(x, y, z, speed, divergence);
-		this.ticksInAir = 0;
 	}
 
 	@Override
@@ -132,9 +121,8 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		if (compound.contains("isSpinning")) {
+		if (compound.contains("isSpinning"))
 			setSpinning(compound.getBoolean("isSpinning"));
-		}
 	}
 
 	@Override
