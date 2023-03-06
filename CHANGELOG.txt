@@ -1,7 +1,5 @@
-v.0.0.20
+v.0.0.21
 
-- Fixes Projectiles not properly despawning over x amount of time.
-- Cleaned up Projectile code.
-- Added Recipes for 7.62, Flares, MZ-90, Tactical Oxygen Nuke, and the Mobile Infantry armor. Recipe credit to Merith#5829
+- Adds all arachnids to Ad Astra Acid Rain Resistant and No Oxygen Needed tags!
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
