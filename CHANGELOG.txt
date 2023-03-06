@@ -1,5 +1,5 @@
-v.0.0.21
+v.0.0.22
 
-- Adds all arachnids to Ad Astra Acid Rain Resistant and No Oxygen Needed tags!
+- Fixes Helmet recipe! Closes #9
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
