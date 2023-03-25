@@ -28,6 +28,7 @@ group = project.maven_group
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/azuredoom-mods/azurelib/maven/' }
+    maven { url 'https://dl.cloudsmith.io/public/tslat/sbl/maven/' }
     maven { url 'https://plugins.gradle.org/m2/' }
 	maven { url "https://cfa2.cursemaven.com" }
     maven { url "https://maven.shedaniel.me/" }
@@ -53,7 +54,8 @@ dependencies {
 	modImplementation "maven.modrinth:midnightlib:1.2.1-fabric"
     shade group: 'maven.modrinth', name: 'midnightlib', version: '1.2.1-fabric'
 	modImplementation ("com.terraformersmc:modmenu:6.1.0-rc.2")
-	modCompileOnly "curse.maven:SBL-661293:4277537-sources-4277538"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.19.4:1.9"
+	modImplementation "net.tslat.smartbrainlib:SmartBrainLib-common-1.19.4:1.9"
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:11.0.597") {
         exclude(group: "net.fabricmc.fabric-api")
     }
@@ -183,7 +185,7 @@ if (file('key.properties').exists()) {
         	required.project "smartbrainlib"
         	required.project "fabric-api"
             optional.project "modmenu"
-            optional.project "roughly-enough-items"
+            optional.project "rei"
    		}
 	}
 }
