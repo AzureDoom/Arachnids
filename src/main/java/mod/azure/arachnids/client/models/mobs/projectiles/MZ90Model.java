@@ -2,9 +2,9 @@ package mod.azure.arachnids.client.models.mobs.projectiles;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
+import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class MZ90Model extends GeoModel<MZ90Entity> {
 	@Override

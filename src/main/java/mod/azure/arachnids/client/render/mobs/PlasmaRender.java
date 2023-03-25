@@ -2,8 +2,8 @@ package mod.azure.arachnids.client.render.mobs;
 
 import mod.azure.arachnids.client.models.mobs.PlasmaModel;
 import mod.azure.arachnids.entity.bugs.PlasmaEntity;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 public class PlasmaRender extends GeoEntityRenderer<PlasmaEntity> {
 

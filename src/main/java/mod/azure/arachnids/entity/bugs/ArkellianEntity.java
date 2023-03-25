@@ -6,6 +6,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -36,11 +41,6 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class ArkellianEntity extends BaseBugEntity implements SmartBrainOwner<ArkellianEntity> {
 
@@ -79,44 +79,26 @@ public class ArkellianEntity extends BaseBugEntity implements SmartBrainOwner<Ar
 
 	@Override
 	public List<ExtendedSensor<ArkellianEntity>> getSensors() {
-		return ObjectArrayList.of(
-				new NearbyPlayersSensor<>(), 
-				new NearbyLivingEntitySensor<ArkellianEntity>(),
-				new HurtBySensor<>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<ArkellianEntity>(), new HurtBySensor<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ArkellianEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(
-				new LookAtTarget<>(),
-				new AnimalPanic(1.2f),
-				new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new AnimalPanic(1.2f), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<ArkellianEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<ArkellianEntity>(
-						new TargetOrRetaliate<>(), 
-						new SetPlayerLookTarget<>().stopIf(
-								target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
-			            new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(
-						new SetRandomWalkTarget<>().speedModifier(0.65f),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<ArkellianEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(0.65f), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<ArkellianEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive()));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, ArachnidsConfig.arkellian_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.arkellian_melee).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.arkellian_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.arkellian_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	public int getVariant() {

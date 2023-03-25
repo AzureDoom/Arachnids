@@ -28,7 +28,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 public class MAR2Item extends BaseGunItemExtended {
-	
+
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public MAR2Item() {
@@ -39,47 +39,35 @@ public class MAR2Item extends BaseGunItemExtended {
 	@Override
 	public void onUseTick(Level worldIn, LivingEntity entityLiving, ItemStack stack, int count) {
 		if (entityLiving instanceof Player) {
-			Player playerentity = (Player) entityLiving;
-			if (stack.getDamageValue() < (stack.getMaxDamage() - 1)
-					&& !playerentity.getCooldowns().isOnCooldown(this)) {
+			var playerentity = (Player) entityLiving;
+			if (stack.getDamageValue() < (stack.getMaxDamage() - 1) && !playerentity.getCooldowns().isOnCooldown(this)) {
 				if (!worldIn.isClientSide()) {
-					AbstractArrow abstractarrowentity;
+					AbstractArrow projectile;
 					if (playerentity.getOffhandItem().getItem() == ArachnidsItems.MZ90) {
-						abstractarrowentity = createMZ90(worldIn, stack, playerentity);
-						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
-								0.0F, 0.5F * 3.0F, 1.0F);
-						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
-								playerentity.getZ(), ArachnidsSounds.GRENADELAUNCHER, SoundSource.PLAYERS, 0.25F,
-								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
+						projectile = createMZ90(worldIn, stack, playerentity);
+						projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.5F * 3.0F, 1.0F);
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.GRENADELAUNCHER, SoundSource.PLAYERS, 0.25F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 						removeOffHandItem(ArachnidsItems.MZ90, playerentity);
 						playerentity.getCooldowns().addCooldown(this, 8);
-					} else if (playerentity.getOffhandItem().getItem() == ArachnidsItems.FLARE
-							&& EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, stack) > 0) {
-						abstractarrowentity = createFlare(worldIn, stack, playerentity);
-						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
-								0.0F, 0.5F * 3.0F, 1.0F);
-						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
-								playerentity.getZ(), ArachnidsSounds.FLAREGUN, SoundSource.PLAYERS, 0.25F,
-								1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
+					} else if (playerentity.getOffhandItem().getItem() == ArachnidsItems.FLARE && EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, stack) > 0) {
+						projectile = createFlare(worldIn, stack, playerentity);
+						projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.5F * 3.0F, 1.0F);
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.FLAREGUN, SoundSource.PLAYERS, 0.25F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 						removeOffHandItem(ArachnidsItems.FLARE, playerentity);
 						playerentity.getCooldowns().addCooldown(this, 8);
 					} else {
-						abstractarrowentity = createBullet(worldIn, stack, playerentity, ArachnidsConfig.MAR2_bullet_damage);
-						abstractarrowentity.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(),
-								0.0F, 1.0F * 3.0F, 1.0F);
-						if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0) {
-							abstractarrowentity.setSecondsOnFire(100);
-						}
-						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(),
-								playerentity.getZ(), ArachnidsSounds.MAR2FIRE, SoundSource.PLAYERS, 0.25F,
-								1.0F);
+						projectile = createBullet(worldIn, stack, playerentity, ArachnidsConfig.MAR2_bullet_damage);
+						projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
+						if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0)
+							projectile.setSecondsOnFire(100);
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.MAR2FIRE, SoundSource.PLAYERS, 0.25F, 1.0F);
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
 						playerentity.getCooldowns().addCooldown(this, 3);
-						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel)worldIn), "shoot_controller", "firing");
+						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 					}
-					worldIn.addFreshEntity(abstractarrowentity);
+					worldIn.addFreshEntity(projectile);
 				}
-				boolean isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
+				var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);
 			}
 		}
@@ -87,19 +75,20 @@ public class MAR2Item extends BaseGunItemExtended {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		super.appendHoverText(stack, world, tooltip, context);
-		tooltip.add(Component.translatable("Damage: " + (j > 0 ? (ArachnidsConfig.MAR2_bullet_damage + (j * 1.5F + 0.5F))
-				: ArachnidsConfig.MAR2_bullet_damage)).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("Damage: " + (enchantlevel > 0 ? (ArachnidsConfig.MAR2_bullet_damage + (enchantlevel * 1.5F + 0.5F)) : ArachnidsConfig.MAR2_bullet_damage)).withStyle(ChatFormatting.ITALIC));
 	}
-	
+
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final MAR2Render renderer = new MAR2Render();
+			private MAR2Render renderer;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				if (renderer == null)
+					return new MAR2Render();
 				return this.renderer;
 			}
 		});

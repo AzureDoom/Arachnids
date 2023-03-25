@@ -7,6 +7,11 @@ import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -43,11 +48,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<WorkerEntity> {
 
@@ -90,55 +90,33 @@ public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<Worke
 
 	@Override
 	public List<ExtendedSensor<WorkerEntity>> getSensors() {
-		return ObjectArrayList.of(
-				new NearbyPlayersSensor<>(), 
-				new NearbyLivingEntitySensor<WorkerEntity>().setPredicate(
-						(target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager),
-				new HurtBySensor<>(),
-				new UnreachableTargetSensor<WorkerEntity>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<WorkerEntity>().setPredicate((target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager), new HurtBySensor<>(), new UnreachableTargetSensor<WorkerEntity>());
 	}
 
 	@Override
 	public BrainActivityGroup<WorkerEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(
-				new LookAtTarget<>(),
-				new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<WorkerEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<WorkerEntity>(
-						new TargetOrRetaliate<>(), 
-						new SetPlayerLookTarget<>().stopIf(
-								target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
-			            new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(
-						new SetRandomWalkTarget<>().speedModifier(1),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<WorkerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<WorkerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player)target).isCreative()),
-				new SetWalkTargetToAttackTarget<>().speedMod(1.5F),  
-				new BugMeleeAttack<>(5).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new BugMeleeAttack<>(5).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, ArachnidsConfig.worker_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.worker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.worker_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.worker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide())
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
-		}
 	}
 
 	@Override

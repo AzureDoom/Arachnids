@@ -37,8 +37,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	protected int timeInAir;
 	protected boolean inAir;
 	protected String type;
-	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(MZ90Entity.class,
-			EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(MZ90Entity.class, EntityDataSerializers.BOOLEAN);
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
 	public MZ90Entity(EntityType<? extends MZ90Entity> entityType, Level world) {
@@ -95,7 +94,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+		var areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 		areaeffectcloudentity.setRadius(ArachnidsConfig.MZ90_explode_damage + 2);
 		areaeffectcloudentity.setDuration(1);
@@ -179,9 +178,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.MZ90_explode_damage,
-				(ArachnidsConfig.cause_fire ? true : false),
-				(ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.MZ90_explode_damage, (ArachnidsConfig.cause_fire ? true : false), (ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	@Override

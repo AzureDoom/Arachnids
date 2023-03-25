@@ -12,16 +12,14 @@ import net.minecraft.resources.ResourceLocation;
 
 public class MZ90BlockRender extends EntityRenderer<MZ90BlockEntity> {
 
-	protected static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID,
-			"textures/block/barrel_explode.png");
+	protected static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID, "textures/block/barrel_explode.png");
 
 	public MZ90BlockRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
 		this.shadowRadius = 0.5F;
 	}
 
-	public void render(MZ90BlockEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn,
-			MultiBufferSource bufferIn, int packedLightIn) {
+	public void render(MZ90BlockEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0.0D, 0.5D, 0.0D);
 

@@ -36,8 +36,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 
 	protected int timeInAir;
 	protected boolean inAir;
-	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData
-			.defineId(TacticalOxygenNukeEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> SPINNING = SynchedEntityData.defineId(TacticalOxygenNukeEntity.class, EntityDataSerializers.BOOLEAN);
 	protected String type;
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
@@ -50,13 +49,11 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 		super(ProjectilesEntityRegister.TON, owner, world);
 	}
 
-	protected TacticalOxygenNukeEntity(EntityType<? extends TacticalOxygenNukeEntity> type, double x, double y,
-			double z, Level world) {
+	protected TacticalOxygenNukeEntity(EntityType<? extends TacticalOxygenNukeEntity> type, double x, double y, double z, Level world) {
 		this(type, world);
 	}
 
-	protected TacticalOxygenNukeEntity(EntityType<? extends TacticalOxygenNukeEntity> type, LivingEntity owner,
-			Level world) {
+	protected TacticalOxygenNukeEntity(EntityType<? extends TacticalOxygenNukeEntity> type, LivingEntity owner, Level world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
 		this.pickup = AbstractArrow.Pickup.DISALLOWED;
@@ -97,7 +94,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 
 	@Override
 	public void remove(RemovalReason reason) {
-		AreaEffectCloud areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+		var areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 		areaeffectcloudentity.setRadius(ArachnidsConfig.TON_damage + 5);
 		areaeffectcloudentity.setDuration(1);
@@ -180,9 +177,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.TON_damage,
-				(ArachnidsConfig.cause_fire ? true : false),
-				(ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.TON_damage, (ArachnidsConfig.cause_fire ? true : false), (ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	@Override

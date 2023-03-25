@@ -29,45 +29,40 @@ public abstract class BaseGunItemExtended extends BaseGunItem {
 	}
 
 	public MZ90Entity createMZ90(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		MZ90Entity arrowentity = new MZ90Entity(worldIn, shooter, false);
-		return arrowentity;
+		var nade = new MZ90Entity(worldIn, shooter, false);
+		return nade;
 	}
 
 	public FlareEntity createFlare(Level worldIn, ItemStack stack, LivingEntity shooter) {
-		FlareEntity arrowentity = new FlareEntity(worldIn, stack, shooter, true);
-		return arrowentity;
+		var flare = new FlareEntity(worldIn, stack, shooter, true);
+		return flare;
 	}
 
 	public BulletEntity createBullet(Level worldIn, ItemStack stack, LivingEntity shooter, float bulletDamage) {
-		float j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
-		BulletEntity arrowentity = new BulletEntity(worldIn, shooter,
-				j > 0 ? (bulletDamage + (j * 1.5F + 0.5F)) : bulletDamage);
-		return arrowentity;
+		var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		var bullet = new BulletEntity(worldIn, shooter, enchantlevel > 0 ? (bulletDamage + (enchantlevel * 1.5F + 0.5F)) : bulletDamage);
+		return bullet;
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		if (world.isClientSide()) {
-			if (((Player) entity).getMainHandItem().getItem() instanceof BaseGunItemExtended) {
+			if (((Player) entity).getMainHandItem().getItem() instanceof BaseGunItemExtended)
 				if (ArachnidsClientInit.reload.isDown() && selected) {
-					FriendlyByteBuf passedData = new FriendlyByteBuf(Unpooled.buffer());
+					var passedData = new FriendlyByteBuf(Unpooled.buffer());
 					passedData.writeBoolean(true);
 					ClientPlayNetworking.send(ArachnidsMod.RELOAD_BULLETS, passedData);
 				}
-			}
 		}
 	}
 
 	public void reloadBullets(Player user, InteractionHand hand) {
 		if (user.getItemInHand(hand).getItem() instanceof BaseGunItemExtended) {
-			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0
-					&& user.getInventory().countItem(ArachnidsItems.BULLETS) > 0) {
+			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(ArachnidsItems.BULLETS) > 0) {
 				removeAmmo(ArachnidsItems.BULLETS, user);
-				user.getItemInHand(hand).hurtAndBreak(-ArachnidsConfig.MAR1_mag_size, user,
-						s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).hurtAndBreak(-ArachnidsConfig.MAR1_mag_size, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
-				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(),
-						ArachnidsSounds.CLIPRELOAD, SoundSource.PLAYERS, 1.00F, 1.0F);
+				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(), ArachnidsSounds.CLIPRELOAD, SoundSource.PLAYERS, 1.00F, 1.0F);
 			}
 		}
 	}

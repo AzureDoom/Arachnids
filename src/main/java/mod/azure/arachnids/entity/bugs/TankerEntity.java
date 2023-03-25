@@ -7,6 +7,11 @@ import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -45,11 +50,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<TankerEntity> {
 
@@ -92,10 +92,7 @@ public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<Tanke
 
 	@Override
 	public List<ExtendedSensor<TankerEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<TankerEntity>().setPredicate((target, entity) -> target instanceof Player
-						|| !(target instanceof BaseBugEntity) || target instanceof Villager),
-				new HurtBySensor<>(), new UnreachableTargetSensor<TankerEntity>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<TankerEntity>().setPredicate((target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager), new HurtBySensor<>(), new UnreachableTargetSensor<TankerEntity>());
 	}
 
 	@Override
@@ -105,50 +102,33 @@ public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<Tanke
 
 	@Override
 	public BrainActivityGroup<TankerEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<TankerEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(
-						new SetRandomWalkTarget<>().speedModifier(1).startCondition(entity -> !entity.isAggressive()),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<TankerEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1).startCondition(entity -> !entity.isAggressive()), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<TankerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().stopIf(
-						target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
-				new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(20)
-						.whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(20).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		final var aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
-			if ((e instanceof ScorpionEntity || e instanceof TankerEntity || e instanceof PlasmaEntity)
-					&& e.tickCount < 1) {
+			if ((e instanceof ScorpionEntity || e instanceof TankerEntity || e instanceof PlasmaEntity) && e.tickCount < 1)
 				this.remove(Entity.RemovalReason.DISCARDED);
-			}
 		});
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, ArachnidsConfig.tanker_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.tanker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.tanker_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.tanker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide())
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
-		}
 	}
 
 	@Override
@@ -187,7 +167,7 @@ public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<Tanke
 	protected SoundEvent getStepSound() {
 		return ArachnidsSounds.TANKER_MOVING;
 	}
-	
+
 	@Override
 	public boolean fireImmune() {
 		return true;

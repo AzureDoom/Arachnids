@@ -40,11 +40,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 @Environment(EnvType.CLIENT)
 public class ArachnidsClientInit implements ClientModInitializer {
 
-	public static KeyMapping reload = new KeyMapping("key.arachnids.reload", InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_R, "category.arachnids.binds");
+	public static KeyMapping reload = new KeyMapping("key.arachnids.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.arachnids.binds");
 
-	public static KeyMapping scope = new KeyMapping("key.arachnids.scope", InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_LEFT_ALT, "category.arachnids.binds");
+	public static KeyMapping scope = new KeyMapping("key.arachnids.scope", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "category.arachnids.binds");
 
 	public static final ResourceLocation PacketID = new ResourceLocation(ArachnidsMod.MODID, "spawn_packet");
 
@@ -69,22 +67,19 @@ public class ArachnidsClientInit implements ClientModInitializer {
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FLARE, (ctx) -> new FlareRender(ctx));
 		EntityRendererRegistry.register(ProjectilesEntityRegister.FIRING, (ctx) -> new FlameFiringRender(ctx));
 		ParticleFactoryRegistry.getInstance().register(ArachnidsParticles.FLARE, FlareParticle.RedSmokeFactory::new);
-		ItemProperties.register(ArachnidsItems.M55, new ResourceLocation("broken"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					return isUsable(itemStack) ? 0.0F : 1.0F;
-				});
-		ItemProperties.register(ArachnidsItems.MAR1, new ResourceLocation("scoped"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					if (livingEntity != null)
-						return isScoped(itemStack) ? 1.0F : 0.0F;
-					return 0.0F;
-				});
-		ItemProperties.register(ArachnidsItems.MAR2, new ResourceLocation("scoped"),
-				(itemStack, clientWorld, livingEntity, seed) -> {
-					if (livingEntity != null)
-						return isScoped(itemStack) ? 1.0F : 0.0F;
-					return 0.0F;
-				});
+		ItemProperties.register(ArachnidsItems.M55, new ResourceLocation("broken"), (itemStack, clientWorld, livingEntity, seed) -> {
+			return isUsable(itemStack) ? 0.0F : 1.0F;
+		});
+		ItemProperties.register(ArachnidsItems.MAR1, new ResourceLocation("scoped"), (itemStack, clientWorld, livingEntity, seed) -> {
+			if (livingEntity != null)
+				return isScoped(itemStack) ? 1.0F : 0.0F;
+			return 0.0F;
+		});
+		ItemProperties.register(ArachnidsItems.MAR2, new ResourceLocation("scoped"), (itemStack, clientWorld, livingEntity, seed) -> {
+			if (livingEntity != null)
+				return isScoped(itemStack) ? 1.0F : 0.0F;
+			return 0.0F;
+		});
 	}
 
 	private static boolean isUsable(ItemStack stack) {

@@ -1,13 +1,17 @@
 package mod.azure.arachnids.entity.bugs;
 
 import java.util.List;
-import java.util.SplittableRandom;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -50,11 +54,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<WarriorEntity> {
 
@@ -101,56 +100,33 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 
 	@Override
 	public List<ExtendedSensor<WarriorEntity>> getSensors() {
-		return ObjectArrayList.of(
-				new NearbyPlayersSensor<>(), 
-				new NearbyLivingEntitySensor<WarriorEntity>().setPredicate(
-						(target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager),
-				new HurtBySensor<>(),
-				new UnreachableTargetSensor<WarriorEntity>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<WarriorEntity>().setPredicate((target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager), new HurtBySensor<>(), new UnreachableTargetSensor<WarriorEntity>());
 	}
 
 	@Override
 	public BrainActivityGroup<WarriorEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(
-				new LookAtTarget<>(),
-				new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new MoveToWalkTarget<>());
 	}
 
 	@Override
 	public BrainActivityGroup<WarriorEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<WarriorEntity>(
-						new TargetOrRetaliate<>(), 
-						new SetPlayerLookTarget<>().stopIf(
-								target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()),
-			            new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(
-						new SetRandomWalkTarget<>().speedModifier(1),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<WarriorEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<WarriorEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player)target).isCreative()),
-				new SetWalkTargetToAttackTarget<>().speedMod(1.5F),
-				//new BreakBlock<>().forBlocks((entity, pos, state) -> state.is(Blocks.OBSIDIAN)).timeToBreak((entity, pos, state) -> 60), 
-				new BugMeleeAttack<>(5).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new BugMeleeAttack<>(5).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, ArachnidsConfig.warrior_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.warrior_melee).add(Attributes.MOVEMENT_SPEED, 0.25D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.warrior_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.warrior_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide())
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
-		}
 	}
 
 	@Override
@@ -173,17 +149,13 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 
 	@Override
 	public Component getCustomName() {
-		return this.getVariant() == 1 ? Component.translatable("entity.arachnids.workertiger")
-				: this.getVariant() == 2 ? Component.translatable("entity.arachnids.workerplasma")
-						: super.getCustomName();
+		return this.getVariant() == 1 ? Component.translatable("entity.arachnids.workertiger") : this.getVariant() == 2 ? Component.translatable("entity.arachnids.workerplasma") : super.getCustomName();
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverWorldAccess, DifficultyInstance difficulty,
-			MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverWorldAccess, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityTag) {
 		entityData = super.finalizeSpawn(serverWorldAccess, difficulty, spawnReason, entityData, entityTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 4);
+		int var = this.getRandom().nextInt(0, 4);
 		this.setVariant(var);
 		return entityData;
 	}

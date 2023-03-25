@@ -1,7 +1,6 @@
 package mod.azure.arachnids.entity.bugs;
 
 import java.util.List;
-import java.util.SplittableRandom;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.arachnids.config.ArachnidsConfig;
@@ -11,6 +10,12 @@ import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.entity.tasks.RandomFlyConvergeOnTargetGoal;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.core.object.PlayState;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -58,12 +63,6 @@ import net.tslat.smartbrainlib.api.core.sensor.custom.UnreachableTargetSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<HopperEntity> {
 
@@ -78,11 +77,9 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (!this.isAggressive() && event.isMoving()
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (!this.isAggressive() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
-			if (this.entityData.get(STATE) == 0 && this.isAggressive() && event.isMoving()
-					&& !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (this.entityData.get(STATE) == 0 && this.isAggressive() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
 			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("melee"));
@@ -90,8 +87,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("flame_breath"));
 			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying"))
-					&& !event.isCurrentAnimation(RawAnimation.begin().thenLoop("moving")))
+			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("moving")))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 			return PlayState.CONTINUE;
 		}));
@@ -114,41 +110,23 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 
 	@Override
 	public List<ExtendedSensor<HopperEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(),
-				new NearbyLivingEntitySensor<HopperEntity>().setPredicate((target, entity) -> target instanceof Player
-						|| !(target instanceof BaseBugEntity) || target instanceof Villager),
-				new HurtBySensor<>(), new UnreachableTargetSensor<HopperEntity>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<HopperEntity>().setPredicate((target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager), new HurtBySensor<>(), new UnreachableTargetSensor<HopperEntity>());
 	}
 
 	@Override
 	public BrainActivityGroup<HopperEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(),
-				new StrafeTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1),
-				new MoveToWalkTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1));
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new StrafeTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1), new MoveToWalkTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1));
 	}
 
 	@Override
 	public BrainActivityGroup<HopperEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(
-				new FirstApplicableBehaviour<HopperEntity>(new TargetOrRetaliate<>(),
-						new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive()
-								|| target instanceof Player && ((Player) target).isCreative()),
-						new SetRandomLookTarget<>()),
-				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1),
-						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<HopperEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
 	}
 
 	@Override
 	public BrainActivityGroup<HopperEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(
-				new InvalidateAttackTarget<>().stopIf(
-						target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()
-								|| !(target instanceof BaseBugEntity) || target instanceof Villager),
-				new SetWalkTargetToAttackTarget<>().speedMod(this.getEntityData().get(VARIANT) == 2 ? 0.0F : 2.5F)
-						.stopIf(entity -> this.getEntityData().get(VARIANT) == 2),
-				new BugProjectileAttack<>(5).startCondition(entity -> this.getEntityData().get(VARIANT) != 1),
-				new BugMeleeAttack<>(15).whenStarting(entity -> setAggressive(true))
-						.whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative() || !(target instanceof BaseBugEntity) || target instanceof Villager), new SetWalkTargetToAttackTarget<>().speedMod(this.getEntityData().get(VARIANT) == 2 ? 0.0F : 2.5F).stopIf(entity -> this.getEntityData().get(VARIANT) == 2), new BugProjectileAttack<>(5).startCondition(entity -> this.getEntityData().get(VARIANT) != 1),
+				new BugMeleeAttack<>(15).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	@Override
@@ -161,17 +139,16 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	}
 
 	public void travel(Vec3 movementInput) {
-		if (this.tickCount % 10 == 0) {
+		if (this.tickCount % 10 == 0)
 			this.refreshDimensions();
-		}
 		if (this.isAggressive() && this.getTarget() != null) {
-			float f = 0.91F;
-			float f1 = 0.16277137F / (f * f * f);
+			var f = 0.91F;
+			var f1 = 0.16277137F / (f * f * f);
 			this.moveRelative(this.onGround ? 0.3F * f1 : 3.6F, movementInput);
 			this.move(MoverType.SELF, this.getDeltaMovement());
 			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
 			this.lookAt(this.getTarget(), 30.0F, 30.0F);
-			this.calculateEntityAnimation(this, false);
+			this.calculateEntityAnimation(false);
 		} else
 			super.travel(movementInput);
 	}
@@ -187,8 +164,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	}
 
 	@Override
-	protected void checkFallDamage(double heightDifference, boolean onGround, BlockState landedState,
-			BlockPos landedPosition) {
+	protected void checkFallDamage(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
 	}
 
 	public boolean isInAir() {
@@ -196,11 +172,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, ArachnidsConfig.hopper_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.hopper_melee).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D)
-				.add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 2.0D)
-				.add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.hopper_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.hopper_melee).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 2.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -237,11 +209,9 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-			MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, SpawnGroupData spawnDataIn, CompoundTag dataTag) {
 		spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
-		SplittableRandom random = new SplittableRandom();
-		int var = random.nextInt(0, 3);
+		var var = this.getRandom().nextInt(0, 3);
 		this.setVariant(var);
 		return spawnDataIn;
 	}

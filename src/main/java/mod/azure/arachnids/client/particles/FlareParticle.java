@@ -11,8 +11,7 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
 
 public class FlareParticle extends TextureSheetParticle {
-	private FlareParticle(ClientLevel world, double x, double y, double z, double xd, double yd,
-			double zd, float red, float green, float blue) {
+	private FlareParticle(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, float red, float green, float blue) {
 		super(world, x, y, z);
 		this.scale(3.0F);
 		this.setSize(0.25F, 0.25F);
@@ -31,19 +30,14 @@ public class FlareParticle extends TextureSheetParticle {
 		this.yo = this.y;
 		this.zo = this.z;
 		if (this.age++ < this.lifetime && this.alpha > 0.0F) {
-			this.xd += (double) (this.random.nextFloat() / 5000.0F
-					* (float) (this.random.nextBoolean() ? 1 : -1));
-			this.zd += (double) (this.random.nextFloat() / 5000.0F
-					* (float) (this.random.nextBoolean() ? 1 : -1));
+			this.xd += (double) (this.random.nextFloat() / 5000.0F * (float) (this.random.nextBoolean() ? 1 : -1));
+			this.zd += (double) (this.random.nextFloat() / 5000.0F * (float) (this.random.nextBoolean() ? 1 : -1));
 			this.yd -= (double) this.gravity;
 			this.move(this.xd, this.yd, this.zd);
-			if (this.age >= this.lifetime - 60 && this.alpha > 0.01F) {
+			if (this.age >= this.lifetime - 60 && this.alpha > 0.01F)
 				this.alpha -= 0.015F;
-			}
-
-		} else {
+		} else
 			this.remove();
-		}
 	}
 
 	@Override
@@ -59,9 +53,8 @@ public class FlareParticle extends TextureSheetParticle {
 			this.spriteProvider = spriteProvider;
 		}
 
-		public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d,
-				double e, double f, double g, double h, double i) {
-			FlareParticle campfireSmokeParticle = new FlareParticle(clientWorld, d, e, f, g, h, i, 22, 156, 156);
+		public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+			var campfireSmokeParticle = new FlareParticle(clientWorld, d, e, f, g, h, i, 22, 156, 156);
 			campfireSmokeParticle.pickSprite(this.spriteProvider);
 			return campfireSmokeParticle;
 		}

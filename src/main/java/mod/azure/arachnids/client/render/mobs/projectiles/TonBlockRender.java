@@ -12,16 +12,14 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TonBlockRender extends EntityRenderer<TONBlockEntity> {
 
-	protected static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID,
-			"textures/blocks/barrel_explode.png");
+	protected static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID, "textures/blocks/barrel_explode.png");
 
 	public TonBlockRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
 		this.shadowRadius = 0.5F;
 	}
 
-	public void render(TONBlockEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn,
-			MultiBufferSource bufferIn, int packedLightIn) {
+	public void render(TONBlockEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0.0D, 0.5D, 0.0D);
 

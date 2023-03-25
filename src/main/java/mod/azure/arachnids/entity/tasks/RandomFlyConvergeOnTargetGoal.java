@@ -18,14 +18,10 @@ public class RandomFlyConvergeOnTargetGoal extends Goal {
 	 * 
 	 * @param entity
 	 * @param flySpeed             The flying speed of the entity.
-	 * @param convergeDistance     The distance in blocks from the target at which
-	 *                             the entity starts to trend towards moving back
-	 *                             towards it.
-	 * @param convergenceAdherence The strength of the convergence. Max value is 1,
-	 *                             default 0.25.
+	 * @param convergeDistance     The distance in blocks from the target at which the entity starts to trend towards moving back towards it.
+	 * @param convergenceAdherence The strength of the convergence. Max value is 1, default 0.25.
 	 */
-	public RandomFlyConvergeOnTargetGoal(BaseBugEntity entity, double flySpeed, double convergeDistance,
-			double convergenceAdherence) {
+	public RandomFlyConvergeOnTargetGoal(BaseBugEntity entity, double flySpeed, double convergeDistance, double convergenceAdherence) {
 		this.parentEntity = entity;
 		this.flySpeed = flySpeed;
 		this.convergeDistance = convergeDistance * convergeDistance;

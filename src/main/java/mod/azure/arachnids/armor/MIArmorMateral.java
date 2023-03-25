@@ -7,7 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -28,8 +28,7 @@ public enum MIArmorMateral implements ArmorMaterial {
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	private MIArmorMateral(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantability,
-			SoundEvent equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> supplier) {
+	private MIArmorMateral(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantability, SoundEvent equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> supplier) {
 		this.name = name;
 		this.durabilityMultiplier = durabilityMultiplier;
 		this.protectionAmounts = protectionAmounts;
@@ -41,13 +40,13 @@ public enum MIArmorMateral implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurabilityForSlot(EquipmentSlot slot) {
-		return BASE_DURABILITY[slot.getIndex()] * this.durabilityMultiplier;
+	public int getDurabilityForType(Type slot) {
+		return BASE_DURABILITY[slot.getSlot().getIndex()] * this.durabilityMultiplier;
 	}
 
 	@Override
-	public int getDefenseForSlot(EquipmentSlot slot) {
-		return this.protectionAmounts[slot.getIndex()];
+	public int getDefenseForType(Type slot) {
+		return this.protectionAmounts[slot.getSlot().getIndex()];
 	}
 
 	@Override

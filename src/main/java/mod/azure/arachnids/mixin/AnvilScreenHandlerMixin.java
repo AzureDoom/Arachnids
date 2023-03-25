@@ -20,32 +20,22 @@ import net.minecraft.world.item.enchantment.Enchantments;
 @Mixin(value = AnvilMenu.class)
 public abstract class AnvilScreenHandlerMixin extends ItemCombinerMenu {
 
-	public AnvilScreenHandlerMixin(MenuType<?> type, int syncId, Inventory playerInventory,
-			ContainerLevelAccess context) {
+	public AnvilScreenHandlerMixin(MenuType<?> type, int syncId, Inventory playerInventory, ContainerLevelAccess context) {
 		super(type, syncId, playerInventory, context);
 	}
 
 	@Inject(method = "createResult", at = @At(value = "RETURN"))
 	private void blockEnchantments(CallbackInfo ci) {
-		ItemStack leftStack = this.inputSlots.getItem(0).copy();
-		ItemStack rightStack = this.inputSlots.getItem(1).copy();
-		if ((leftStack.getItem() instanceof BaseGunItemExtended || leftStack.getItem() instanceof M55Item)
-				&& (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, rightStack) > 0
-						|| EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, rightStack) > 0
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.UNBREAKING))) {
-			ItemStack repaired = ItemStack.EMPTY;
+		var leftStack = this.inputSlots.getItem(0).copy();
+		var rightStack = this.inputSlots.getItem(1).copy();
+		if ((leftStack.getItem() instanceof BaseGunItemExtended || leftStack.getItem() instanceof M55Item) && (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, rightStack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, rightStack) > 0 || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.MENDING) || EnchantmentHelper.getEnchantments(rightStack).containsKey(Enchantments.UNBREAKING))) {
+			var repaired = ItemStack.EMPTY;
 			this.resultSlots.setItem(0, repaired);
 			this.broadcastChanges();
 		}
-		if (!(leftStack.getItem() instanceof BaseGunItemExtended)
-				&& (EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, rightStack) > 0
-						|| EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.GRENADEATTACHMENT, rightStack) > 0
-						|| EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.SNIPERATTACHMENT, rightStack) > 0
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.FLAREATTACHMENT)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.GRENADEATTACHMENT)
-						|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.SNIPERATTACHMENT))) {
-			ItemStack repaired = ItemStack.EMPTY;
+		if (!(leftStack.getItem() instanceof BaseGunItemExtended) && (EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, rightStack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.GRENADEATTACHMENT, rightStack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.SNIPERATTACHMENT, rightStack) > 0 || EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.FLAREATTACHMENT)
+				|| EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.GRENADEATTACHMENT) || EnchantmentHelper.getEnchantments(rightStack).containsKey(ArachnidsMod.SNIPERATTACHMENT))) {
+			var repaired = ItemStack.EMPTY;
 			this.resultSlots.setItem(0, repaired);
 			this.broadcastChanges();
 		}

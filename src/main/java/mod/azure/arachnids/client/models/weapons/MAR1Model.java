@@ -2,8 +2,8 @@ package mod.azure.arachnids.client.models.weapons;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.items.weapons.MAR1Item;
-import net.minecraft.resources.ResourceLocation;
 import mod.azure.azurelib.model.GeoModel;
+import net.minecraft.resources.ResourceLocation;
 
 public class MAR1Model extends GeoModel<MAR1Item> {
 	@Override

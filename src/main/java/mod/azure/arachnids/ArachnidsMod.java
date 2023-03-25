@@ -44,42 +44,36 @@ public class ArachnidsMod implements ModInitializer {
 	public static final Enchantment SNIPERATTACHMENT = new SnipingEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment GRENADEATTACHMENT = new GrenadeEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment FLAREATTACHMENT = new FlareEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
-	public static final CreativeModeTab GENERAL = FabricItemGroup
-			.builder(new ResourceLocation(ArachnidsMod.MODID, "itemgroup"))
-			.icon(() -> new ItemStack(ArachnidsItems.MZ90))
-			.displayItems((enabledFeatures, entries, operatorEnabled) -> {
-				entries.accept(ArachnidsItems.MAR1);
-				entries.accept(ArachnidsItems.MAR2);
-				entries.accept(ArachnidsItems.M55);
-				entries.accept(ArachnidsItems.BULLETS);
-				entries.accept(ArachnidsItems.TON);
-				entries.accept(ArachnidsItems.MZ90);
-				entries.accept(ArachnidsItems.FLARE);
-				entries.accept(ArachnidsItems.MI_HELMET);
-				entries.accept(ArachnidsItems.MI_CHESTPLATE);
-				entries.accept(ArachnidsItems.MI_LEGGINGS);
-				entries.accept(ArachnidsItems.MI_BOOTS);
-				entries.accept(ArachnidsItems.ARKELLIANBUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.WORKERBUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.WARRIORBUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.HOOPERBUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.PLAMSABUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.SCORPIONBUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.TANKERBUG_SPAWN_EGG);
-				entries.accept(ArachnidsItems.BRAINBUG_SPAWN_EGG);
-			}).build();
+	public static final CreativeModeTab GENERAL = FabricItemGroup.builder(new ResourceLocation(ArachnidsMod.MODID, "itemgroup")).icon(() -> new ItemStack(ArachnidsItems.MZ90)).displayItems((context, entries) -> {
+		entries.accept(ArachnidsItems.MAR1);
+		entries.accept(ArachnidsItems.MAR2);
+		entries.accept(ArachnidsItems.M55);
+		entries.accept(ArachnidsItems.BULLETS);
+		entries.accept(ArachnidsItems.TON);
+		entries.accept(ArachnidsItems.MZ90);
+		entries.accept(ArachnidsItems.FLARE);
+		entries.accept(ArachnidsItems.MI_HELMET);
+		entries.accept(ArachnidsItems.MI_CHESTPLATE);
+		entries.accept(ArachnidsItems.MI_LEGGINGS);
+		entries.accept(ArachnidsItems.MI_BOOTS);
+		entries.accept(ArachnidsItems.ARKELLIANBUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.WORKERBUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.WARRIORBUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.HOOPERBUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.PLAMSABUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.SCORPIONBUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.TANKERBUG_SPAWN_EGG);
+		entries.accept(ArachnidsItems.BRAINBUG_SPAWN_EGG);
+	}).build();
 
 	@Override
 	public void onInitialize() {
 		MidnightConfig.init(MODID, ArachnidsConfig.class);
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "mz90"), MZ90BLOCK);
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "ton"), TONBLOCK);
-		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "grenadeattachment"),
-				GRENADEATTACHMENT);
-		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "sniperattachment"),
-				SNIPERATTACHMENT);
-		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "flareattachment"),
-				FLAREATTACHMENT);
+		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "grenadeattachment"), GRENADEATTACHMENT);
+		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "sniperattachment"), SNIPERATTACHMENT);
+		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "flareattachment"), FLAREATTACHMENT);
 		ITEMS = new ArachnidsItems();
 		SOUNDS = new ArachnidsSounds();
 		PROJECTILES = new ProjectilesEntityRegister();
@@ -87,20 +81,13 @@ public class ArachnidsMod implements ModInitializer {
 		MobSpawn.addSpawnEntries();
 		MobAttributes.init();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> ArachnidsVillagerTrades.addTrades());
-		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_BULLETS,
-				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandItem().getItem() instanceof BaseGunItemExtended) {
-						((BaseGunItemExtended) player.getMainHandItem().getItem()).reloadBullets(player,
-								InteractionHand.MAIN_HAND);
-					}
-					;
-				});
-		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_TON,
-				(server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
-					if (player.getMainHandItem().getItem() instanceof M55Item) {
-						((M55Item) player.getMainHandItem().getItem()).reload(player, InteractionHand.MAIN_HAND);
-					}
-					;
-				});
+		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_BULLETS, (server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
+			if (player.getMainHandItem().getItem() instanceof BaseGunItemExtended)
+				((BaseGunItemExtended) player.getMainHandItem().getItem()).reloadBullets(player, InteractionHand.MAIN_HAND);
+		});
+		ServerPlayNetworking.registerGlobalReceiver(ArachnidsMod.RELOAD_TON, (server, player, serverPlayNetworkHandler, inputPacket, packetSender) -> {
+			if (player.getMainHandItem().getItem() instanceof M55Item)
+				((M55Item) player.getMainHandItem().getItem()).reload(player, InteractionHand.MAIN_HAND);
+		});
 	}
 }

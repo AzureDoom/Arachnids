@@ -21,7 +21,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 @Mixin(Gui.class)
@@ -42,20 +41,14 @@ public abstract class SniperMixin extends GuiComponent {
 
 	@Inject(at = @At("TAIL"), method = "render")
 	private void render(CallbackInfo info) {
-		ItemStack itemStack = this.minecraft.player.getInventory().getSelected();
-		if (this.minecraft.options.getCameraType().isFirstPerson()
-				&& (itemStack.getItem() instanceof MAR1Item || itemStack.getItem() instanceof MAR2Item)
-				&& EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.SNIPERATTACHMENT, itemStack) > 0) {
+		var itemStack = this.minecraft.player.getInventory().getSelected();
+		if (this.minecraft.options.getCameraType().isFirstPerson() && (itemStack.getItem() instanceof MAR1Item || itemStack.getItem() instanceof MAR2Item) && EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.SNIPERATTACHMENT, itemStack) > 0) {
 			if (ArachnidsClientInit.scope.isDown()) {
-				if (this.scoped == true) {
+				if (this.scoped == true)
 					this.scoped = false;
-				}
 				this.renderSniperOverlay();
-			} else {
-				if (!this.scoped) {
-					this.scoped = true;
-				}
-			}
+			} else if (!this.scoped)
+				this.scoped = true;
 		}
 	}
 

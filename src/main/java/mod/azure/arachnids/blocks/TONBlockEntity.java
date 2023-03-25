@@ -25,15 +25,13 @@ public class TONBlockEntity extends Entity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.TON_damage,
-				true,
-				(ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.TON_damage, true, (ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	public TONBlockEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {
 		this(ArachnidsMobs.TON, worldIn);
 		this.absMoveTo(x, y, z);
-		double d = level.random.nextDouble() * 6.2831854820251465D;
+		var d = level.random.nextDouble() * 6.2831854820251465D;
 		this.setDeltaMovement(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
 		this.xo = x;
 		this.yo = y;
@@ -50,12 +48,10 @@ public class TONBlockEntity extends Entity {
 	protected void defineSynchedData() {
 	}
 
-
 	public void tick() {
 		this.remove(Entity.RemovalReason.DISCARDED);
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide())
 			this.explode();
-		}
 	}
 
 	@Override
@@ -65,7 +61,7 @@ public class TONBlockEntity extends Entity {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag) {
 	}
-	
+
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return new ClientboundAddEntityPacket(this);

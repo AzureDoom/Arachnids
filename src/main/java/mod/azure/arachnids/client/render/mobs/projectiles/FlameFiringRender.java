@@ -11,8 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FlameFiringRender extends EntityRenderer<FlameFiring> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID,
-			"textures/item/bullet.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID, "textures/item/bullet.png");
 
 	public FlameFiringRender(EntityRendererProvider.Context renderManagerIn) {
 		super(renderManagerIn);
@@ -24,8 +23,7 @@ public class FlameFiringRender extends EntityRenderer<FlameFiring> {
 	}
 
 	@Override
-	public void render(FlameFiring persistentProjectileEntity, float f, float g, PoseStack matrixStack,
-			MultiBufferSource vertexConsumerProvider, int i) {
+	public void render(FlameFiring persistentProjectileEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
 		super.render(persistentProjectileEntity, f, g, matrixStack, vertexConsumerProvider, i);
 		matrixStack.pushPose();
 		matrixStack.scale(0, 0, 0);

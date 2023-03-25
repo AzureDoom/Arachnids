@@ -10,7 +10,6 @@ import mod.azure.azurelib.network.packet.EntityPacket;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,8 +35,7 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 		this.directHitDamage = directHitDamage;
 	}
 
-	public BugPlasmaEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ,
-			float directHitDamage) {
+	public BugPlasmaEntity(Level worldIn, LivingEntity shooter, double accelX, double accelY, double accelZ, float directHitDamage) {
 		super(ProjectilesEntityRegister.BUGPLASMA, shooter, accelX, accelY, accelZ, worldIn);
 		this.shooter = shooter;
 		this.directHitDamage = directHitDamage;
@@ -94,18 +92,16 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
 		if (!this.level.isClientSide()) {
-			Entity entity = entityHitResult.getEntity();
-			Entity entity2 = this.getOwner();
-			entity.hurt(DamageSource.mobAttack((LivingEntity) entity2), directHitDamage);
-			if (entity2 instanceof LivingEntity) {
+			var entity = entityHitResult.getEntity();
+			var entity2 = this.getOwner();
+			entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
+			if (entity2 instanceof LivingEntity)
 				this.doEnchantDamageEffects((LivingEntity) entity2, entity);
-			}
 		}
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false,
-				Level.ExplosionInteraction.NONE);
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, Level.ExplosionInteraction.NONE);
 	}
 
 	public LivingEntity getShooter() {

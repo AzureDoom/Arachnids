@@ -2,9 +2,9 @@ package mod.azure.arachnids.client.models.mobs;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.ArkellianEntity;
+import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class ArkellianModel extends GeoModel<ArkellianEntity> {
 

@@ -55,10 +55,8 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	protected BulletEntity(EntityType<? extends BulletEntity> type, LivingEntity owner, Level world) {
 		this(type, owner.getX(), owner.getEyeY() - 0.10000000149011612D, owner.getZ(), world);
 		this.setOwner(owner);
-		if (owner instanceof Player) {
+		if (owner instanceof Player)
 			this.pickup = AbstractArrow.Pickup.ALLOWED;
-		}
-
 	}
 
 	@Override
@@ -98,9 +96,9 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 		if (this.tickCount >= 80)
 			this.remove(Entity.RemovalReason.DISCARDED);
 		if (this.level.isClientSide()) {
-			double d2 = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
-			double f2 = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
-			this.level.addParticle(ParticleTypes.SMOKE, true, d2, this.getY(), f2, 0, 0, 0);
+			double x = this.getX() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+			double z = this.getZ() + (this.random.nextDouble()) * (double) this.getBbWidth() * 0.5D;
+			this.level.addParticle(ParticleTypes.SMOKE, true, x, this.getY(), z, 0, 0, 0);
 		}
 	}
 
@@ -131,51 +129,41 @@ public class BulletEntity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
-		}
 		this.setSoundEvent(SoundEvents.ARMOR_EQUIP_IRON);
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		Entity entity = entityHitResult.getEntity();
-		if (entityHitResult.getType() != HitResult.Type.ENTITY
-				|| !((EntityHitResult) entityHitResult).getEntity().is(entity)) {
-			if (!this.level.isClientSide()) {
+		var entity = entityHitResult.getEntity();
+		if (entityHitResult.getType() != HitResult.Type.ENTITY || !((EntityHitResult) entityHitResult).getEntity().is(entity))
+			if (!this.level.isClientSide())
 				this.remove(Entity.RemovalReason.DISCARDED);
-			}
-		}
-		Entity entity2 = this.getOwner();
+		var entity2 = this.getOwner();
 		DamageSource damageSource2;
 		if (entity2 == null) {
-			damageSource2 = DamageSource.arrow(this, this);
+			damageSource2 = damageSources().arrow(this, this);
 		} else {
-			damageSource2 = DamageSource.arrow(this, entity2);
+			damageSource2 = damageSources().arrow(this, entity2);
 			if (entity2 instanceof LivingEntity) {
 				((LivingEntity) entity2).setLastHurtMob(entity);
 			}
 		}
 		if (entity.hurt(damageSource2, bulletdamage)) {
 			if (entity instanceof LivingEntity) {
-				LivingEntity livingEntity = (LivingEntity) entity;
+				var livingEntity = (LivingEntity) entity;
 				if (!this.level.isClientSide() && entity2 instanceof LivingEntity) {
 					EnchantmentHelper.doPostHurtEffects(livingEntity, entity2);
 					EnchantmentHelper.doPostDamageEffects((LivingEntity) entity2, livingEntity);
 				}
 
 				this.doPostHurtEffects(livingEntity);
-				if (entity2 != null && livingEntity != entity2 && livingEntity instanceof Player
-						&& entity2 instanceof ServerPlayer && !this.isSilent()) {
-					((ServerPlayer) entity2).connection
-							.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
-				}
+				if (entity2 != null && livingEntity != entity2 && livingEntity instanceof Player && entity2 instanceof ServerPlayer && !this.isSilent())
+					((ServerPlayer) entity2).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
 			}
-		} else {
-			if (!this.level.isClientSide()) {
-				this.remove(Entity.RemovalReason.DISCARDED);
-			}
-		}
+		} else if (!this.level.isClientSide())
+			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
 	@Override

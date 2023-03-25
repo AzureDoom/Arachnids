@@ -4,12 +4,9 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -35,21 +32,17 @@ public class TONBlock extends Block {
 	}
 
 	private static void primeBlock(Level world, BlockPos pos, LivingEntity igniter) {
-		if (!world.isClientSide()) {
-			TONBlockEntity tntEntity = new TONBlockEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY(),
-					(double) pos.getZ() + 0.5D, igniter);
-			world.addFreshEntity(tntEntity);
-		}
+		if (!world.isClientSide())
+			world.addFreshEntity(new TONBlockEntity(world, (double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, igniter));
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
-		ItemStack itemStack = player.getItemInHand(hand);
-		Item item = itemStack.getItem();
-		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		var itemStack = player.getItemInHand(hand);
+		var item = itemStack.getItem();
+		if (item != Items.FLINT_AND_STEEL && item != Items.FIRE_CHARGE)
 			return super.use(state, world, pos, player, hand, hit);
-		} else {
+		else {
 			primeBlock(world, pos, player);
 			world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			return InteractionResult.sidedSuccess(world.isClientSide);
@@ -59,8 +52,8 @@ public class TONBlock extends Block {
 	@Override
 	public void onProjectileHit(Level world, BlockState state, BlockHitResult hit, Projectile projectile) {
 		if (!world.isClientSide()) {
-			Entity entity = projectile.getOwner();
-			BlockPos blockPos = hit.getBlockPos();
+			var entity = projectile.getOwner();
+			var blockPos = hit.getBlockPos();
 			primeBlock(world, blockPos, entity instanceof LivingEntity ? (LivingEntity) entity : null);
 			world.removeBlock(blockPos, false);
 		}

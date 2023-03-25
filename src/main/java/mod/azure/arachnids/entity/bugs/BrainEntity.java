@@ -3,6 +3,11 @@ package mod.azure.arachnids.entity.bugs;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,11 +24,6 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.util.AzureLibUtil;
 
 public class BrainEntity extends BaseBugEntity {
 
@@ -51,10 +51,7 @@ public class BrainEntity extends BaseBugEntity {
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D)
-				.add(Attributes.MAX_HEALTH, ArachnidsConfig.brain_health)
-				.add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.brain_melee).add(Attributes.MOVEMENT_SPEED, 0.05D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.brain_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.brain_melee).add(Attributes.MOVEMENT_SPEED, 0.05D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -65,19 +62,17 @@ public class BrainEntity extends BaseBugEntity {
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide())
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
-		}
 	}
 
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		final AABB aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
+		final var aabb = new AABB(this.blockPosition().above()).inflate(64D, 64D, 64D);
 		this.getCommandSenderWorld().getEntities(this, aabb).forEach(e -> {
-			if (e instanceof BrainEntity && e.tickCount < 1) {
+			if (e instanceof BrainEntity && e.tickCount < 1)
 				e.remove(Entity.RemovalReason.DISCARDED);
-			}
 		});
 	}
 

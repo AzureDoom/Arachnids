@@ -16,14 +16,14 @@ import net.minecraft.world.level.Level;
 
 public class MIArmorItem extends ArmorItem {
 
-	public MIArmorItem(EquipmentSlot slot) {
+	public MIArmorItem(Type slot) {
 		super(MIArmorMateral.MIARMOR, slot, new Item.Properties());
 	}
 
 	@Override
 	public void onCraftedBy(ItemStack stack, Level world, Player player) {
 		stack.hasTag();
-		if (slot == EquipmentSlot.HEAD)
+		if (type.getSlot() == EquipmentSlot.HEAD)
 			stack.enchant(Enchantments.FIRE_PROTECTION, 5);
 	}
 

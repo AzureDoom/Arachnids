@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import mod.azure.arachnids.items.weapons.BaseGunItemExtended;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,16 +33,14 @@ public abstract class HeldItemRendererMixin {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	public void fguns$cancelAnimation(CallbackInfo ci) {
-		LocalPlayer clientPlayerEntity = this.minecraft.player;
-		ItemStack itemStack = clientPlayerEntity.getMainHandItem();
-		ItemStack itemStack2 = clientPlayerEntity.getOffhandItem();
-		if (this.mainHandItem.getItem() instanceof BaseGunItemExtended && itemStack.getItem() instanceof BaseGunItemExtended
-				&& ItemStack.isSame(mainHandItem, itemStack)) {
+		var clientPlayerEntity = this.minecraft.player;
+		var itemStack = clientPlayerEntity.getMainHandItem();
+		var itemStack2 = clientPlayerEntity.getOffhandItem();
+		if (this.mainHandItem.getItem() instanceof BaseGunItemExtended && itemStack.getItem() instanceof BaseGunItemExtended && ItemStack.isSame(mainHandItem, itemStack)) {
 			this.mainHandHeight = 1;
 			this.mainHandItem = itemStack;
 		}
-		if (this.offHandItem.getItem() instanceof BaseGunItemExtended && itemStack2.getItem() instanceof BaseGunItemExtended
-				&& ItemStack.isSame(offHandItem, itemStack2)) {
+		if (this.offHandItem.getItem() instanceof BaseGunItemExtended && itemStack2.getItem() instanceof BaseGunItemExtended && ItemStack.isSame(offHandItem, itemStack2)) {
 			this.offHandHeight = 1;
 			this.offHandItem = itemStack2;
 		}

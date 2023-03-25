@@ -2,9 +2,9 @@ package mod.azure.arachnids.client.models.mobs;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.PlasmaEntity;
+import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class PlasmaModel extends GeoModel<PlasmaEntity> {
 
@@ -20,8 +20,7 @@ public class PlasmaModel extends GeoModel<PlasmaEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(PlasmaEntity object) {
-		return new ResourceLocation(ArachnidsMod.MODID,
-				"textures/entity/" + (object.getAttckingState() == 1 ? "plasma_glow" : "plasma") + ".png");
+		return new ResourceLocation(ArachnidsMod.MODID, "textures/entity/" + (object.getAttckingState() == 1 ? "plasma_glow" : "plasma") + ".png");
 	}
 
 	@Override

@@ -2,9 +2,9 @@ package mod.azure.arachnids.client.models.mobs.projectiles;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.items.ammo.MZ90Item;
+import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import mod.azure.azurelib.model.GeoModel;
 
 public class MZ90BlockModel extends GeoModel<MZ90Item> {
 	@Override

@@ -2,8 +2,8 @@ package mod.azure.arachnids.client.render.mobs;
 
 import mod.azure.arachnids.client.models.mobs.ArkellianModel;
 import mod.azure.arachnids.entity.bugs.ArkellianEntity;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 public class ArkellianRender extends GeoEntityRenderer<ArkellianEntity> {
 

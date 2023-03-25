@@ -13,15 +13,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FlareRender extends EntityRenderer<FlareEntity> {
 
-	protected static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID,
-			"textures/block/barrel_explode.png");
+	protected static final ResourceLocation TEXTURE = new ResourceLocation(ArachnidsMod.MODID, "textures/block/barrel_explode.png");
 
 	public FlareRender(EntityRendererProvider.Context dispatcher) {
 		super(dispatcher);
 	}
 
-	public void render(FlareEntity fireworkRocketEntity, float f, float g, PoseStack matrixStack,
-			MultiBufferSource vertexConsumerProvider, int i) {
+	public void render(FlareEntity fireworkRocketEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
 		matrixStack.pushPose();
 		matrixStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
 		matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));

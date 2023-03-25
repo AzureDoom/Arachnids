@@ -21,22 +21,19 @@ public class FlareItem extends Item {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemStack = user.getItemInHand(hand);
-		if (!user.getCooldowns().isOnCooldown(this)
-				&& user.getMainHandItem().getItem() instanceof FlareItem) {
+		var itemStack = user.getItemInHand(hand);
+		if (!user.getCooldowns().isOnCooldown(this) && user.getMainHandItem().getItem() instanceof FlareItem) {
 			user.getCooldowns().addCooldown(this, 25);
 			if (!world.isClientSide()) {
-				FlareEntity snowballEntity = new FlareEntity(world, itemStack, user, false);
-				snowballEntity.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 0.5F * 3.0F, 1.0F);
-				world.addFreshEntity(snowballEntity);
+				var flare = new FlareEntity(world, itemStack, user, false);
+				flare.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 0.5F * 3.0F, 1.0F);
+				world.addFreshEntity(flare);
 			}
-			if (!user.getAbilities().instabuild) {
+			if (!user.getAbilities().instabuild)
 				itemStack.shrink(1);
-			}
 			return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide());
-		} else {
+		} else 
 			return InteractionResultHolder.fail(itemStack);
-		}
 	}
 
 	@Override

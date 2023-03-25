@@ -27,7 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public class TONItem extends BlockItem implements GeoItem {
-	
+
 	private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
@@ -35,14 +35,15 @@ public class TONItem extends BlockItem implements GeoItem {
 		super(block, new Item.Properties());
 	}
 
-	// Utilise our own render hook to define our custom renderer
 	@Override
 	public void createRenderer(Consumer<Object> consumer) {
 		consumer.accept(new RenderProvider() {
-			private final TonBlockItemRender renderer = new TonBlockItemRender();
+			private TonBlockItemRender renderer = null;
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				if (renderer == null)
+					return new TonBlockItemRender();
 				return this.renderer;
 			}
 		});
@@ -53,7 +54,6 @@ public class TONItem extends BlockItem implements GeoItem {
 		return this.renderProvider;
 	}
 
-	// Register our animation controllers
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, "shoot_controller", event -> PlayState.CONTINUE));
@@ -71,23 +71,20 @@ public class TONItem extends BlockItem implements GeoItem {
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-		ItemStack itemStack = user.getItemInHand(hand);
-		if (!user.getCooldowns().isOnCooldown(this)
-				&& user.getMainHandItem().getItem() instanceof TONItem) {
+		var itemStack = user.getItemInHand(hand);
+		if (!user.getCooldowns().isOnCooldown(this) && user.getMainHandItem().getItem() instanceof TONItem) {
 			user.getCooldowns().addCooldown(this, 25);
 			if (!world.isClientSide()) {
-				TacticalOxygenNukeEntity snowballEntity = new TacticalOxygenNukeEntity(world, user, true);
-				snowballEntity.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.0F, 1.0F);
-				snowballEntity.moveTo(user.getX(), user.getY(0.95), user.getZ(), 0, 0);
-				world.addFreshEntity(snowballEntity);
+				var nuke = new TacticalOxygenNukeEntity(world, user, true);
+				nuke.shootFromRotation(user, user.getXRot(), user.getYRot(), 0.0F, 1.0F, 1.0F);
+				nuke.moveTo(user.getX(), user.getY(0.95), user.getZ(), 0, 0);
+				world.addFreshEntity(nuke);
 			}
-			if (!user.getAbilities().instabuild) {
+			if (!user.getAbilities().instabuild)
 				itemStack.shrink(1);
-			}
 			return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide());
-		} else {
+		} else
 			return InteractionResultHolder.fail(itemStack);
-		}
 	}
 
 	@Override
