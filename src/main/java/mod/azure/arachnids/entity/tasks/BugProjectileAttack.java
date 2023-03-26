@@ -86,12 +86,9 @@ public class BugProjectileAttack<E extends BaseBugEntity> extends CustomDelayedB
 			entity.shootPlasma(this.target);
 		if (entity instanceof ScorpionEntity)
 			entity.shootPlasma(this.target);
-		if (entity instanceof TankerEntity) {
-			int j;
-			for (j = 0; j < 15; ++j) {
+		if (entity instanceof TankerEntity) 
+			for (var j = 0; j < 15; ++j) 
 				entity.shootFlames(this.target);
-			}
-		}
 	}
 
 }
