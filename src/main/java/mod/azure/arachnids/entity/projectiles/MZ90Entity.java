@@ -131,6 +131,8 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 
 	@Override
 	public void tick() {
+		if (this.tickCount >= 45 && !this.level.isClientSide())
+			this.remove(Entity.RemovalReason.DISCARDED);
 		super.tick();
 	}
 
@@ -154,27 +156,25 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide()) 
 			if (this.tickCount >= 45) {
 				this.explode();
 				this.entityData.set(SPINNING, false);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
-		}
 		this.setSoundEvent(SoundEvents.GENERIC_EXPLODE);
 	}
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide()) {
+		if (!this.level.isClientSide()) 
 			this.explode();
 			if (this.tickCount >= 45) {
 				this.explode();
 				this.entityData.set(SPINNING, false);
 				this.remove(Entity.RemovalReason.DISCARDED);
 			}
-		}
 	}
 
 	protected void explode() {

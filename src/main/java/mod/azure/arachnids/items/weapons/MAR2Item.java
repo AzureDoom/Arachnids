@@ -12,6 +12,7 @@ import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.animatable.client.RenderProvider;
+import mod.azure.azurelib.items.BaseGunItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
@@ -49,23 +50,32 @@ public class MAR2Item extends BaseGunItemExtended {
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.GRENADELAUNCHER, SoundSource.PLAYERS, 0.25F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 						removeOffHandItem(ArachnidsItems.MZ90, playerentity);
 						playerentity.getCooldowns().addCooldown(this, 8);
+						worldIn.addFreshEntity(projectile);
 					} else if (playerentity.getOffhandItem().getItem() == ArachnidsItems.FLARE && EnchantmentHelper.getItemEnchantmentLevel(ArachnidsMod.FLAREATTACHMENT, stack) > 0) {
 						projectile = createFlare(worldIn, stack, playerentity);
 						projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 0.5F * 3.0F, 1.0F);
 						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.FLAREGUN, SoundSource.PLAYERS, 0.25F, 1.0F / (worldIn.random.nextFloat() * 0.4F + 1.2F) + 1F * 0.5F);
 						removeOffHandItem(ArachnidsItems.FLARE, playerentity);
 						playerentity.getCooldowns().addCooldown(this, 8);
+						worldIn.addFreshEntity(projectile);
 					} else {
-						projectile = createBullet(worldIn, stack, playerentity, ArachnidsConfig.MAR2_bullet_damage);
-						projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 1.0F * 3.0F, 1.0F);
-						if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0)
-							projectile.setSecondsOnFire(100);
-						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.MAR2FIRE, SoundSource.PLAYERS, 0.25F, 1.0F);
+						var result = BaseGunItem.hitscanTrace(playerentity, 64, 1.0F);
+						var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+						if (result != null) {
+							if (result.getEntity()instanceof LivingEntity livingEntity)
+								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), (enchantlevel > 0 ? (ArachnidsConfig.MAR2_bullet_damage + (enchantlevel * 1.5F + 0.5F)) : ArachnidsConfig.MAR2_bullet_damage));
+						} else {
+							projectile = createBullet(worldIn, stack, playerentity, ArachnidsConfig.MAR2_bullet_damage);
+							projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 20.0F, 1.0F);
+							if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0)
+								projectile.setSecondsOnFire(100);
+							worldIn.addFreshEntity(projectile);
+						}
 						stack.hurtAndBreak(1, entityLiving, p -> p.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+						worldIn.playSound((Player) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), ArachnidsSounds.MAR2FIRE, SoundSource.PLAYERS, 0.25F, 1.0F);
 						playerentity.getCooldowns().addCooldown(this, 3);
 						triggerAnim(playerentity, GeoItem.getOrAssignId(stack, (ServerLevel) worldIn), "shoot_controller", "firing");
 					}
-					worldIn.addFreshEntity(projectile);
 				}
 				var isInsideWaterBlock = playerentity.level.isWaterAt(playerentity.blockPosition());
 				spawnLightSource(entityLiving, isInsideWaterBlock);

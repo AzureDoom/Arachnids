@@ -1,5 +1,6 @@
-v.0.0.22
+v.0.0.23
 
-- Fixes Helmet recipe! Closes #9
+- Makes MAR1 and MAR2 do hitscan damage when possible. 
+- Fixes broken Grenade and TON life span.
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.

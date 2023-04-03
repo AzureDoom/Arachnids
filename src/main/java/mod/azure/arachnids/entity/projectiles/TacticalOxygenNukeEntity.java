@@ -131,6 +131,8 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	@Override
 	public void tick() {
 		super.tick();
+		if (this.tickCount >= 45 && !this.level.isClientSide())
+			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
 	public void initFromStack(ItemStack stack) {
