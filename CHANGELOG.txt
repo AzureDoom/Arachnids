@@ -1,6 +1,5 @@
-v.0.0.23
+v.0.0.24
 
-- Makes MAR1 and MAR2 do hitscan damage when possible. 
-- Fixes broken Grenade and TON life span.
+- Updated Midnight Lib version shadowed.
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
