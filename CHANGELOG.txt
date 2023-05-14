@@ -1,5 +1,5 @@
-v.0.0.25
+v.0.0.25HF
 
-- Moved from Midnight Lib to Configuration
+- Updated required AzureLib to fix crashing at startup.
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.

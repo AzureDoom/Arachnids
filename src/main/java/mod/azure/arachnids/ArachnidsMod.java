@@ -1,7 +1,5 @@
 package mod.azure.arachnids;
 
-import dev.toma.configuration.Configuration;
-import dev.toma.configuration.config.format.ConfigFormats;
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
 import mod.azure.arachnids.config.ArachnidsConfig;
@@ -17,6 +15,8 @@ import mod.azure.arachnids.util.MobAttributes;
 import mod.azure.arachnids.util.MobSpawn;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import mod.azure.azurelib.AzureLib;
+import mod.azure.azurelib.AzureLibMod;
+import mod.azure.azurelib.config.format.ConfigFormats;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -70,7 +70,7 @@ public class ArachnidsMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		config = Configuration.registerConfig(ArachnidsConfig.class, ConfigFormats.json()).getConfigInstance();
+		config = AzureLibMod.registerConfig(ArachnidsConfig.class, ConfigFormats.json()).getConfigInstance();
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "mz90"), MZ90BLOCK);
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "ton"), TONBLOCK);
 		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "grenadeattachment"), GRENADEATTACHMENT);

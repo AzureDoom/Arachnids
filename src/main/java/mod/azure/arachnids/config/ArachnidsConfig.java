@@ -1,8 +1,8 @@
 package mod.azure.arachnids.config;
 
-import dev.toma.configuration.config.Config;
-import dev.toma.configuration.config.Configurable;
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.azurelib.config.Config;
+import mod.azure.azurelib.config.Configurable;
 
 @Config(id = ArachnidsMod.MODID)
 public class ArachnidsConfig {
