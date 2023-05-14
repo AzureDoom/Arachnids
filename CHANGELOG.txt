@@ -1,5 +1,5 @@
-v.0.0.24
+v.0.0.25
 
-- Updated Midnight Lib version shadowed.
+- Moved from Midnight Lib to Configuration
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.

@@ -3,7 +3,6 @@ package mod.azure.arachnids.items.weapons;
 import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.client.ArachnidsClientInit;
-import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.entity.projectiles.BulletEntity;
 import mod.azure.arachnids.entity.projectiles.FlareEntity;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
@@ -60,7 +59,7 @@ public abstract class BaseGunItemExtended extends BaseGunItem {
 		if (user.getItemInHand(hand).getItem() instanceof BaseGunItemExtended) {
 			while (!user.isCreative() && user.getItemInHand(hand).getDamageValue() != 0 && user.getInventory().countItem(ArachnidsItems.BULLETS) > 0) {
 				removeAmmo(ArachnidsItems.BULLETS, user);
-				user.getItemInHand(hand).hurtAndBreak(-ArachnidsConfig.MAR1_mag_size, user, s -> user.broadcastBreakEvent(hand));
+				user.getItemInHand(hand).hurtAndBreak(-ArachnidsMod.config.MAR1_mag_size, user, s -> user.broadcastBreakEvent(hand));
 				user.getItemInHand(hand).setPopTime(3);
 				user.getCommandSenderWorld().playSound((Player) null, user.getX(), user.getY(), user.getZ(), ArachnidsSounds.CLIPRELOAD, SoundSource.PLAYERS, 1.00F, 1.0F);
 			}

@@ -3,7 +3,7 @@ package mod.azure.arachnids.entity.bugs;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -57,7 +57,7 @@ public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<Tanke
 
 	public TankerEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
-		this.xpReward = ArachnidsConfig.tanker_exp;
+		this.xpReward = ArachnidsMod.config.tanker_exp;
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<Tanke
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.tanker_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.tanker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsMod.config.tanker_health).add(Attributes.ATTACK_DAMAGE, ArachnidsMod.config.tanker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class TankerEntity extends BaseBugEntity implements SmartBrainOwner<Tanke
 
 	@Override
 	public int getArmorValue() {
-		return ArachnidsConfig.tanker_armor;
+		return ArachnidsMod.config.tanker_armor;
 	}
 
 	public int getVariant() {

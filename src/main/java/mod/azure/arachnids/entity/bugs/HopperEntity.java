@@ -3,7 +3,7 @@ package mod.azure.arachnids.entity.bugs;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.pathing.HopperFlightMoveControl;
 import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
@@ -70,7 +70,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 
 	public HopperEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
-		this.xpReward = ArachnidsConfig.hopper_exp;
+		this.xpReward = ArachnidsMod.config.hopper_exp;
 		this.moveControl = new HopperFlightMoveControl(this);
 	}
 
@@ -172,7 +172,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.hopper_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.hopper_melee).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 2.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsMod.config.hopper_health).add(Attributes.ATTACK_DAMAGE, ArachnidsMod.config.hopper_melee).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.FLYING_SPEED, 2.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 
 	@Override
 	public int getArmorValue() {
-		return ArachnidsConfig.hopper_armor;
+		return ArachnidsMod.config.hopper_armor;
 	}
 
 	public int getVariant() {

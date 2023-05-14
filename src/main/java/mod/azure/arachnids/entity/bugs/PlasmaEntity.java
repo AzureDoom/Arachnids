@@ -3,7 +3,7 @@ package mod.azure.arachnids.entity.bugs;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -58,7 +58,7 @@ public class PlasmaEntity extends BaseBugEntity implements SmartBrainOwner<Plasm
 
 	public PlasmaEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
-		this.xpReward = ArachnidsConfig.plasma_exp;
+		this.xpReward = ArachnidsMod.config.plasma_exp;
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class PlasmaEntity extends BaseBugEntity implements SmartBrainOwner<Plasm
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.plasma_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.plasma_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsMod.config.plasma_health).add(Attributes.ATTACK_DAMAGE, ArachnidsMod.config.plasma_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class PlasmaEntity extends BaseBugEntity implements SmartBrainOwner<Plasm
 
 	@Override
 	public int getArmorValue() {
-		return ArachnidsConfig.plasma_armor;
+		return ArachnidsMod.config.plasma_armor;
 	}
 
 	public int getVariant() {

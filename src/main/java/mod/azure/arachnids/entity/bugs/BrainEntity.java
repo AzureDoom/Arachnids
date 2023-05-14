@@ -1,6 +1,6 @@
 package mod.azure.arachnids.entity.bugs;
 
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -31,7 +31,7 @@ public class BrainEntity extends BaseBugEntity {
 
 	public BrainEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
-		this.xpReward = ArachnidsConfig.brain_exp;
+		this.xpReward = ArachnidsMod.config.brain_exp;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class BrainEntity extends BaseBugEntity {
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.brain_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.brain_melee).add(Attributes.MOVEMENT_SPEED, 0.05D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsMod.config.brain_health).add(Attributes.ATTACK_DAMAGE, ArachnidsMod.config.brain_melee).add(Attributes.MOVEMENT_SPEED, 0.05D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override

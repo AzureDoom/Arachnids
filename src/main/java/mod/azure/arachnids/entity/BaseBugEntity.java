@@ -1,6 +1,6 @@
 package mod.azure.arachnids.entity;
 
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.WarriorEntity;
 import mod.azure.arachnids.entity.projectiles.BugPlasmaEntity;
 import mod.azure.arachnids.entity.projectiles.CustomSmallFireballEntity;
@@ -208,7 +208,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				var d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
 				var d3 = livingentity.getY(0.5) - (this.getY(0.5));
 				var d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
-				var projectile = new BugPlasmaEntity(level, this, d2, d3, d4, ArachnidsConfig.plasma_ranged);
+				var projectile = new BugPlasmaEntity(level, this, d2, d3, d4, ArachnidsMod.config.plasma_ranged);
 				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
 				world.addFreshEntity(projectile);
 			}
@@ -240,7 +240,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				var d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
 				var d3 = livingentity.getY(0.5D) - (this.getY(0.5));
 				var d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
-				var projectile = new CustomSmallFireballEntity(level, this, d2, d3, d4, ArachnidsConfig.hopper_firefly_ranged);
+				var projectile = new CustomSmallFireballEntity(level, this, d2, d3, d4, ArachnidsMod.config.hopper_firefly_ranged);
 				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
 				world.addFreshEntity(projectile);
 			}

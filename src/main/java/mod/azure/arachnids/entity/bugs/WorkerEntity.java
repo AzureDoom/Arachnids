@@ -3,7 +3,7 @@ package mod.azure.arachnids.entity.bugs;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
@@ -55,7 +55,7 @@ public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<Worke
 
 	public WorkerEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
-		this.xpReward = ArachnidsConfig.worker_exp;
+		this.xpReward = ArachnidsMod.config.worker_exp;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<Worke
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.worker_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.worker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsMod.config.worker_health).add(Attributes.ATTACK_DAMAGE, ArachnidsMod.config.worker_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.KNOCKBACK_RESISTANCE, 15.0D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<Worke
 
 	@Override
 	public int getArmorValue() {
-		return ArachnidsConfig.worker_armor;
+		return ArachnidsMod.config.worker_armor;
 	}
 
 	public int getVariant() {

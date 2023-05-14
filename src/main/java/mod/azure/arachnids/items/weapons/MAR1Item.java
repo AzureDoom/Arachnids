@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.client.render.weapons.MAR1Render;
-import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.animatable.GeoItem;
@@ -33,7 +32,7 @@ public class MAR1Item extends BaseGunItemExtended {
 	private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
 	public MAR1Item() {
-		super(new Item.Properties().stacksTo(1).durability((ArachnidsConfig.MAR1_max_ammo + 1)));
+		super(new Item.Properties().stacksTo(1).durability((ArachnidsMod.config.MAR1_max_ammo + 1)));
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
@@ -63,9 +62,9 @@ public class MAR1Item extends BaseGunItemExtended {
 						var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 						if (result != null) {
 							if (result.getEntity()instanceof LivingEntity livingEntity)
-								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), (enchantlevel > 0 ? (ArachnidsConfig.MAR1_bullet_damage + (enchantlevel * 1.5F + 0.5F)) : ArachnidsConfig.MAR1_bullet_damage));
+								livingEntity.hurt(playerentity.damageSources().playerAttack(playerentity), (enchantlevel > 0 ? (ArachnidsMod.config.MAR1_bullet_damage + (enchantlevel * 1.5F + 0.5F)) : ArachnidsMod.config.MAR1_bullet_damage));
 						} else {
-							projectile = createBullet(worldIn, stack, playerentity, ArachnidsConfig.MAR1_bullet_damage);
+							projectile = createBullet(worldIn, stack, playerentity, ArachnidsMod.config.MAR1_bullet_damage);
 							projectile.shootFromRotation(playerentity, playerentity.getXRot(), playerentity.getYRot(), 0.0F, 20.0F, 1.0F);
 							if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0)
 								projectile.setSecondsOnFire(100);
@@ -87,7 +86,7 @@ public class MAR1Item extends BaseGunItemExtended {
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
 		var enchantlevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
 		super.appendHoverText(stack, world, tooltip, context);
-		tooltip.add(Component.translatable("Damage: " + (enchantlevel > 0 ? (ArachnidsConfig.MAR1_bullet_damage + (enchantlevel * 1.5F + 0.5F)) : ArachnidsConfig.MAR1_bullet_damage)).withStyle(ChatFormatting.ITALIC));
+		tooltip.add(Component.translatable("Damage: " + (enchantlevel > 0 ? (ArachnidsMod.config.MAR1_bullet_damage + (enchantlevel * 1.5F + 0.5F)) : ArachnidsMod.config.MAR1_bullet_damage)).withStyle(ChatFormatting.ITALIC));
 	}
 
 	@Override

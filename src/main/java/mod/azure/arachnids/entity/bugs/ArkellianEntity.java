@@ -3,7 +3,7 @@ package mod.azure.arachnids.entity.bugs;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -48,7 +48,7 @@ public class ArkellianEntity extends BaseBugEntity implements SmartBrainOwner<Ar
 
 	public ArkellianEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
-		this.xpReward = ArachnidsConfig.arkellian_exp;
+		this.xpReward = ArachnidsMod.config.arkellian_exp;
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class ArkellianEntity extends BaseBugEntity implements SmartBrainOwner<Ar
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
-		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsConfig.arkellian_health).add(Attributes.ATTACK_DAMAGE, ArachnidsConfig.arkellian_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
+		return LivingEntity.createLivingAttributes().add(Attributes.FOLLOW_RANGE, 25.0D).add(Attributes.MAX_HEALTH, ArachnidsMod.config.arkellian_health).add(Attributes.ATTACK_DAMAGE, ArachnidsMod.config.arkellian_melee).add(Attributes.MOVEMENT_SPEED, 0.25D).add(Attributes.ATTACK_KNOCKBACK, 0.0D);
 	}
 
 	public int getVariant() {

@@ -1,6 +1,6 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
 import mod.azure.azurelib.animatable.GeoEntity;
@@ -96,7 +96,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	public void remove(RemovalReason reason) {
 		var areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
-		areaeffectcloudentity.setRadius(ArachnidsConfig.MZ90_explode_damage + 2);
+		areaeffectcloudentity.setRadius(ArachnidsMod.config.MZ90_explode_damage + 2);
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.setPos(this.getX(), this.getEyeY(), this.getZ());
 		this.level.addFreshEntity(areaeffectcloudentity);
@@ -178,7 +178,7 @@ public class MZ90Entity extends AbstractArrow implements GeoEntity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.MZ90_explode_damage, (ArachnidsConfig.cause_fire ? true : false), (ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsMod.config.MZ90_explode_damage, (ArachnidsMod.config.cause_fire ? true : false), (ArachnidsMod.config.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package mod.azure.arachnids.blocks;
 
 import org.jetbrains.annotations.Nullable;
 
-import mod.azure.arachnids.config.ArachnidsConfig;
+import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.util.ArachnidsMobs;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,7 +25,7 @@ public class TONBlockEntity extends Entity {
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsConfig.TON_damage, true, (ArachnidsConfig.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
+		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsMod.config.TON_damage, true, (ArachnidsMod.config.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	public TONBlockEntity(Level worldIn, double x, double y, double z, @Nullable LivingEntity igniter) {

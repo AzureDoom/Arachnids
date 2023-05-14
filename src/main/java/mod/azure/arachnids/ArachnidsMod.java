@@ -1,6 +1,7 @@
 package mod.azure.arachnids;
 
-import eu.midnightdust.lib.config.MidnightConfig;
+import dev.toma.configuration.Configuration;
+import dev.toma.configuration.config.format.ConfigFormats;
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
 import mod.azure.arachnids.config.ArachnidsConfig;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.block.Block;
 public class ArachnidsMod implements ModInitializer {
 
 	public static ArachnidsItems ITEMS;
+	public static ArachnidsConfig config;
 	public static ArachnidsSounds SOUNDS;
 	public static final String MODID = "arachnids";
 	public static ProjectilesEntityRegister PROJECTILES;
@@ -68,7 +70,7 @@ public class ArachnidsMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		MidnightConfig.init(MODID, ArachnidsConfig.class);
+		config = Configuration.registerConfig(ArachnidsConfig.class, ConfigFormats.json()).getConfigInstance();
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "mz90"), MZ90BLOCK);
 		Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "ton"), TONBLOCK);
 		Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "grenadeattachment"), GRENADEATTACHMENT);

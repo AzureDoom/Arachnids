@@ -22,9 +22,6 @@
 		],
 		"client": [
 			"mod.azure.arachnids.client.ArachnidsClientInit"
-		],
-		"modmenu": [
-			"mod.azure.arachnids.config.ModMenuArachnids"
 		]
 	},
 	"mixins": [
