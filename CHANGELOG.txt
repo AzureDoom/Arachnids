@@ -1,5 +1,5 @@
-v.0.0.25HF
+v.0.0.26
 
-- Updated required AzureLib to fix crashing at startup.
+- Updated to 1.20
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
