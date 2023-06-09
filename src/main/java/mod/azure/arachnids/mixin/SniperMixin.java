@@ -18,13 +18,12 @@ import mod.azure.arachnids.items.weapons.MAR1Item;
 import mod.azure.arachnids.items.weapons.MAR2Item;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 @Mixin(Gui.class)
-public abstract class SniperMixin extends GuiComponent {
+public abstract class SniperMixin {
 
 	private static final ResourceLocation SNIPER = new ResourceLocation(ArachnidsMod.MODID, "textures/gui/scope.png");
 	@Shadow

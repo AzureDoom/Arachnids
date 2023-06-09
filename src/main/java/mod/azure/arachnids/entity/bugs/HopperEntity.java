@@ -144,7 +144,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 		if (this.isAggressive() && this.getTarget() != null) {
 			var f = 0.91F;
 			var f1 = 0.16277137F / (f * f * f);
-			this.moveRelative(this.onGround ? 0.3F * f1 : 3.6F, movementInput);
+			this.moveRelative(this.onGround() ? 0.3F * f1 : 3.6F, movementInput);
 			this.move(MoverType.SELF, this.getDeltaMovement());
 			this.setDeltaMovement(this.getDeltaMovement().scale((double) f));
 			this.lookAt(this.getTarget(), 30.0F, 30.0F);
@@ -168,7 +168,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	}
 
 	public boolean isInAir() {
-		return !this.onGround;
+		return !this.onGround();
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
@@ -178,7 +178,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
 		}
 	}

@@ -194,13 +194,13 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 			var block = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
 			if (this.random.nextFloat() < block) {
 				player.getCooldowns().addCooldown(Items.SHIELD, 100);
-				this.level.broadcastEntityEvent(player, (byte) 30);
+				this.level().broadcastEntityEvent(player, (byte) 30);
 			}
 		}
 	}
 
 	public void shootPlasma(Entity target) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
 				var livingentity = this.getTarget();
 				var world = this.getCommandSenderWorld();
@@ -208,7 +208,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				var d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
 				var d3 = livingentity.getY(0.5) - (this.getY(0.5));
 				var d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
-				var projectile = new BugPlasmaEntity(level, this, d2, d3, d4, ArachnidsMod.config.plasma_ranged);
+				var projectile = new BugPlasmaEntity(level(), this, d2, d3, d4, ArachnidsMod.config.plasma_ranged);
 				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
 				world.addFreshEntity(projectile);
 			}
@@ -216,7 +216,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 	}
 
 	public void shootFlames(Entity target) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
 				var livingentity = this.getTarget();
 				var world = this.getCommandSenderWorld();
@@ -224,7 +224,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				var d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
 				var d3 = livingentity.getY(0.5) - (this.getY(0.5));
 				var d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
-				var projectile = new FlameFiring(level, this, d2, d3, d4);
+				var projectile = new FlameFiring(level(), this, d2, d3, d4);
 				projectile.setPos(this.getX() + vector3d.x * 7, this.getY(0.5), this.getZ() + vector3d.z * 7);
 				world.addFreshEntity(projectile);
 			}
@@ -232,7 +232,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 	}
 
 	public void shootFire(Entity target) {
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			if (this.getTarget() != null) {
 				var livingentity = this.getTarget();
 				var world = this.getCommandSenderWorld();
@@ -240,7 +240,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				var d2 = livingentity.getX() - (this.getX() + vector3d.x * 2);
 				var d3 = livingentity.getY(0.5D) - (this.getY(0.5));
 				var d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
-				var projectile = new CustomSmallFireballEntity(level, this, d2, d3, d4, ArachnidsMod.config.hopper_firefly_ranged);
+				var projectile = new CustomSmallFireballEntity(level(), this, d2, d3, d4, ArachnidsMod.config.hopper_firefly_ranged);
 				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
 				world.addFreshEntity(projectile);
 			}

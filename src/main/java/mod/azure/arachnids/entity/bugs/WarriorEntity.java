@@ -125,7 +125,7 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
 	}
 

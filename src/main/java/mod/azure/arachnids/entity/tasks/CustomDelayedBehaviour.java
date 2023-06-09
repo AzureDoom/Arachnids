@@ -53,7 +53,7 @@ public abstract class CustomDelayedBehaviour<E extends BaseBugEntity> extends Ex
 
 	@Override
 	protected boolean shouldKeepRunning(E entity) {
-		return this.delayFinishedAt >= entity.level.getGameTime();
+		return this.delayFinishedAt >= entity.level().getGameTime();
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class CustomSmallFireballEntity extends SmallFireball {
 
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			var entity = entityHitResult.getEntity();
 			if (!entity.fireImmune()) {
 				var entity2 = this.getOwner();

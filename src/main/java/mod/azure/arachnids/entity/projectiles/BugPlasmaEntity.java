@@ -82,7 +82,7 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			this.explode();
 			this.remove(Entity.RemovalReason.DISCARDED);
 		}
@@ -91,7 +91,7 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			var entity = entityHitResult.getEntity();
 			var entity2 = this.getOwner();
 			entity.hurt(damageSources().mobAttack((LivingEntity) entity2), directHitDamage);
@@ -101,7 +101,7 @@ public class BugPlasmaEntity extends AbstractHurtingProjectile implements GeoEnt
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, Level.ExplosionInteraction.NONE);
+		this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 1.0F, false, Level.ExplosionInteraction.NONE);
 	}
 
 	public LivingEntity getShooter() {

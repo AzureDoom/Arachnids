@@ -128,7 +128,7 @@ public class PlasmaEntity extends BaseBugEntity implements SmartBrainOwner<Plasm
 	@Override
 	public void aiStep() {
 		super.aiStep();
-		if (!this.level.isClientSide())
+		if (!this.level().isClientSide())
 			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1000000, 1, false, false));
 	}
 

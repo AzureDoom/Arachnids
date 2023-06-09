@@ -94,12 +94,12 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 
 	@Override
 	public void remove(RemovalReason reason) {
-		var areaeffectcloudentity = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+		var areaeffectcloudentity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
 		areaeffectcloudentity.setParticle(ParticleTypes.EXPLOSION);
 		areaeffectcloudentity.setRadius(ArachnidsMod.config.TON_damage + 5);
 		areaeffectcloudentity.setDuration(1);
 		areaeffectcloudentity.setPos(this.getX(), this.getEyeY(), this.getZ());
-		this.level.addFreshEntity(areaeffectcloudentity);
+		this.level().addFreshEntity(areaeffectcloudentity);
 		this.explode();
 		super.remove(reason);
 	}
@@ -131,7 +131,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	@Override
 	public void tick() {
 		super.tick();
-		if (this.tickCount >= 45 && !this.level.isClientSide())
+		if (this.tickCount >= 45 && !this.level().isClientSide())
 			this.remove(Entity.RemovalReason.DISCARDED);
 	}
 
@@ -155,7 +155,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult) {
 		super.onHitBlock(blockHitResult);
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			if (this.tickCount >= 45) {
 				this.explode();
 				this.setSpinning(false);
@@ -168,7 +168,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	@Override
 	protected void onHitEntity(EntityHitResult entityHitResult) {
 		super.onHitEntity(entityHitResult);
-		if (!this.level.isClientSide()) {
+		if (!this.level().isClientSide()) {
 			this.explode();
 			if (this.tickCount >= 45) {
 				this.explode();
@@ -179,7 +179,7 @@ public class TacticalOxygenNukeEntity extends AbstractArrow implements GeoEntity
 	}
 
 	protected void explode() {
-		this.level.explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsMod.config.TON_damage, (ArachnidsMod.config.cause_fire ? true : false), (ArachnidsMod.config.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
+		this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), ArachnidsMod.config.TON_damage, (ArachnidsMod.config.cause_fire ? true : false), (ArachnidsMod.config.break_blocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE));
 	}
 
 	@Override

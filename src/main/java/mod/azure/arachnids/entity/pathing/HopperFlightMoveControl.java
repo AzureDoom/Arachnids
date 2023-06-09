@@ -33,7 +33,7 @@ public class HopperFlightMoveControl extends MoveControl {
 		var axisalignedbb = this.mob.getBoundingBox();
 		for (var i = 1; i < steps; ++i) {
 			axisalignedbb = axisalignedbb.move(direction);
-			if (!this.mob.level.noCollision(this.entity, axisalignedbb))
+			if (!this.mob.level().noCollision(this.entity, axisalignedbb))
 				return false;
 		}
 		return true;

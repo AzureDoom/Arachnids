@@ -7,4 +7,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'arachnids-fabric-1.19'
+rootProject.name = 'arachnids-fabric-1.20'

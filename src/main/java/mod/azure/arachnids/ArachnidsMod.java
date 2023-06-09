@@ -23,6 +23,9 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -46,27 +49,7 @@ public class ArachnidsMod implements ModInitializer {
 	public static final Enchantment SNIPERATTACHMENT = new SnipingEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment GRENADEATTACHMENT = new GrenadeEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment FLAREATTACHMENT = new FlareEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
-	public static final CreativeModeTab GENERAL = FabricItemGroup.builder(new ResourceLocation(ArachnidsMod.MODID, "itemgroup")).icon(() -> new ItemStack(ArachnidsItems.MZ90)).displayItems((context, entries) -> {
-		entries.accept(ArachnidsItems.MAR1);
-		entries.accept(ArachnidsItems.MAR2);
-		entries.accept(ArachnidsItems.M55);
-		entries.accept(ArachnidsItems.BULLETS);
-		entries.accept(ArachnidsItems.TON);
-		entries.accept(ArachnidsItems.MZ90);
-		entries.accept(ArachnidsItems.FLARE);
-		entries.accept(ArachnidsItems.MI_HELMET);
-		entries.accept(ArachnidsItems.MI_CHESTPLATE);
-		entries.accept(ArachnidsItems.MI_LEGGINGS);
-		entries.accept(ArachnidsItems.MI_BOOTS);
-		entries.accept(ArachnidsItems.ARKELLIANBUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.WORKERBUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.WARRIORBUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.HOOPERBUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.PLAMSABUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.SCORPIONBUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.TANKERBUG_SPAWN_EGG);
-		entries.accept(ArachnidsItems.BRAINBUG_SPAWN_EGG);
-	}).build();
+	public static final ResourceKey<CreativeModeTab> GENERAL = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(MODID, "items"));
 
 	@Override
 	public void onInitialize() {
@@ -79,6 +62,29 @@ public class ArachnidsMod implements ModInitializer {
 		ITEMS = new ArachnidsItems();
 		SOUNDS = new ArachnidsSounds();
 		PROJECTILES = new ProjectilesEntityRegister();
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, GENERAL, FabricItemGroup.builder().icon(() -> new ItemStack(ArachnidsItems.MZ90)) // icon
+				.title(Component.translatable("itemGroup.arachnids.itemgroup")) // title
+				.displayItems((context, entries) -> {
+					entries.accept(ArachnidsItems.MAR1);
+					entries.accept(ArachnidsItems.MAR2);
+					entries.accept(ArachnidsItems.M55);
+					entries.accept(ArachnidsItems.BULLETS);
+					entries.accept(ArachnidsItems.TON);
+					entries.accept(ArachnidsItems.MZ90);
+					entries.accept(ArachnidsItems.FLARE);
+					entries.accept(ArachnidsItems.MI_HELMET);
+					entries.accept(ArachnidsItems.MI_CHESTPLATE);
+					entries.accept(ArachnidsItems.MI_LEGGINGS);
+					entries.accept(ArachnidsItems.MI_BOOTS);
+					entries.accept(ArachnidsItems.ARKELLIANBUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.WORKERBUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.WARRIORBUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.HOOPERBUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.PLAMSABUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.SCORPIONBUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.TANKERBUG_SPAWN_EGG);
+					entries.accept(ArachnidsItems.BRAINBUG_SPAWN_EGG);
+				}).build()); // build() no longer registers by itself
 		AzureLib.initialize();
 		MobSpawn.addSpawnEntries();
 		MobAttributes.init();
