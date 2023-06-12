@@ -1,5 +1,5 @@
-v.0.0.26
+v.0.0.27
 
-- Updated to 1.20
+- Updated to 1.20.1
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
