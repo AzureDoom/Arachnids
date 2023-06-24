@@ -27,12 +27,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 public class ArachnidsMod implements ModInitializer {
@@ -50,6 +52,14 @@ public class ArachnidsMod implements ModInitializer {
 	public static final Enchantment GRENADEATTACHMENT = new GrenadeEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final Enchantment FLAREATTACHMENT = new FlareEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
 	public static final ResourceKey<CreativeModeTab> GENERAL = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(MODID, "items"));
+	/* SPAWN BIOMES */
+	public static final TagKey<Biome> ARKELLIAN_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("arkellian_biomes"));
+	public static final TagKey<Biome> HOPPER_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("hopper_biomes"));
+	public static final TagKey<Biome> PLASMA_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("plasma_biomes"));
+	public static final TagKey<Biome> SCORPION_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("scorpion_biomes"));
+	public static final TagKey<Biome> TANKER_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("tanker_biomes"));
+	public static final TagKey<Biome> WARRIOR_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("warrior_biomes"));
+	public static final TagKey<Biome> BRAIN_BIOMES = TagKey.create(Registries.BIOME, ArachnidsMod.modResource("brain_biomes"));
 
 	@Override
 	public void onInitialize() {
@@ -97,5 +107,9 @@ public class ArachnidsMod implements ModInitializer {
 			if (player.getMainHandItem().getItem() instanceof M55Item)
 				((M55Item) player.getMainHandItem().getItem()).reload(player, InteractionHand.MAIN_HAND);
 		});
+	}
+
+	public static final ResourceLocation modResource(String name) {
+		return new ResourceLocation(ArachnidsMod.MODID, name);
 	}
 }

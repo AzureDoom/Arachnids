@@ -8,16 +8,12 @@ import mod.azure.azurelib.config.Configurable;
 public class ArachnidsConfig {
 
 	@Configurable
-	public String[] arkellian_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
-	@Configurable
 	public int arkellian_spawn_weight = 1;
 	@Configurable
 	public int arkellian_min_group = 1;
 	@Configurable
 	public int arkellian_max_group = 4;
 
-	@Configurable
-	public String[] brain_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
 	@Configurable
 	public int brain_spawn_weight = 1;
 	@Configurable
@@ -26,16 +22,12 @@ public class ArachnidsConfig {
 	public int brain_max_group = 1;
 
 	@Configurable
-	public String[] hopper_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
-	@Configurable
 	public int hopper_spawn_weight = 3;
 	@Configurable
 	public int hopper_min_group = 1;
 	@Configurable
 	public int hopper_max_group = 2;
 
-	@Configurable
-	public String[] plasma_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
 	@Configurable
 	public int plasma_spawn_weight = 2;
 	@Configurable
@@ -44,16 +36,12 @@ public class ArachnidsConfig {
 	public int plasma_max_group = 2;
 
 	@Configurable
-	public String[] scorpion_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
-	@Configurable
 	public int scorpion_spawn_weight = 2;
 	@Configurable
 	public int scorpion_min_group = 1;
 	@Configurable
 	public int scorpion_max_group = 1;
 
-	@Configurable
-	public String[] tanker_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
 	@Configurable
 	public int tanker_spawn_weight = 2;
 	@Configurable
@@ -62,16 +50,12 @@ public class ArachnidsConfig {
 	public int tanker_max_group = 2;
 
 	@Configurable
-	public String[] warrior_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
-	@Configurable
 	public int warrior_spawn_weight = 3;
 	@Configurable
 	public int warrior_min_group = 1;
 	@Configurable
 	public int warrior_max_group = 4;
 
-	@Configurable
-	public String[] worker_biomes = { "minecraft:desert", "minecraft:desert_hills", "minecraft:desert_lakes", "minecraft:badlands", "minecraft:badlands_plateau", "minecraft:eroded_badlands" };
 	@Configurable
 	public int worker_spawn_weight = 3;
 	@Configurable
