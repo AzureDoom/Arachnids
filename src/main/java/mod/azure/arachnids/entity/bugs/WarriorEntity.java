@@ -75,7 +75,7 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("light_attack"));
-			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (this.swinging && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("normal_attack"));
 			if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("heavy_attack"));
@@ -100,7 +100,10 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 
 	@Override
 	public List<ExtendedSensor<WarriorEntity>> getSensors() {
-		return ObjectArrayList.of(new NearbyPlayersSensor<>(), new NearbyLivingEntitySensor<WarriorEntity>().setPredicate((target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager), new HurtBySensor<>(), new UnreachableTargetSensor<WarriorEntity>());
+		return ObjectArrayList.of(new NearbyPlayersSensor<>(), // Nearby players
+				new NearbyLivingEntitySensor<WarriorEntity>().setPredicate((target, entity) -> target instanceof Player || !(target instanceof BaseBugEntity) || target instanceof Villager), // Nearby attackable entities
+				new HurtBySensor<>(), // What hurt the entity
+				new UnreachableTargetSensor<WarriorEntity>()); // Untarget
 	}
 
 	@Override
@@ -110,12 +113,18 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 
 	@Override
 	public BrainActivityGroup<WarriorEntity> getIdleTasks() {
-		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<WarriorEntity>(new TargetOrRetaliate<>(), new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1), new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60))));
+		return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<WarriorEntity>(new TargetOrRetaliate<>(), // Target things
+				new SetPlayerLookTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), // Look at players
+				new SetRandomLookTarget<>()), // Look at things
+				new OneRandomBehaviour<>(new SetRandomWalkTarget<>().speedModifier(1), // Walk around
+						new Idle<>().runFor(entity -> entity.getRandom().nextInt(30, 60)))); // Idle Entity
 	}
 
 	@Override
 	public BrainActivityGroup<WarriorEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new BugMeleeAttack<>(5).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), // Untarget
+				new SetWalkTargetToAttackTarget<>().speedMod(1.5F), // Move to target
+				new BugMeleeAttack<>(5).attackInterval(entity -> 40).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false))); // Attack things
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
@@ -134,6 +143,15 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 		return ArachnidsMod.config.warrior_armor;
 	}
 
+	@Override
+	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+		return 1.55F;
+	}
+
+	/*
+	 * Variant code
+	 */
+
 	public int getVariant() {
 		return Mth.clamp((Integer) this.entityData.get(VARIANT), 1, 3);
 	}
@@ -143,13 +161,10 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-		return 1.55F;
-	}
-
-	@Override
 	public Component getCustomName() {
-		return this.getVariant() == 1 ? Component.translatable("entity.arachnids.workertiger") : this.getVariant() == 2 ? Component.translatable("entity.arachnids.workerplasma") : super.getCustomName();
+		return this.getVariant() == 1 ? Component.translatable("entity.arachnids.workertiger") : // Sets Worker Tiger name
+				this.getVariant() == 2 ? Component.translatable("entity.arachnids.workerplasma") : // Sets Worker Plasma name
+						super.getCustomName(); // Sets Default Name
 	}
 
 	@Override
@@ -171,6 +186,10 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 		super.readAdditionalSaveData(tag);
 		this.setVariant(tag.getInt("Variant"));
 	}
+
+	/*
+	 * Sound code
+	 */
 
 	@Override
 	protected SoundEvent getAmbientSound() {
