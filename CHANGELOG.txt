@@ -1,5 +1,6 @@
-v.0.0.27
+v.0.0.28
 
-- Updated to 1.20.1
+- Moved Spawn configs to tags
+- Made Workers more aggressive 
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
