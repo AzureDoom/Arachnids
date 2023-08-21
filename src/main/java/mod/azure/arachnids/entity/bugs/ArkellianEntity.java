@@ -84,7 +84,7 @@ public class ArkellianEntity extends BaseBugEntity implements SmartBrainOwner<Ar
 
 	@Override
 	public BrainActivityGroup<ArkellianEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new AnimalPanic(1.2f), new MoveToWalkTarget<>());
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new AnimalPanic(1.5f), new MoveToWalkTarget<>());
 	}
 
 	@Override
