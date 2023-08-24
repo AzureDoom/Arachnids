@@ -1,6 +1,5 @@
-v.0.0.28
+v.0.0.29
 
-- Moved Spawn configs to tags
-- Made Workers more aggressive 
+- Switched Reload to AzureLib keybind. Requires AzureLib 1.0.25
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
