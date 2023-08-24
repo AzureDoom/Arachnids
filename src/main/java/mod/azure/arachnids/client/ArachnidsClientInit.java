@@ -40,15 +40,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 @Environment(EnvType.CLIENT)
 public class ArachnidsClientInit implements ClientModInitializer {
 
-	public static KeyMapping reload = new KeyMapping("key.arachnids.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.arachnids.binds");
-
 	public static KeyMapping scope = new KeyMapping("key.arachnids.scope", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "category.arachnids.binds");
 
 	public static final ResourceLocation PacketID = new ResourceLocation(ArachnidsMod.MODID, "spawn_packet");
 
 	@Override
 	public void onInitializeClient() {
-		KeyBindingHelper.registerKeyBinding(reload);
 		KeyBindingHelper.registerKeyBinding(scope);
 		EntityRendererRegistry.register(ArachnidsMobs.MZ90, (ctx) -> new MZ90BlockRender(ctx));
 		EntityRendererRegistry.register(ArachnidsMobs.TON, (ctx) -> new TonBlockRender(ctx));

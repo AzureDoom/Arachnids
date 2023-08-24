@@ -2,12 +2,12 @@ package mod.azure.arachnids.items.weapons;
 
 import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.client.ArachnidsClientInit;
 import mod.azure.arachnids.entity.projectiles.BulletEntity;
 import mod.azure.arachnids.entity.projectiles.FlareEntity;
 import mod.azure.arachnids.entity.projectiles.MZ90Entity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.Keybindings;
 import mod.azure.azurelib.items.BaseGunItem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -47,7 +47,7 @@ public abstract class BaseGunItemExtended extends BaseGunItem {
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		if (world.isClientSide()) {
 			if (((Player) entity).getMainHandItem().getItem() instanceof BaseGunItemExtended)
-				if (ArachnidsClientInit.reload.isDown() && selected) {
+				if (Keybindings.RELOAD.isDown() && selected) {
 					var passedData = new FriendlyByteBuf(Unpooled.buffer());
 					passedData.writeBoolean(true);
 					ClientPlayNetworking.send(ArachnidsMod.RELOAD_BULLETS, passedData);
