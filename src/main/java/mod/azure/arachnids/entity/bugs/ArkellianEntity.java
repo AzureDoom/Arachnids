@@ -56,10 +56,8 @@ public class ArkellianEntity extends BaseBugEntity implements SmartBrainOwner<Ar
 		controllers.add(new AnimationController<>(this, event -> {
 			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		}).triggerableAnim("death", RawAnimation.begin().thenPlayAndHold("death")));
 	}
 
 	@Override

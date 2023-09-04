@@ -12,6 +12,7 @@ import mod.azure.arachnids.entity.tasks.RandomFlyConvergeOnTargetGoal;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.object.PlayState;
@@ -79,18 +80,16 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 		controllers.add(new AnimationController<>(this, event -> {
 			if (!this.isAggressive() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
-			if (this.entityData.get(STATE) == 0 && this.isAggressive() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
+			if (this.isAggressive() && event.isMoving() && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("flying"));
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("melee"));
-			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("flame_breath"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			if (!event.isCurrentAnimation(RawAnimation.begin().thenLoop("flying")) && !event.isCurrentAnimation(RawAnimation.begin().thenLoop("moving")))
 				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
 			return PlayState.CONTINUE;
-		}));
+		})
+				.triggerableAnim("death", RawAnimation.begin().thenPlayAndHold("death"))
+				.triggerableAnim("melee", RawAnimation.begin().then("melee", LoopType.PLAY_ONCE))
+				.triggerableAnim("ranged", RawAnimation.begin().then("flame_breath", LoopType.PLAY_ONCE))
+				.triggerableAnim("melee", RawAnimation.begin().then("melee", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -115,7 +114,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 
 	@Override
 	public BrainActivityGroup<HopperEntity> getCoreTasks() {
-		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new StrafeTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1), new MoveToWalkTarget<>().stopIf(entity -> this.getEntityData().get(VARIANT) == 1));
+		return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new StrafeTarget<>(), new MoveToWalkTarget<>());
 	}
 
 	@Override
@@ -126,7 +125,7 @@ public class HopperEntity extends BaseBugEntity implements SmartBrainOwner<Hoppe
 	@Override
 	public BrainActivityGroup<HopperEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative() || !(target instanceof BaseBugEntity) || target instanceof Villager), new SetWalkTargetToAttackTarget<>().speedMod(this.getEntityData().get(VARIANT) == 2 ? 0.0F : 2.5F).stopIf(entity -> this.getEntityData().get(VARIANT) == 2), new BugProjectileAttack<>(5).startCondition(entity -> this.getEntityData().get(VARIANT) != 1),
-				new BugMeleeAttack<>(15).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+				new BugMeleeAttack<>(15));
 	}
 
 	@Override

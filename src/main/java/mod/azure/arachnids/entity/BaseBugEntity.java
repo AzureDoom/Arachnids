@@ -1,5 +1,7 @@
 package mod.azure.arachnids.entity;
 
+import org.jetbrains.annotations.Nullable;
+
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.bugs.WarriorEntity;
 import mod.azure.arachnids.entity.projectiles.BugPlasmaEntity;
@@ -13,6 +15,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -21,6 +24,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -96,6 +102,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 
 	@Override
 	protected void tickDeath() {
+		this.triggerAnim("base_controller", "death");
 		++this.deathTime;
 		if (this.deathTime == 25)
 			this.remove(Entity.RemovalReason.KILLED);
@@ -209,7 +216,7 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				var d3 = livingentity.getY(0.5) - (this.getY(0.5));
 				var d4 = livingentity.getZ() - (this.getZ() + vector3d.z * 2);
 				var projectile = new BugPlasmaEntity(level(), this, d2, d3, d4, ArachnidsMod.config.plasma_ranged);
-				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.5), this.getZ() + vector3d.z * 2);
+				projectile.setPos(this.getX() + vector3d.x * 2, this.getY(0.95), this.getZ() + vector3d.z * 2);
 				world.addFreshEntity(projectile);
 			}
 		}
@@ -245,6 +252,18 @@ public abstract class BaseBugEntity extends PathfinderMob implements GeoEntity {
 				world.addFreshEntity(projectile);
 			}
 		}
+	}
+
+	public void summonAoE(LivingEntity entity, ParticleOptions particle, int yOffset, int duration, float radius, boolean hasEffect, @Nullable MobEffect effect, int effectTime) {
+		var areaEffectCloudEntity = new AreaEffectCloud(entity.level(), entity.getX(), entity.getY() + yOffset, entity.getZ());
+		areaEffectCloudEntity.setRadius(radius);
+		areaEffectCloudEntity.setDuration(duration);
+		areaEffectCloudEntity.setParticle(particle);
+		areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float) areaEffectCloudEntity.getDuration());
+		if (hasEffect == true)
+			if (!entity.hasEffect(effect))
+				areaEffectCloudEntity.addEffect(new MobEffectInstance(effect, effectTime, 0));
+		entity.level().addFreshEntity(areaEffectCloudEntity);
 	}
 
 	@Override

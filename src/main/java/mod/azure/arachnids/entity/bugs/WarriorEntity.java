@@ -7,8 +7,10 @@ import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
+import mod.azure.azurelib.animatable.SingletonGeoAnimatable;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
@@ -62,25 +64,22 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 	public WarriorEntity(EntityType<? extends BaseBugEntity> entityType, Level world) {
 		super(entityType, world);
 		this.xpReward = ArachnidsMod.config.warrior_exp;
+		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(STATE) == 0 && event.isMoving() && !this.isAggressive())
+			if (event.isMoving() && !this.isAggressive())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
-			if (this.entityData.get(STATE) == 0 && this.isAggressive() && event.isMoving())
+			if (this.isAggressive() && event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("running"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("light_attack"));
-			if (this.swinging && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("normal_attack"));
-			if (this.entityData.get(STATE) == 3 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("heavy_attack"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		})
+				.triggerableAnim("death", RawAnimation.begin().thenPlayAndHold("death"))
+				.triggerableAnim("heavy_attack", RawAnimation.begin().then("heavy_attack", LoopType.PLAY_ONCE))
+				.triggerableAnim("light_attack", RawAnimation.begin().then("light_attack", LoopType.PLAY_ONCE))
+				.triggerableAnim("normal_attack", RawAnimation.begin().then("normal_attack", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -124,7 +123,7 @@ public class WarriorEntity extends BaseBugEntity implements SmartBrainOwner<Warr
 	public BrainActivityGroup<WarriorEntity> getFightTasks() {
 		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), // Untarget
 				new SetWalkTargetToAttackTarget<>().speedMod(1.5F), // Move to target
-				new BugMeleeAttack<>(5).attackInterval(entity -> 40).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false))); // Attack things
+				new BugMeleeAttack<>(13).attackInterval(entity -> 40).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false))); // Attack things
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {

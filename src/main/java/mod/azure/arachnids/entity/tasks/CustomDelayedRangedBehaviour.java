@@ -4,26 +4,25 @@ import java.util.function.Consumer;
 
 import mod.azure.arachnids.entity.BaseBugEntity;
 import mod.azure.arachnids.entity.bugs.HopperEntity;
-import mod.azure.arachnids.entity.bugs.WarriorEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 
-public abstract class CustomDelayedBehaviour<E extends BaseBugEntity> extends ExtendedBehaviour<E> {
+public abstract class CustomDelayedRangedBehaviour<E extends BaseBugEntity> extends ExtendedBehaviour<E> {
 	protected final int delayTime;
 	protected long delayFinishedAt = 0;
 	protected Consumer<E> delayedCallback = entity -> {
 	};
 
-	public CustomDelayedBehaviour(int delayTicks) {
+	public CustomDelayedRangedBehaviour(int delayTicks) {
 		this.delayTime = delayTicks;
 
-		runFor(entity -> Math.max(delayTicks, 60));
+		runFor(entity -> Math.max(delayTicks, 120));
 	}
 
-	public final CustomDelayedBehaviour<E> whenActivating(Consumer<E> callback) {
+	public final CustomDelayedRangedBehaviour<E> whenActivating(Consumer<E> callback) {
 		this.delayedCallback = callback;
 
 		return this;
@@ -38,19 +37,10 @@ public abstract class CustomDelayedBehaviour<E extends BaseBugEntity> extends Ex
 			super.start(level, entity, gameTime);
 			doDelayedAction(entity);
 		}
-		int var = entity.getRandom().nextInt(0, 4);
-		if (entity instanceof WarriorEntity warrior)
-			if (var == 1)
-				warrior.triggerAnim("base_controller", "light_attack");
-			else if (var == 2)
-				warrior.triggerAnim("base_controller", "normal_attack");
-			else
-				warrior.triggerAnim("base_controller", "heavy_attack");
-		else if (entity instanceof HopperEntity hopper && hopper.getEntityData().get(BaseBugEntity.VARIANT) == 2)
-			hopper.triggerAnim("base_controller", "melee");
-		else
-			entity.triggerAnim("base_controller", "melee");
-		entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, this.delayTime, 100, false, false));
+		entity.triggerAnim("base_controller", "ranged");
+		if ((entity instanceof HopperEntity))
+			entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, this.delayTime, 100, false, false));
+		entity.setAttackingState(1);
 	}
 
 	@Override

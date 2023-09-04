@@ -5,10 +5,12 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mod.azure.arachnids.ArachnidsMod;
 import mod.azure.arachnids.entity.BaseBugEntity;
+import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
@@ -63,16 +65,13 @@ public class ScorpionEntity extends BaseBugEntity implements SmartBrainOwner<Sco
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(STATE) == 0 && event.isMoving())
+			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walk"));
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("melee"));
-			if (this.entityData.get(STATE) == 2 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("ranged"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		})
+				.triggerableAnim("death", RawAnimation.begin().thenPlayAndHold("death"))
+				.triggerableAnim("melee", RawAnimation.begin().then("melee", LoopType.PLAY_ONCE))
+				.triggerableAnim("ranged", RawAnimation.begin().then("ranged", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class ScorpionEntity extends BaseBugEntity implements SmartBrainOwner<Sco
 
 	@Override
 	public BrainActivityGroup<ScorpionEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(20).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(20).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)), new BugMeleeAttack<>(13).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	@Override

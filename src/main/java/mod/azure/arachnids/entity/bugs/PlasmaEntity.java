@@ -9,9 +9,9 @@ import mod.azure.arachnids.entity.tasks.BugProjectileAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -64,16 +64,12 @@ public class PlasmaEntity extends BaseBugEntity implements SmartBrainOwner<Plasm
 	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<>(this, event -> {
-			if (this.entityData.get(STATE) == 0 && event.isMoving())
+			if (event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("walking"));
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("attack_ranged"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
-			if (this.entityData.get(STATE) == 0)
-				return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-			return PlayState.CONTINUE;
-		}));
+			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
+		})
+				.triggerableAnim("death", RawAnimation.begin().thenPlayAndHold("death"))
+				.triggerableAnim("ranged", RawAnimation.begin().then("attack_ranged", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -108,7 +104,7 @@ public class PlasmaEntity extends BaseBugEntity implements SmartBrainOwner<Plasm
 
 	@Override
 	public BrainActivityGroup<PlasmaEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(20).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(0.5F), new BugProjectileAttack<>(25).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	@Override

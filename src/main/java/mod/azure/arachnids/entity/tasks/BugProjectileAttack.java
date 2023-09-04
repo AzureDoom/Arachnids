@@ -21,10 +21,10 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
-public class BugProjectileAttack<E extends BaseBugEntity> extends CustomDelayedBehaviour<E> {
+public class BugProjectileAttack<E extends BaseBugEntity> extends CustomDelayedRangedBehaviour<E> {
 	private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORY_REQUIREMENTS = ObjectArrayList.of(Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_PRESENT), Pair.of(MemoryModuleType.ATTACK_COOLING_DOWN, MemoryStatus.VALUE_ABSENT));
 
-	protected Function<E, Integer> attackIntervalSupplier = entity -> 20;
+	protected Function<E, Integer> attackIntervalSupplier = entity -> 80;
 
 	@Nullable
 	protected LivingEntity target = null;
@@ -86,8 +86,8 @@ public class BugProjectileAttack<E extends BaseBugEntity> extends CustomDelayedB
 			entity.shootPlasma(this.target);
 		if (entity instanceof ScorpionEntity)
 			entity.shootPlasma(this.target);
-		if (entity instanceof TankerEntity) 
-			for (var j = 0; j < 15; ++j) 
+		if (entity instanceof TankerEntity)
+			for (var j = 0; j < 15; ++j)
 				entity.shootFlames(this.target);
 	}
 

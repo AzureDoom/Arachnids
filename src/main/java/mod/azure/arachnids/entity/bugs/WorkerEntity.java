@@ -9,6 +9,7 @@ import mod.azure.arachnids.entity.tasks.BugMeleeAttack;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import mod.azure.azurelib.core.animation.Animation.LoopType;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
@@ -65,12 +66,10 @@ public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<Worke
 				return event.setAndContinue(RawAnimation.begin().thenLoop("moving"));
 			if (this.isAggressive() && event.isMoving())
 				return event.setAndContinue(RawAnimation.begin().thenLoop("running"));
-			if (this.entityData.get(STATE) == 1 && !(this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenLoop("light_attack"));
-			if ((this.dead || this.getHealth() < 0.01 || this.isDeadOrDying()))
-				return event.setAndContinue(RawAnimation.begin().thenPlayAndHold("death"));
 			return event.setAndContinue(RawAnimation.begin().thenLoop("idle"));
-		}));
+		})
+				.triggerableAnim("death", RawAnimation.begin().thenPlayAndHold("death"))
+				.triggerableAnim("melee", RawAnimation.begin().then("light_attack", LoopType.PLAY_ONCE)));
 	}
 
 	@Override
@@ -105,7 +104,7 @@ public class WorkerEntity extends BaseBugEntity implements SmartBrainOwner<Worke
 
 	@Override
 	public BrainActivityGroup<WorkerEntity> getFightTasks() {
-		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new BugMeleeAttack<>(5).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
+		return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>().stopIf(target -> !target.isAlive() || target instanceof Player && ((Player) target).isCreative()), new SetWalkTargetToAttackTarget<>().speedMod(1.5F), new BugMeleeAttack<>(13).whenStarting(entity -> setAggressive(true)).whenStarting(entity -> setAggressive(false)));
 	}
 
 	public static AttributeSupplier.Builder createMobAttributes() {
