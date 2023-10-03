@@ -1,5 +1,5 @@
-v.0.0.30
+v.0.0.30b
 
-- Moved all attack animations to triggers. Attacking should vastly cleaned up now.
+- Updates bundled AzureLib version to latest.
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
