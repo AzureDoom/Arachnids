@@ -14,7 +14,6 @@ import mod.azure.arachnids.util.ArachnidsVillagerTrades;
 import mod.azure.arachnids.util.MobAttributes;
 import mod.azure.arachnids.util.MobSpawn;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
-import mod.azure.azurelib.AzureLib;
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.config.format.ConfigFormats;
 import net.fabricmc.api.ModInitializer;
@@ -95,7 +94,6 @@ public class ArachnidsMod implements ModInitializer {
 					entries.accept(ArachnidsItems.TANKERBUG_SPAWN_EGG);
 					entries.accept(ArachnidsItems.BRAINBUG_SPAWN_EGG);
 				}).build()); // build() no longer registers by itself
-		AzureLib.initialize();
 		MobSpawn.addSpawnEntries();
 		MobAttributes.init();
 		ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> ArachnidsVillagerTrades.addTrades());
