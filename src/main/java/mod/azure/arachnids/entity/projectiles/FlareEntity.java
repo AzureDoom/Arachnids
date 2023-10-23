@@ -1,13 +1,11 @@
 package mod.azure.arachnids.entity.projectiles;
 
-import org.jetbrains.annotations.Nullable;
-
+import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsParticles;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
-import mod.azure.azurelib.AzureLibMod;
-import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,203 +26,204 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class FlareEntity extends AbstractArrow {
 
-	public int life;
-	protected int timeInAir;
-	protected boolean inAir;
-	protected String type;
-	private BlockPos lightBlockPos = null;
-	private int idleTicks = 0;
-	private static final EntityDataAccessor<Boolean> PATHING = SynchedEntityData.defineId(FlareEntity.class, EntityDataSerializers.BOOLEAN);
+    public int life;
+    protected int timeInAir;
+    protected boolean inAir;
+    protected String type;
+    private BlockPos lightBlockPos = null;
+    private int idleTicks = 0;
+    private static final EntityDataAccessor<Boolean> PATHING = SynchedEntityData.defineId(FlareEntity.class, EntityDataSerializers.BOOLEAN);
 
-	public FlareEntity(Level world, double x, double y, double z, ItemStack stack) {
-		super(ProjectilesEntityRegister.FLARE, world);
-		this.absMoveTo(x, y, z);
-	}
+    public FlareEntity(Level world, double x, double y, double z, ItemStack stack) {
+        super(ProjectilesEntityRegister.FLARE, world);
+        this.absMoveTo(x, y, z);
+    }
 
-	public FlareEntity(EntityType<? extends FlareEntity> entityType, Level world) {
-		super(entityType, world);
-	}
+    public FlareEntity(EntityType<? extends FlareEntity> entityType, Level world) {
+        super(entityType, world);
+    }
 
-	public FlareEntity(Level world, @Nullable Entity entity, double x, double y, double z, ItemStack stack) {
-		this(world, x, y, z, stack);
-		this.setOwner(entity);
-	}
+    public FlareEntity(Level world, @Nullable Entity entity, double x, double y, double z, ItemStack stack) {
+        this(world, x, y, z, stack);
+        this.setOwner(entity);
+    }
 
-	public FlareEntity(Level world, ItemStack stack, LivingEntity shooter) {
-		this(world, shooter, shooter.getX(), shooter.getY(), shooter.getZ(), stack);
-	}
+    public FlareEntity(Level world, ItemStack stack, LivingEntity shooter) {
+        this(world, shooter, shooter.getX(), shooter.getY(), shooter.getZ(), stack);
+    }
 
-	public FlareEntity(Level world, ItemStack stack, double x, double y, double z, boolean shotAtAngle) {
-		this(world, x, y, z, stack);
-	}
+    public FlareEntity(Level world, ItemStack stack, double x, double y, double z, boolean shotAtAngle) {
+        this(world, x, y, z, stack);
+    }
 
-	public FlareEntity(Level world, ItemStack stack, Entity entity, double x, double y, double z, boolean shotAtAngle) {
-		this(world, stack, x, y, z, shotAtAngle);
-		this.setOwner(entity);
-	}
+    public FlareEntity(Level world, ItemStack stack, Entity entity, double x, double y, double z, boolean shotAtAngle) {
+        this(world, stack, x, y, z, shotAtAngle);
+        this.setOwner(entity);
+    }
 
-	public FlareEntity(Level world, ItemStack stack, LivingEntity user, boolean firingmethod) {
-		super(ProjectilesEntityRegister.FLARE, user, world);
-		this.entityData.set(PATHING, firingmethod);
-	}
+    public FlareEntity(Level world, ItemStack stack, LivingEntity user, boolean firingmethod) {
+        super(ProjectilesEntityRegister.FLARE, user, world);
+        this.entityData.set(PATHING, firingmethod);
+    }
 
-	@Override
-	public void shoot(double x, double y, double z, float speed, float divergence) {
-		super.shoot(x, y, z, speed, divergence);
-	}
+    @Override
+    public void shoot(double x, double y, double z, float speed, float divergence) {
+        super.shoot(x, y, z, speed, divergence);
+    }
 
-	@Override
-	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
-		compound.putBoolean("isGunFired", isGunFired());
-	}
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("isGunFired", isGunFired());
+    }
 
-	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		if (compound.contains("isGunFired"))
-			setFireMethod(compound.getBoolean("isGunFired"));
-	}
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        if (compound.contains("isGunFired"))
+            setFireMethod(compound.getBoolean("isGunFired"));
+    }
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(PATHING, false);
-	}
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(PATHING, false);
+    }
 
-	public boolean isGunFired() {
-		return (Boolean) this.entityData.get(PATHING);
-	}
+    public boolean isGunFired() {
+        return (Boolean) this.entityData.get(PATHING);
+    }
 
-	public void setFireMethod(boolean spin) {
-		this.entityData.set(PATHING, spin);
-	}
+    public void setFireMethod(boolean spin) {
+        this.entityData.set(PATHING, spin);
+    }
 
-	@Override
-	public void tick() {
-		var idleOpt = 100;
-		if (getDeltaMovement().lengthSqr() < 0.01)
-			idleTicks++;
-		else
-			idleTicks = 0;
-		if (idleOpt <= 0 || idleTicks < idleOpt)
-			super.tick();
-		if (this.tickCount >= 800)
-			this.remove(Entity.RemovalReason.DISCARDED);
-		setNoGravity(false);
-		++this.life;
-		if (this.level().isClientSide())
-			this.level().addParticle(ArachnidsParticles.FLARE, true, this.getX(), this.getY() - 0.3D, this.getZ(), this.random.nextGaussian() * 0.05D, -this.getDeltaMovement().y * 0.07D, this.random.nextGaussian() * 0.05D);
-		if (this.tickCount > 25)
-			this.setDeltaMovement(0.0, -0.1, 0.0);
-		var isInsideWaterBlock = level().isWaterAt(blockPosition());
-		spawnLightSource(isInsideWaterBlock);
-	}
+    @Override
+    public void tick() {
+        var idleOpt = 100;
+        if (getDeltaMovement().lengthSqr() < 0.01)
+            idleTicks++;
+        else
+            idleTicks = 0;
+        if (idleOpt <= 0 || idleTicks < idleOpt)
+            super.tick();
+        if (this.tickCount >= 800)
+            this.remove(Entity.RemovalReason.DISCARDED);
+        setNoGravity(false);
+        ++this.life;
+        if (this.level().isClientSide())
+            this.level().addParticle(ArachnidsParticles.FLARE, true, this.getX(), this.getY() - 0.3D, this.getZ(), this.random.nextGaussian() * 0.05D, -this.getDeltaMovement().y * 0.07D, this.random.nextGaussian() * 0.05D);
+        if (this.tickCount > 25)
+            this.setDeltaMovement(0.0, -0.1, 0.0);
+        var isInsideWaterBlock = level().isWaterAt(blockPosition());
+        spawnLightSource(isInsideWaterBlock);
+    }
 
-	@Override
-	public void startFalling() {
-		this.inGround = false;
-		var vec3 = this.getDeltaMovement();
-		this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * -2.0f, this.random.nextFloat() * -2.0f, this.random.nextFloat() * -2.0f));
-		this.life = 0;
-	}
+    @Override
+    public void startFalling() {
+        this.inGround = false;
+        var vec3 = this.getDeltaMovement();
+        this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * -2.0f, this.random.nextFloat() * -2.0f, this.random.nextFloat() * -2.0f));
+        this.life = 0;
+    }
 
-	@Override
-	public void handleEntityEvent(byte status) {
-		super.handleEntityEvent(status);
-	}
+    @Override
+    public void handleEntityEvent(byte status) {
+        super.handleEntityEvent(status);
+    }
 
-	public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
+    public SoundEvent hitSound = this.getDefaultHitGroundSoundEvent();
 
-	@Override
-	public void setSoundEvent(SoundEvent soundIn) {
-		this.hitSound = soundIn;
-	}
+    @Override
+    public void setSoundEvent(SoundEvent soundIn) {
+        this.hitSound = soundIn;
+    }
 
-	@Override
-	protected SoundEvent getDefaultHitGroundSoundEvent() {
-		return ArachnidsSounds.FLAREGUN;
-	}
+    @Override
+    protected SoundEvent getDefaultHitGroundSoundEvent() {
+        return ArachnidsSounds.FLAREGUN;
+    }
 
-	@Override
-	protected void onHitBlock(BlockHitResult blockHitResult) {
-		super.onHitBlock(blockHitResult);
-	}
+    @Override
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+        super.onHitBlock(blockHitResult);
+    }
 
-	@Override
-	protected void onHitEntity(EntityHitResult entityHitResult) {
-		this.setSoundEvent(ArachnidsSounds.FLAREGUN);
-		this.setSilent(true);
-	}
+    @Override
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        this.setSoundEvent(ArachnidsSounds.FLAREGUN);
+        this.setSilent(true);
+    }
 
-	@Override
-	public boolean isAttackable() {
-		return false;
-	}
+    @Override
+    public boolean isAttackable() {
+        return false;
+    }
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return EntityPacket.createPacket(this);
-	}
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return EntityPacket.createPacket(this);
+    }
 
-	@Override
-	protected ItemStack getPickupItem() {
-		return new ItemStack(ArachnidsItems.FLARE);
-	}
+    @Override
+    protected ItemStack getPickupItem() {
+        return new ItemStack(ArachnidsItems.FLARE);
+    }
 
-	@Override
-	@Environment(EnvType.CLIENT)
-	public boolean shouldRenderAtSqrDistance(double distance) {
-		return true;
-	}
+    @Override
+    @Environment(EnvType.CLIENT)
+    public boolean shouldRenderAtSqrDistance(double distance) {
+        return true;
+    }
 
-	@Override
-	protected boolean tryPickup(Player player) {
-		return false;
-	}
+    @Override
+    protected boolean tryPickup(Player player) {
+        return false;
+    }
 
-	private void spawnLightSource(boolean isInWaterBlock) {
-		if (lightBlockPos == null) {
-			lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
-			if (lightBlockPos == null)
-				return;
-			level().setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
-		} else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
-			var blockEntity = level().getBlockEntity(lightBlockPos);
-			if (blockEntity instanceof TickingLightEntity)
-				((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
-			else
-				lightBlockPos = null;
-		} else
-			lightBlockPos = null;
-	}
+    private void spawnLightSource(boolean isInWaterBlock) {
+        if (lightBlockPos == null) {
+            lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
+            if (lightBlockPos == null)
+                return;
+            level().setBlockAndUpdate(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+        } else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
+            var blockEntity = level().getBlockEntity(lightBlockPos);
+            if (blockEntity instanceof TickingLightEntity)
+                ((TickingLightEntity) blockEntity).refresh(isInWaterBlock ? 20 : 0);
+            else
+                lightBlockPos = null;
+        } else
+            lightBlockPos = null;
+    }
 
-	private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
-		return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
-	}
+    private boolean checkDistance(BlockPos blockPosA, BlockPos blockPosB, int distance) {
+        return Math.abs(blockPosA.getX() - blockPosB.getX()) <= distance && Math.abs(blockPosA.getY() - blockPosB.getY()) <= distance && Math.abs(blockPosA.getZ() - blockPosB.getZ()) <= distance;
+    }
 
-	private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
-		if (blockPos == null)
-			return null;
+    private BlockPos findFreeSpace(Level world, BlockPos blockPos, int maxDistance) {
+        if (blockPos == null)
+            return null;
 
-		var offsets = new int[maxDistance * 2 + 1];
-		offsets[0] = 0;
-		for (var i = 2; i <= maxDistance * 2; i += 2) {
-			offsets[i - 1] = i / 2;
-			offsets[i] = -i / 2;
-		}
-		for (var x : offsets)
-			for (var y : offsets)
-				for (var z : offsets) {
-					var offsetPos = blockPos.offset(x, y, z);
-					var state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
-						return offsetPos;
-				}
+        var offsets = new int[maxDistance * 2 + 1];
+        offsets[0] = 0;
+        for (var i = 2; i <= maxDistance * 2; i += 2) {
+            offsets[i - 1] = i / 2;
+            offsets[i] = -i / 2;
+        }
+        for (var x : offsets)
+            for (var y : offsets)
+                for (var z : offsets) {
+                    var offsetPos = blockPos.offset(x, y, z);
+                    var state = world.getBlockState(offsetPos);
+                    if (state.isAir() || state.getBlock().equals(ArachnidsMod.TICKING_LIGHT_BLOCK))
+                        return offsetPos;
+                }
 
-		return null;
-	}
+        return null;
+    }
 
 }

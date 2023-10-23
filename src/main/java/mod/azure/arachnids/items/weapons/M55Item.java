@@ -4,12 +4,12 @@ import java.util.List;
 
 import io.netty.buffer.Unpooled;
 import mod.azure.arachnids.ArachnidsMod;
+import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.entity.projectiles.TacticalOxygenNukeEntity;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.Keybindings;
-import mod.azure.azurelib.entities.TickingLightEntity;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -133,7 +133,7 @@ public class M55Item extends Item {
 			lightBlockPos = findFreeSpace(entity.level(), entity.blockPosition(), 2);
 			if (lightBlockPos == null)
 				return;
-			entity.level().setBlockAndUpdate(lightBlockPos, AzureLibMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+			entity.level().setBlockAndUpdate(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.defaultBlockState());
 		} else if (checkDistance(lightBlockPos, entity.blockPosition(), 2)) {
 			var blockEntity = entity.level().getBlockEntity(lightBlockPos);
 			if (blockEntity instanceof TickingLightEntity)
@@ -163,7 +163,7 @@ public class M55Item extends Item {
 				for (var z : offsets) {
 					var offsetPos = blockPos.offset(x, y, z);
 					var state = world.getBlockState(offsetPos);
-					if (state.isAir() || state.getBlock().equals(AzureLibMod.TICKING_LIGHT_BLOCK))
+					if (state.isAir() || state.getBlock().equals(ArachnidsMod.TICKING_LIGHT_BLOCK))
 						return offsetPos;
 				}
 
