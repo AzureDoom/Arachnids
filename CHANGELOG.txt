@@ -1,7 +1,5 @@
-v.0.0.31
+v.0.0.32
 
-- Updates required AzureLib version to v1.0.32.
-- Fixes early init crash with Connector.
-- Adds AzureLib to Connector builds required mods list, no longer bundled as you can use the Forge version safely with Fabric mods.
+- Fixes crash when loaded with connector and AzureLib Forge.
 
 - This is a WIP build, AI is in heavy works for all mobs. All mobs will spawn via structures later on.
