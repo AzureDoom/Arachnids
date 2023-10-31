@@ -2,8 +2,6 @@ package mod.azure.arachnids;
 
 import mod.azure.arachnids.blocks.MZ90Block;
 import mod.azure.arachnids.blocks.TONBlock;
-import mod.azure.arachnids.blocks.TickingLightBlock;
-import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.config.ArachnidsConfig;
 import mod.azure.arachnids.enchantment.FlareEnchantment;
 import mod.azure.arachnids.enchantment.GrenadeEnchantment;
@@ -17,7 +15,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -33,7 +30,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ArachnidsMod implements ModInitializer {
 
@@ -44,8 +40,6 @@ public class ArachnidsMod implements ModInitializer {
     public static ProjectilesEntityRegister PROJECTILES;
     public static final Block TONBLOCK = new TONBlock();
     public static final Block MZ90BLOCK = new MZ90Block();
-    public static final TickingLightBlock TICKING_LIGHT_BLOCK = new TickingLightBlock();
-    public static BlockEntityType<TickingLightEntity> TICKING_LIGHT_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID + ":lightblock", FabricBlockEntityTypeBuilder.create(TickingLightEntity::new, TICKING_LIGHT_BLOCK).build(null));
     public static final ResourceLocation RELOAD_BULLETS = new ResourceLocation(MODID, "reload_bullets");
     public static final ResourceLocation RELOAD_TON = new ResourceLocation(MODID, "reload_ton");
     public static final Enchantment SNIPERATTACHMENT = new SnipingEnchantment(Rarity.RARE, EquipmentSlot.MAINHAND);
@@ -66,7 +60,6 @@ public class ArachnidsMod implements ModInitializer {
         config = AzureLibMod.registerConfig(ArachnidsConfig.class, ConfigFormats.json()).getConfigInstance();
         Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "mz90"), MZ90BLOCK);
         Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "ton"), TONBLOCK);
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation(MODID, "lightblock"), TICKING_LIGHT_BLOCK);
         Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "grenadeattachment"), GRENADEATTACHMENT);
         Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "sniperattachment"), SNIPERATTACHMENT);
         Registry.register(BuiltInRegistries.ENCHANTMENT, new ResourceLocation(MODID, "flareattachment"), FLAREATTACHMENT);

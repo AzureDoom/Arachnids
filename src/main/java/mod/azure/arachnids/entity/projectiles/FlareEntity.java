@@ -1,12 +1,13 @@
 package mod.azure.arachnids.entity.projectiles;
 
 import mod.azure.arachnids.ArachnidsMod;
-import mod.azure.arachnids.blocks.TickingLightEntity;
 import mod.azure.arachnids.client.ArachnidsParticles;
 import mod.azure.arachnids.util.ArachnidsItems;
 import mod.azure.arachnids.util.ArachnidsSounds;
 import mod.azure.arachnids.util.ProjectilesEntityRegister;
+import mod.azure.azurelib.entities.TickingLightEntity;
 import mod.azure.azurelib.network.packet.EntityPacket;
+import mod.azure.azurelib.platform.Services;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -189,7 +190,7 @@ public class FlareEntity extends AbstractArrow {
             lightBlockPos = findFreeSpace(level(), blockPosition(), 2);
             if (lightBlockPos == null)
                 return;
-            level().setBlockAndUpdate(lightBlockPos, ArachnidsMod.TICKING_LIGHT_BLOCK.defaultBlockState());
+            level().setBlockAndUpdate(lightBlockPos, Services.PLATFORM.getTickingLightBlock().defaultBlockState());
         } else if (checkDistance(lightBlockPos, blockPosition(), 2)) {
             var blockEntity = level().getBlockEntity(lightBlockPos);
             if (blockEntity instanceof TickingLightEntity)
@@ -219,7 +220,7 @@ public class FlareEntity extends AbstractArrow {
                 for (var z : offsets) {
                     var offsetPos = blockPos.offset(x, y, z);
                     var state = world.getBlockState(offsetPos);
-                    if (state.isAir() || state.getBlock().equals(ArachnidsMod.TICKING_LIGHT_BLOCK))
+                    if (state.isAir() || state.getBlock().equals(Services.PLATFORM.getTickingLightBlock()))
                         return offsetPos;
                 }
 
